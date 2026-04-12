@@ -1,0 +1,73 @@
+body {
+    font-family: Arial;
+    background: #e9e9e9;
+}
+
+.container {
+    display: flex;
+    align-items: flex-start;
+    /* kiri tidak dipaksa setinggi layar */
+}
+
+.left {
+    width: 28%;
+    color: #c94a6a;
+    padding: 30px 20px;
+    display: flex;
+    justify-content: center;
+}
+.experience{
+  height: fit-content;
+}
+.contact{
+  height: fit-content;
+}
+.profile {
+    background: rgb(255, 255, 255);
+    padding: 50px;
+    border-radius: 15px;
+    text-align: center;
+    width: 200px;
+    margin-top: 40px;
+    
+}
+
+.profile img {
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 4px solid #c94a6a;
+    margin-bottom: 15px;
+}
+
+.profile h2 {
+    margin: 10px 0 5px;
+}
+
+.right {
+    width: 65%;
+    padding: 40px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 25px;
+}
+
+.card {
+    background: #c94a6a;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+    transition: 0.3s;
+    color: white;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 25px rgba(0, 0, 0, 0.15);
+}
+
+
+.skills {
+    margin-top: 10px;
+}
