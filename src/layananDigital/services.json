@@ -1,0 +1,324 @@
+[
+  {
+    "id": 1,
+    "name": "Coffee Catering",
+    "category": "Event Service",
+    "price": 1500000,
+    "rating": 4.8,
+    "image": "/assets/coffee1.webp",
+    "provider": {
+      "name": "Zafa Coffee",
+      "location": "Jakarta",
+      "contact": {
+        "email": "zafa@coffee.com",
+        "phone": "0811111111"
+      }
+    },
+    
+    "details": {
+      "duration": "5 jam",
+      "capacity": "100 orang",
+      "barista": true
+    }
+  },
+  
+  
+  {
+    "id": 2,
+    "name": "Barista Training",
+    "category": "Training",
+    "price": 1000000,
+    "rating": 4.7,
+    "image": "/assets/coffee2.webp",
+    "provider": {
+      "name": "Barista School",
+      "location": "Bandung",
+      "contact": {
+        "email": "train@coffee.com",
+        "phone": "0822222222"
+      }
+    },
+    "details": {
+      "duration": "3 hari",
+      "level": "Beginner",
+      "certificate": true
+    }
+    
+  },
+  {
+    "id": 3,
+    "name": "Coffee Workshop",
+    "category": "Training",
+    "price": 750000,
+    "rating": 4.6,
+    "image": "/assets/coffee3.webp",
+    "provider": {
+      "name": "Coffee Lab",
+      "location": "Surabaya",
+      "contact": {
+        "email": "lab@coffee.com",
+        "phone": "0833333333"
+      }
+    },
+    "details": {
+      "duration": "1 hari",
+      "level": "Intermediate",
+      "certificate": true
+    }
+  },
+  {
+    "id": 4,
+    "name": "Coffee Delivery Service",
+    "category": "Delivery",
+    "price": 500000,
+    "rating": 4.5,
+    "image": "/assets/coffee4.webp",
+    "provider": {
+      "name": "Coffee Express",
+      "location": "Medan",
+      "contact": {
+        "email": "express@coffee.com",
+        "phone": "0844444444"
+      }
+    },
+    "details": {
+      "duration": "1 hari",
+      "coverage": "Kota",
+      "tracking": true
+    }
+  },
+  {
+    "id": 5,
+    "name": "Coffee Subscription",
+    "category": "Subscription",
+    "price": 300000,
+    "rating": 4.9,
+    "image": "/assets/coffee5.webp",
+    "provider": {
+      "name": "Daily Coffee",
+      "location": "Bali",
+      "contact": {
+        "email": "daily@coffee.com",
+        "phone": "0855555555"
+      }
+    },
+    "details": {
+      "duration": "1 bulan",
+      "package": "Premium",
+      "delivery": true
+    }
+  },
+
+  {
+    "id": 6,
+    "name": "Mobile Coffee Service",
+    "category": "Event Service",
+    "price": 1200000,
+    "rating": 4.6,
+    "image": "/assets/coffee6.webp",
+    "provider": {
+      "name": "Coffee On Wheels",
+      "location": "Jakarta",
+      "contact": { "email": "mobile@coffee.com", "phone": "0811223344" }
+    },
+    "details": { "duration": "6 jam", "capacity": "150 orang", "barista": true }
+  },
+  {
+    "id": 7,
+    "name": "Coffee Booth Event",
+    "category": "Event Service",
+    "price": 2000000,
+    "rating": 4.7,
+    "image": "/assets/coffee7.webp",
+    "provider": {
+      "name": "Event Brew",
+      "location": "Bandung",
+      "contact": { "email": "event@coffee.com", "phone": "0822334455" }
+    },
+    "details": { "duration": "1 hari", "capacity": "200 orang", "barista": true }
+  },
+  {
+    "id": 8,
+    "name": "Coffee Roasting Service",
+    "category": "Production",
+    "price": 800000,
+    "rating": 4.5,
+    "image": "/assets/coffee8.jpg",
+    "provider": {
+      "name": "Roast Lab",
+      "location": "Surabaya",
+      "contact": { "email": "roast@coffee.com", "phone": "0833445566" }
+    },
+    "details": { "duration": "2 hari", "beans": "Custom", "quality": "Premium" }
+  },
+  {
+    "id": 9,
+    "name": "Custom Coffee Blend",
+    "category": "Production",
+    "price": 900000,
+    "rating": 4.8,
+    "image": "/assets/coffee9.webp",
+    "provider": {
+      "name": "Blend House",
+      "location": "Medan",
+      "contact": { "email": "blend@coffee.com", "phone": "0844556677" }
+    },
+    "details": { "duration": "3 hari", "beans": "Mix", "custom": true }
+  },
+  {
+    "id": 10,
+    "name": "Coffee Consultation",
+    "category": "Consulting",
+    "price": 700000,
+    "rating": 4.6,
+    "image": "/assets/coffee10.webp",
+    "provider": {
+      "name": "Coffee Expert",
+      "location": "Jakarta",
+      "contact": { "email": "consult@coffee.com", "phone": "0811998877" }
+    },
+    "details": { "duration": "2 jam", "level": "Professional", "online": true }
+  },
+
+  {
+    "id": 11,
+    "name": "Cafe Setup Service",
+    "category": "Consulting",
+    "price": 3000000,
+    "rating": 4.9,
+    "image": "/assets/coffee11.webp",
+    "provider": {
+      "name": "Cafe Builder",
+      "location": "Bandung",
+      "contact": { "email": "setup@coffee.com", "phone": "0822998877" }
+    },
+    "details": { "duration": "1 minggu", "design": true, "equipment": true }
+  },
+  {
+    "id": 12,
+    "name": "Coffee Equipment Rental",
+    "category": "Rental",
+    "price": 500000,
+    "rating": 4.5,
+    "image": "/assets/coffee12.jpg",
+    "provider": {
+      "name": "Equip Rent",
+      "location": "Surabaya",
+      "contact": { "email": "rent@coffee.com", "phone": "0833112233" }
+    },
+    "details": { "duration": "1 hari", "equipment": "Full Set", "delivery": true }
+  },
+  {
+    "id": 13,
+    "name": "Private Barista Service",
+    "category": "Event Service",
+    "price": 1000000,
+    "rating": 4.7,
+    "image": "/assets/coffee13.jpg",
+    "provider": {
+      "name": "Private Brew",
+      "location": "Medan",
+      "contact": { "email": "private@coffee.com", "phone": "0844223344" }
+    },
+    "details": { "duration": "5 jam", "barista": true, "exclusive": true }
+  },
+  {
+    "id": 14,
+    "name": "Office Coffee Service",
+    "category": "Subscription",
+    "price": 2000000,
+    "rating": 4.8,
+    "image": "/assets/coffee14.jpg",
+    "provider": {
+      "name": "Office Brew",
+      "location": "Jakarta",
+      "contact": { "email": "office@coffee.com", "phone": "0811887766" }
+    },
+    "details": { "duration": "1 bulan", "capacity": "50 orang", "delivery": true }
+  },
+  {
+    "id": 15,
+    "name": "Coffee Tasting Session",
+    "category": "Experience",
+    "price": 600000,
+    "rating": 4.6,
+    "image": "/assets/coffee15.webp",
+    "provider": {
+      "name": "Taste Lab",
+      "location": "Bandung",
+      "contact": { "email": "taste@coffee.com", "phone": "0822776655" }
+    },
+    "details": { "duration": "2 jam", "beans": "Various", "guide": true }
+  },
+
+  {
+    "id": 16,
+    "name": "Coffee Branding Service",
+    "category": "Consulting",
+    "price": 2500000,
+    "rating": 4.7,
+    "image": "/assets/coffee16.webp",
+    "provider": {
+      "name": "Brand Brew",
+      "location": "Surabaya",
+      "contact": { "email": "brand@coffee.com", "phone": "0833221144" }
+    },
+    "details": { "duration": "1 minggu", "design": true, "strategy": true }
+  },
+  {
+    "id": 17,
+    "name": "Pop-up Coffee Stand",
+    "category": "Event Service",
+    "price": 1800000,
+    "rating": 4.8,
+    "image": "/assets/coffee17.jpg",
+    "provider": {
+      "name": "Pop Brew",
+      "location": "Medan",
+      "contact": { "email": "popup@coffee.com", "phone": "0844332211" }
+    },
+    "details": { "duration": "1 hari", "portable": true, "barista": true }
+  },
+  {
+    "id": 18,
+    "name": "Coffee Franchise Setup",
+    "category": "Consulting",
+    "price": 5000000,
+    "rating": 4.9,
+    "image": "/assets/coffee18.png",
+    "provider": {
+      "name": "Franchise Lab",
+      "location": "Jakarta",
+      "contact": { "email": "franchise@coffee.com", "phone": "0811334455" }
+    },
+    "details": { "duration": "2 minggu", "training": true, "branding": true }
+  },
+  {
+    "id": 19,
+    "name": "Coffee Machine Maintenance",
+    "category": "Maintenance",
+    "price": 400000,
+    "rating": 4.5,
+    "image": "/assets/coffee19.webp",
+    "provider": {
+      "name": "Machine Care",
+      "location": "Bandung",
+      "contact": { "email": "care@coffee.com", "phone": "0822445566" }
+    },
+    "details": { "duration": "1 hari", "service": "Full", "repair": true }
+  },
+  {
+    "id": 20,
+    "name": "Coffee Tour Experience",
+    "category": "Subscription",
+    "price": 350000,
+    "rating": 4.8,
+    "image": "/assets/coffee20.jpg",
+    "provider": {
+      "name": "Daily Brew",
+      "location": "Surabaya",
+      "contact": { "email": "dailybrew@coffee.com", "phone": "0833556677" }
+    },
+    "details": { "duration": "1 bulan", "delivery": true, "package": "Standard" }
+  }
+]
