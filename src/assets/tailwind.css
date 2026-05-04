@@ -1,0 +1,66 @@
+@import "tailwindcss";
+
+@font-face {
+    font-family: 'Barlow';
+    src: url('./fonts/Barlow-Regular.ttf');
+}
+
+@font-face {
+    font-family: 'Barlow';
+    src: url('./fonts/Barlow-SemiBold.ttf');
+}
+
+@font-face {
+    font-family: 'Barlow';
+    src: url('./fonts/Barlow-MediumItalic.ttf');
+}
+
+@font-face {
+    font-family: 'Barlow';
+    src: url('./fonts/Barlow-Italic.ttf');
+}
+
+@font-face {
+    font-family: 'Barlow';
+    src: url('./fonts/Barlow-Bold.ttf');
+}
+
+@font-face {
+    font-family: 'Poppins';
+    src: url('./fonts/Poppins-SemiBoldItalic.ttf');
+}
+
+@font-face {
+    font-family: 'Poppins';
+    src: url('./fonts/Poppins-Regular.ttf');
+}
+
+@font-face {
+    font-family: 'Poppins';
+    src: url('./fonts/Poppins-MediumItalic.ttf');
+}
+
+@font-face {
+    font-family: 'Poppins';
+    src: url('./fonts/Poppins-SemiBoldItalic.ttf');
+}
+
+@theme {
+    --font-barlow: "Barlow", sans-serif;
+    --font-poppins: "Poppins", sans-serif;
+    --font-barlow-semi-bold: "Barlow SemiBold", sans-serif;
+    --font-barlow-medium-italic: "Barlow Medium Italic", sans-serif;
+    --font-barlow-bold: "Barlow Bold", sans-serif;
+    --font-poppins-semi-bold-italic: "Poppins SemiBold Italic", sans-serif;
+    --font-poppins-regular: "Poppins Regular", sans-serif;
+    --font-poppins-medium-italic: "Poppins Medium Italic", sans-serif;
+
+    --color-latar: #f3f4f6;
+    --color-teks: #374151;
+    --color-teks-samping: #6b7280;
+    --color-garis: #e5e7eb;
+    --color-hijau: #00B074;
+    --color-merah: #ef4444;
+    --color-biru: #3b82f6;
+    --color-kuning: #f59e0b;
+}

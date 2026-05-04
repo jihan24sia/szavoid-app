@@ -1,121 +1,77 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
-import './App.css'
+import React, { Suspense, useState } from 'react';
+import { Routes, Route } from 'react-router-dom';
+import Loading from "./components/Loading";
+
+// Lazy Loading Pages
+const Dashboard = React.lazy(() => import("./pages/Dashboard"));
+const Orders = React.lazy(() => import("./pages/Orders"));
+const Customers = React.lazy(() => import("./pages/Customers"));
+const NewOrder = React.lazy(() => import("./pages/orders/NewOrder")); 
+const Tracking = React.lazy(() => import("./pages/Tracking"));
+const Services = React.lazy(() => import("./pages/Services"));
+const Notifications = React.lazy(() => import("./pages/Notifications"));
+const History = React.lazy(() => import("./pages/History"));
+const Payments = React.lazy(() => import("./pages/Payments"));
+
+// Layouts
+const MainLayout = React.lazy(() => import("./layouts/MainLayout"));
+const AuthLayout = React.lazy(() => import("./layouts/AuthLayout"));
+
+// Auth Pages
+const Login = React.lazy(() => import("./pages/auth/Login"));
+const Register = React.lazy(() => import("./pages/auth/Register"));
+const Forgot = React.lazy(() => import("./pages/auth/Forgot"));
+
+// Error Pages
+const NotFound = React.lazy(() => import("./pages/NotFound"));
+
 
 function App() {
-  const [count, setCount] = useState(0)
+  // Master data order disimpan di sini supaya tidak hilang saat pindah halaman
+  const [allOrders, setAllOrders] = useState([
+    { id: "ORD-001", customer: "Jihan Zahra", service: "Cuci Setrika", weight: "5kg", total: "Rp 50.000", status: "Proses", date: "24 Mei 2024" },
+    { id: "ORD-002", customer: "Budi Santoso", service: "Cuci Kering", weight: "3kg", total: "Rp 21.000", status: "Selesai", date: "23 Mei 2024" },
+  ]);
+
+  // Fungsi untuk menambah order baru dari halaman NewOrder
+  const handleAddOrder = (newOrder) => {
+    setAllOrders((prevOrders) => [newOrder, ...prevOrders]);
+  };
 
   return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.jsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
+    <Suspense fallback={<Loading />}>
+      <Routes>
+        {/* Private Routes (Admin BrightWash) */}
+        <Route element={<MainLayout />}>
+          <Route path="/" element={<Dashboard />} />
+          
+          {/* Kirim fungsi penambah order ke halaman NewOrder */}
+          <Route path="/orders/new" element={<NewOrder onAddOrder={handleAddOrder} />} />
+          
+          {/* Kirim data master order ke halaman tabel Orders */}
+          <Route path="/orders" element={<Orders orders={allOrders} />} />
+          
+          <Route path="/tracking" element={<Tracking />} />
+          <Route path="/customers" element={<Customers />} />
+          <Route path="/services" element={<Services />} />
+          <Route path="/notifications" element={<Notifications />} />
+          <Route path="/history" element={<History />} />
+          <Route path="/payments" element={<Payments />} />
 
-      <div className="ticks"></div>
+          {/* Error & Utils */}
+      
+          <Route path="*" element={<NotFound />} />
+        </Route>
 
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
-
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
-  )
+        {/* Auth Routes */}
+        <Route element={<AuthLayout />}>
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/forgot" element={<Forgot />} />
+        </Route>
+      </Routes>
+    </Suspense>
+  );
 }
 
-export default App
+export default App;
