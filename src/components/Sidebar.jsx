@@ -9,7 +9,8 @@ import {
   Users,
   Tag,
   Bell,
-  LogOut
+  LogOut,
+  RotateCcw
 } from 'lucide-react';
 
 
@@ -31,7 +32,7 @@ const Sidebar = () => {
     { path: '/customers', name: 'Data Pelanggan', icon: <Users size={20} /> },
     { path: '/services', name: 'Layanan & Harga', icon: <Tag size={20} /> },
     { path: '/notifications', name: 'Notifikasi', icon: <Bell size={20} /> },
-    { path: '/history', name: 'Riwayat', icon: <Bell size={20} /> },
+    { path: '/history', name: 'Riwayat', icon: <RotateCcw size={20} /> },
   ];
 
   return (

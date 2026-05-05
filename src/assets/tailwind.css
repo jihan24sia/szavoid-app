@@ -64,3 +64,36 @@
     --color-biru: #3b82f6;
     --color-kuning: #f59e0b;
 }
+
+@theme {
+ 
+    --font-barlow: "Barlow", sans-serif;
+    --font-poppins: "Poppins", sans-serif;
+
+
+    --color-primary: #4DBAE9;     
+    --color-secondary: #1678F3;    
+    --color-accent: #64A6F9;      
+    --color-latar: #EDF2F6;       
+    --color-surface: #FFFFFF;     
+    
+    /* Semantic Colors */
+    --color-sukses: #00B074;       
+    --color-proses: #F59E0B;      
+    --color-gagal: #EF4444;       
+
+    /* Typography Helpers */
+    --tracking-tighter: -0.05em;   
+}
+
+
+@layer base {
+  body {
+    @apply bg-latar text-secondary font-barlow;
+  }
+  
+
+  .heading-tight {
+    @apply font-black tracking-tighter uppercase italic font-barlow;
+  }
+}
