@@ -1,107 +1,119 @@
 import React, { useState } from 'react';
-import { Tag, Zap, Star, ShieldCheck, Plus, X, Footprints } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { Tag, Zap, Star, ShieldCheck, Plus, X, Footprints, MoreVertical, Waves, Sparkles, ShirtIcon, BedDouble } from 'lucide-react';
 
 const Services = () => {
-  // State untuk menyimpan daftar layanan (termasuk Cuci Sepatu)
+  // 1. STATE MASTER DATA (Dikasih ID supaya bisa diklik ke detail)
   const [serviceList, setServiceList] = useState([
-    { name: 'Cuci Kering', price: '7.000', unit: 'Kg', color: 'bg-[#6259E8]', icon: <Tag /> },
-    { name: 'Cuci Setrika', price: '10.000', unit: 'Kg', color: 'bg-[#FF71A4]', icon: <Star /> },
-    { name: 'Express 6 Jam', price: '15.000', unit: 'Kg', color: 'bg-[#8C83FF]', icon: <Zap /> },
-    { name: 'Bed Cover', price: '35.000', unit: 'Pcs', color: 'bg-[#6259E8]', icon: <ShieldCheck /> },
-    { name: 'Cuci Sepatu', price: '25.000', unit: 'Pasang', color: 'bg-[#FF71A4]', icon: <Footprints /> }, // Layanan baru
+    { id: 'cuci-kering', name: 'Cuci Kering', price: '7.000', unit: 'Kg', icon: <Waves className="text-[#1678F3]" /> },
+    { id: 'cuci-setrika', name: 'Cuci Setrika', price: '10.000', unit: 'Kg', icon: <ShirtIcon className="text-orange-400" /> },
+    { id: 'express-6-jam', name: 'Express 6 Jam', price: '15.000', unit: 'Kg', icon: <Zap className="text-amber-400" /> },
+    { id: 'bed-cover', name: 'Bed Cover', price: '35.000', unit: 'Pcs', icon: <BedDouble className="text-emerald-400" /> },
+    { id: 'cuci-sepatu', name: 'Cuci Sepatu', price: '25.000', unit: 'Pasang', icon: <Footprints className="text-pink-400" /> },
   ]);
 
-  // State untuk kontrol Modal
+  // 2. LOGIKA MODAL TAMBAH LAYANAN
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [newService, setNewService] = useState({ name: '', price: '', unit: 'Kg', color: 'bg-[#6259E8]' });
+  const [newService, setNewService] = useState({ name: '', price: '', unit: 'Kg' });
 
   const handleAddService = (e) => {
     e.preventDefault();
-    // Logika menambah layanan baru ke list
-    setServiceList([...serviceList, { ...newService, icon: <Tag /> }]);
-    setIsModalOpen(false);
-    setNewService({ name: '', price: '', unit: 'Kg', color: 'bg-[#6259E8]' });
+    // Generate ID sederhana dari nama
+    const generatedId = newService.name.toLowerCase().replace(/ /g, '-');
+    
+    setServiceList([...serviceList, { 
+        ...newService, 
+        id: generatedId, 
+        icon: <Sparkles className="text-blue-500" /> 
+    }]);
+    
+    setIsModalOpen(false); 
+    setNewService({ name: '', price: '', unit: 'Kg' }); 
   };
 
   return (
-    <div className="animate-in fade-in duration-500 relative">
-      {/* HEADER */}
-      <div className="flex justify-between items-center mb-10">
+    <div className="p-2 animate-in fade-in duration-700 relative">
+      
+      {/* --- HEADER --- */}
+      <div className="flex justify-between items-center mb-10 px-2">
         <div>
-          <h2 className="text-3xl font-black text-[#2B3674] tracking-tight uppercase italic">Layanan & Harga</h2>
-          <p className="text-gray-400 font-medium text-sm">Kelola daftar harga BrightWash</p>
+          <h2 className="text-3xl font-black text-[#1678F3] tracking-tighter uppercase italic leading-none">Layanan & Harga</h2>
+          <p className="text-gray-400 font-bold text-[10px] uppercase tracking-[0.3em] mt-2 italic">Daftar Harga BrightWash</p>
         </div>
         <button 
-          onClick={() => setIsModalOpen(true)}
-          className="bg-[#6259E8] text-white px-6 py-3 rounded-2xl font-bold flex items-center gap-2 shadow-lg shadow-indigo-200 hover:scale-105 transition-all"
+          onClick={() => setIsModalOpen(true)} 
+          className="bg-[#1678F3] text-white px-6 py-4 rounded-[22px] font-black italic flex items-center gap-2 shadow-xl shadow-blue-200 hover:scale-105 active:scale-95 transition-all uppercase text-[10px] tracking-widest border-b-4 border-blue-700"
         >
-          <Plus size={18} /> Tambah Layanan
+          <Plus size={18} strokeWidth={4} /> Tambah Layanan
         </button>
       </div>
 
-      {/* GRID LAYANAN */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+   
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6">
         {serviceList.map((s, i) => (
-          <div key={i} className={`${s.color} rounded-[45px] p-8 text-white shadow-xl relative overflow-hidden group hover:scale-105 transition-all cursor-pointer`}>
+          <Link 
+            to={`/services/${s.id}`} 
+            key={i} 
+            className="group block relative bg-gradient-to-br from-[#1678F3] to-[#4DBAE9] rounded-[45px] p-8 text-white shadow-2xl shadow-blue-100 hover:-translate-y-3 transition-all duration-500 overflow-hidden border-b-8 border-blue-600/20"
+          >
+            {/* Background Decor */}
+            <Waves className="absolute -right-8 -bottom-8 text-white/10 scale-[2.5] pointer-events-none group-hover:rotate-12 transition-transform duration-700" />
+            
             <div className="relative z-10">
-              <div className="bg-white/20 w-12 h-12 rounded-2xl flex items-center justify-center mb-6">
-                {s.icon}
+              <div className="flex justify-between items-start mb-8">
+                <div className="bg-white/90 backdrop-blur-md w-12 h-12 rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-500">
+                  {React.cloneElement(s.icon, { size: 22, strokeWidth: 2.5 })}
+                </div>
+                <button className="text-white/40 hover:text-white"><MoreVertical size={18} /></button>
               </div>
-              <h4 className="font-bold text-lg opacity-90">{s.name}</h4>
-              <div className="mt-4">
-                <span className="text-3xl font-black italic">Rp {s.price}</span>
-                <span className="text-xs opacity-60 ml-1">/{s.unit}</span>
+
+              <div>
+                <h4 className="font-black text-white text-sm uppercase italic tracking-tight mb-1">{s.name}</h4>
+                <p className="text-[9px] font-black text-white/60 uppercase tracking-widest mb-6 italic">Premium Quality</p>
+                
+                <div className="flex items-baseline gap-1">
+                  <span className="text-2xl font-black italic text-white leading-none">Rp {s.price}</span>
+                  <span className="text-[10px] font-black text-white/50 uppercase">/{s.unit}</span>
+                </div>
               </div>
             </div>
-            {/* Dekorasi lingkaran di background */}
-            <div className="absolute -right-4 -bottom-4 w-24 h-24 bg-white/10 rounded-full blur-2xl group-hover:scale-150 transition-all"></div>
-          </div>
+          </Link>
         ))}
       </div>
 
-      {/* MODAL FORM TAMBAH LAYANAN */}
+      {/* --- MODAL FORM TAMBAH LAYANAN --- */}
       {isModalOpen && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
-          {/* Overlay blur */}
-          <div className="absolute inset-0 bg-[#2B3674]/20 backdrop-blur-md" onClick={() => setIsModalOpen(false)}></div>
-          
-          <div className="relative bg-white w-full max-w-md rounded-[40px] shadow-2xl p-10 animate-in zoom-in duration-300">
-            <button 
-              onClick={() => setIsModalOpen(false)}
-              className="absolute right-8 top-8 text-gray-300 hover:text-red-500 transition-colors"
-            >
-              <X size={24} />
+        <div className="fixed inset-0 z-[999] flex items-center justify-center p-6 bg-[#1678F3]/20 backdrop-blur-sm animate-in fade-in duration-300">
+          <div className="relative bg-white w-full max-w-md rounded-[50px] shadow-2xl p-10 animate-in zoom-in duration-300">
+            <button onClick={() => setIsModalOpen(false)} className="absolute right-10 top-10 text-gray-300 hover:text-rose-500 transition-colors">
+              <X size={24} strokeWidth={3} />
             </button>
 
-            <h3 className="text-2xl font-black text-[#2B3674] italic uppercase mb-6">Tambah Layanan</h3>
+            <h3 className="text-2xl font-black text-[#1678F3] italic uppercase tracking-tighter mb-8">Tambah Layanan</h3>
             
-            <form onSubmit={handleAddService} className="space-y-5">
-              <div className="space-y-2">
-                <label className="text-[10px] font-black uppercase text-[#6259E8] ml-2 tracking-widest">Nama Layanan</label>
+            <form onSubmit={handleAddService} className="space-y-6">
+              <div>
+                <label className="text-[10px] font-black uppercase text-gray-400 ml-2 tracking-[0.2em]">Nama Layanan</label>
                 <input 
-                  required
-                  type="text"
-                  placeholder="Misal: Cuci Karpet"
-                  className="w-full bg-gray-50 border-none p-4 rounded-2xl outline-none focus:ring-2 focus:ring-[#6259E8] text-sm font-bold"
-                  onChange={(e) => setNewService({...newService, name: e.target.value})}
+                  required type="text" placeholder="Misal: Cuci Boneka" 
+                  className="w-full bg-gray-50 border-none p-4 rounded-2xl outline-none focus:ring-2 focus:ring-[#1678F3] text-sm font-bold text-[#1678F3] mt-2"
+                  onChange={(e) => setNewService({...newService, name: e.target.value})} 
                 />
               </div>
 
-              <div className="space-y-2">
-                <label className="text-[10px] font-black uppercase text-[#6259E8] ml-2 tracking-widest">Harga (Rp)</label>
+              <div>
+                <label className="text-[10px] font-black uppercase text-gray-400 ml-2 tracking-[0.2em]">Harga (Rp)</label>
                 <input 
-                  required
-                  type="text"
-                  placeholder="20.000"
-                  className="w-full bg-gray-50 border-none p-4 rounded-2xl outline-none focus:ring-2 focus:ring-[#6259E8] text-sm font-bold"
-                  onChange={(e) => setNewService({...newService, price: e.target.value})}
+                  required type="text" placeholder="25.000" 
+                  className="w-full bg-gray-50 border-none p-4 rounded-2xl outline-none focus:ring-2 focus:ring-[#1678F3] text-sm font-bold text-[#1678F3] mt-2"
+                  onChange={(e) => setNewService({...newService, price: e.target.value})} 
                 />
               </div>
 
-              <div className="space-y-2">
-                <label className="text-[10px] font-black uppercase text-[#6259E8] ml-2 tracking-widest">Satuan</label>
+              <div>
+                <label className="text-[10px] font-black uppercase text-gray-400 ml-2 tracking-[0.2em]">Satuan</label>
                 <select 
-                  className="w-full bg-gray-50 border-none p-4 rounded-2xl outline-none focus:ring-2 focus:ring-[#6259E8] text-sm font-bold appearance-none cursor-pointer"
+                  className="w-full bg-gray-50 border-none p-4 rounded-2xl outline-none focus:ring-2 focus:ring-[#1678F3] text-sm font-black italic uppercase text-[#1678F3] mt-2 cursor-pointer appearance-none"
                   onChange={(e) => setNewService({...newService, unit: e.target.value})}
                 >
                   <option value="Kg">Per Kg</option>
@@ -110,10 +122,7 @@ const Services = () => {
                 </select>
               </div>
 
-              <button 
-                type="submit"
-                className="w-full bg-[#6259E8] text-white py-5 rounded-2xl font-black italic uppercase text-xs shadow-xl shadow-indigo-100 hover:brightness-110 transition-all mt-4"
-              >
+              <button type="submit" className="w-full bg-[#1678F3] text-white py-5 rounded-[25px] font-black italic uppercase text-xs shadow-xl shadow-blue-100 hover:brightness-110 transition-all mt-4 border-b-4 border-blue-700">
                 Simpan Layanan Baru
               </button>
             </form>

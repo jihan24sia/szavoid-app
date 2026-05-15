@@ -1,13 +1,15 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom'; // Tambahkan ini
 import {
   Plus, Search, MoreVertical, Users,
-  ShoppingBag, Star, X, History
+  ShoppingBag, Star, X, History, Waves, Smartphone
 } from 'lucide-react';
 
 // Pastikan file data kamu sudah dieksport dengan nama 'customers'
 import { customers as initialData } from "../data/customers"; 
 
 const Customers = () => {
+  const navigate = useNavigate(); // Hook untuk navigasi
   const [customers, setCustomers] = useState(initialData);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
@@ -25,7 +27,6 @@ const Customers = () => {
       phone: newCustomer.phone,
       email: `${newCustomer.name.toLowerCase().replace(/\s/g, '')}@mail.com`,
       total_orders: 0,
-      // Kita seragamkan: kalau di modal pilih Member, statusnya jadi VIP
       status: newCustomer.status === 'Member' ? 'VIP' : 'Reguler',
     };
     
@@ -41,33 +42,36 @@ const Customers = () => {
   );
 
   return (
-    <div className="animate-in fade-in duration-700 h-full flex flex-col gap-8 pb-10 relative">
+    <div className="animate-in fade-in slide-in-from-right-6 duration-700 h-full flex flex-col gap-8">
 
       {/* --- HEADER --- */}
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-        <div>
-          <h2 className="text-4xl font-black text-[#2B3674] tracking-tight uppercase italic leading-none">Customer Database</h2>
-          <p className="text-[11px] font-bold text-[#6358DC] tracking-[0.3em] uppercase mt-2 flex items-center gap-2">
-            <Users size={14} /> Total: {customers.length} Registered Customers
-          </p>
+      <div className="flex flex-col md:flex-row justify-between items-center gap-6">
+        <div className="flex items-center gap-4">
+          <div className="w-2 h-10 bg-[#1678F3] rounded-full"></div>
+          <div>
+            <h2 className="text-4xl font-black text-[#1678F3] tracking-tighter uppercase italic leading-none">Customer Database</h2>
+            <p className="text-[10px] font-black text-[#4DBAE9] tracking-[0.4em] uppercase mt-1 flex items-center gap-2">
+              <Users size={14} /> {customers.length} Registered Customers
+            </p>
+          </div>
         </div>
 
-        <div className="flex items-center gap-3 w-full md:w-auto">
-          <div className="relative flex-1 md:w-80">
+        <div className="flex items-center gap-4 w-full md:w-auto">
+          <div className="relative flex-1 md:w-80 group">
             <input
               type="text"
               placeholder="Cari Nama atau No. HP..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full bg-white/70 backdrop-blur-md border border-white rounded-2xl py-4 pl-12 pr-4 text-xs shadow-sm focus:ring-2 focus:ring-[#6358DC] outline-none font-bold text-[#2B3674]"
+              className="w-full bg-white/80 backdrop-blur-md border-2 border-transparent focus:border-blue-100 rounded-[22px] py-4 pl-12 pr-6 text-xs shadow-xl shadow-blue-100/20 outline-none font-bold text-[#1678F3] transition-all"
             />
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-300 group-focus-within:text-[#1678F3] transition-colors" size={18} />
           </div>
           <button
             onClick={() => setIsModalOpen(true)}
-            className="bg-[#6358DC] text-white px-6 py-4 rounded-2xl font-black italic flex items-center gap-2 hover:scale-105 transition-all shadow-lg uppercase text-xs"
+            className="bg-[#1678F3] text-white px-8 py-4 rounded-[22px] font-black italic flex items-center gap-2 hover:scale-105 active:scale-95 transition-all shadow-xl shadow-blue-200 uppercase text-xs tracking-widest"
           >
-            <Plus size={18} strokeWidth={3} /> Add Customer
+            <Plus size={18} strokeWidth={4} /> Add Customer
           </button>
         </div>
       </div>
@@ -75,60 +79,76 @@ const Customers = () => {
       <div className="grid grid-cols-12 gap-8 flex-1">
         {/* --- TABLE (KIRI) --- */}
         <div className="col-span-12 lg:col-span-8">
-          <div className="bg-white/40 border border-white rounded-[45px] overflow-hidden shadow-sm backdrop-blur-md">
-            <div className="p-8 border-b border-white/50 bg-white/20">
-              <h3 className="font-black text-[#2B3674] italic uppercase tracking-widest text-sm">Active Customer List</h3>
+          <div className="bg-white/70 backdrop-blur-md border border-white rounded-[50px] overflow-hidden shadow-2xl shadow-blue-100/40 h-full flex flex-col">
+            <div className="p-8 border-b border-blue-50 bg-[#F8FAFC]/50 flex justify-between items-center">
+              <h3 className="font-black text-[#1678F3] italic uppercase tracking-tighter text-sm flex items-center gap-2">
+                <Waves size={16} /> Active Customer List
+              </h3>
             </div>
 
-            <div className="overflow-x-auto max-h-[600px] overflow-y-auto custom-scrollbar">
-              <table className="w-full text-left">
-                <thead className="sticky top-0 bg-white/90 backdrop-blur-md z-10">
-                  <tr className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">
-                    <th className="px-8 py-6">Customer Info</th>
-                    <th className="px-8 py-6">Status</th>
-                    <th className="px-8 py-6">Orders</th>
-                    <th className="px-8 py-6">Spent</th>
-                    <th className="px-8 py-6"></th>
+            <div className="overflow-x-auto flex-1 custom-scrollbar">
+              <table className="w-full text-left border-separate border-spacing-0">
+                <thead className="sticky top-0 bg-[#F8FAFC] z-10">
+                  <tr className="text-[10px] font-black text-gray-400 uppercase tracking-[0.3em]">
+                    <th className="px-10 py-6">Customer Info</th>
+                    <th className="px-10 py-6">Status</th>
+                    <th className="px-10 py-6 text-center">Orders</th>
+                    <th className="px-10 py-6">Estimated Spent</th>
+                    <th className="px-10 py-6"></th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-white/50">
+                <tbody className="divide-y divide-blue-50">
                   {filteredCustomers.length > 0 ? (
                     filteredCustomers.map((c) => (
-                      <tr key={c.id} className="group hover:bg-white/50 transition-all">
-                        <td className="px-8 py-6">
+                      <tr 
+                        key={c.id} 
+                        onClick={() => navigate(`/customers/${c.id}`)}
+                        className="group hover:bg-white transition-all cursor-pointer relative"
+                      >
+                        <td className="px-10 py-6">
                           <div className="flex items-center gap-4">
-                            <div className="w-10 h-10 bg-[#6358DC] rounded-xl flex items-center justify-center text-white font-black italic shadow-lg uppercase text-sm">
+                            <div className="w-12 h-12 bg-blue-50 rounded-2xl flex items-center justify-center text-[#1678F3] font-black italic shadow-inner group-hover:bg-[#1678F3] group-hover:text-white transition-all duration-300">
                               {c.name.charAt(0)}
                             </div>
                             <div>
-                              <p className="text-sm font-black text-[#2B3674] italic">{c.name}</p>
-                              <p className="text-[10px] font-bold text-gray-400">{c.phone}</p>
+                              <p className="text-sm font-black text-[#1678F3] uppercase italic tracking-tighter group-hover:scale-105 transition-transform origin-left">{c.name}</p>
+                              <p className="text-[10px] font-bold text-gray-400 flex items-center gap-1 uppercase tracking-widest mt-0.5"><Smartphone size={10}/> {c.phone}</p>
                             </div>
                           </div>
                         </td>
-                        <td className="px-8 py-6">
-                          <span className={`px-4 py-1.5 rounded-full text-[9px] font-black uppercase italic tracking-widest ${
+                        <td className="px-10 py-6">
+                          <span className={`px-5 py-2 rounded-full text-[9px] font-black uppercase italic tracking-[0.2em] shadow-sm border ${
                             c.status === 'VIP' 
-                            ? 'bg-gradient-to-r from-[#FF71A4] to-[#ff9bc1] text-white shadow-md shadow-pink-100' 
-                            : 'bg-gray-100 text-gray-400'}`}>
+                            ? 'bg-blue-50 text-[#1678F3] border-blue-100' 
+                            : 'bg-gray-50 text-gray-400 border-gray-100'}`}>
                             {c.status}
                           </span>
                         </td>
-                        <td className="px-8 py-6 font-black text-[#2B3674] italic text-xs">
+                        <td className="px-10 py-6 font-black text-[#1678F3] text-center italic text-xs">
                           {c.total_orders}x
                         </td>
-                        <td className="px-8 py-6 text-[#6358DC] font-black text-xs italic">
+                        <td className="px-10 py-6 text-[#4DBAE9] font-black text-xs italic">
                           Rp {(c.total_orders * 15000).toLocaleString('id-ID')}
                         </td>
-                        <td className="px-8 py-6 text-right">
-                          <button className="text-gray-300 hover:text-[#6358DC] transition-colors"><MoreVertical size={18} /></button>
+                        <td className="px-10 py-6 text-right">
+                          <button 
+                            onClick={(e) => {
+                              e.stopPropagation(); // Biar klik menu gak lari ke detail
+                            }}
+                            className="p-2 text-gray-200 hover:text-[#1678F3] transition-colors"
+                          >
+                            <MoreVertical size={20} />
+                          </button>
                         </td>
                       </tr>
                     ))
                   ) : (
                     <tr>
-                      <td colSpan="5" className="px-8 py-20 text-center italic text-gray-400 text-xs font-black uppercase tracking-widest">
-                        Pelanggan tidak ditemukan...
+                      <td colSpan="5" className="px-10 py-20 text-center">
+                         <div className="opacity-20 flex flex-col items-center gap-2">
+                            <Search size={40} />
+                            <p className="font-black italic uppercase text-sm tracking-widest">No Customer Found</p>
+                         </div>
                       </td>
                     </tr>
                   )}
@@ -139,31 +159,33 @@ const Customers = () => {
         </div>
 
         {/* --- SIDE INFO (KANAN) --- */}
-        <div className="col-span-12 lg:col-span-4 space-y-6">
-          {/* Card VIP Stats */}
-          <div className="bg-[#FF71A4] rounded-[40px] p-8 text-white shadow-xl relative overflow-hidden group">
-            <h4 className="text-[10px] font-black uppercase tracking-widest opacity-80 italic">Loyalty Member</h4>
-            <p className="text-4xl font-black mt-3 italic tracking-tight">
+        <div className="col-span-12 lg:col-span-4 space-y-8">
+          <div className="bg-gradient-to-br from-[#1678F3] to-[#4DBAE9] rounded-[50px] p-10 text-white shadow-2xl relative overflow-hidden group">
+            <h4 className="text-[10px] font-black uppercase tracking-[0.3em] opacity-70 italic">Loyalty Member</h4>
+            <p className="text-5xl font-black mt-4 italic tracking-tighter">
               {customers.filter(c => c.status === 'VIP').length} 
-              <span className="text-sm not-italic opacity-70 ml-2 uppercase">VIP Pelanggan</span>
+              <span className="text-xs not-italic opacity-80 ml-3 uppercase tracking-widest font-black">VIP Members</span>
             </p>
-            <Star className="absolute -right-2 -bottom-2 w-24 h-24 text-white/10 rotate-12 group-hover:scale-110 transition-transform duration-500" />
+            <Star className="absolute -right-4 -bottom-4 w-32 h-32 text-white/10 rotate-12 group-hover:scale-125 group-hover:rotate-[30deg] transition-all duration-700" />
           </div>
 
-          {/* Recent Activity */}
-          <div className="bg-white/40 border border-white rounded-[40px] p-8 shadow-sm backdrop-blur-md">
-            <h3 className="text-[10px] font-black text-[#2B3674] uppercase tracking-widest mb-8 italic flex items-center gap-2">
-              <History size={16} className="text-[#6358DC]" /> Recent Activity
+          <div className="bg-white/70 backdrop-blur-md border border-white rounded-[50px] p-10 shadow-xl shadow-blue-100/30 flex-1 h-fit">
+            <h3 className="text-[10px] font-black text-[#1678F3] uppercase tracking-[0.3em] mb-10 italic flex items-center gap-3">
+              <History size={18} /> Recent Activity
             </h3>
-            <div className="space-y-8">
+            <div className="space-y-10">
               {customers.slice(0, 4).map((c, i) => (
-                <div key={i} className="flex gap-4 items-center">
-                  <div className="w-10 h-10 bg-white rounded-2xl shadow-sm flex items-center justify-center shrink-0 border border-gray-50 text-[#6358DC]">
-                    <ShoppingBag size={16} strokeWidth={2.5} />
+                <div 
+                  key={i} 
+                  onClick={() => navigate(`/customers/${c.id}`)}
+                  className="flex gap-5 items-center group cursor-pointer"
+                >
+                  <div className="w-12 h-12 bg-blue-50 rounded-2xl shadow-inner flex items-center justify-center shrink-0 border border-blue-100 text-[#1678F3] group-hover:scale-110 transition-transform">
+                    <ShoppingBag size={20} strokeWidth={2.5} />
                   </div>
                   <div>
-                    <p className="text-xs font-black text-[#2B3674] italic leading-none">{c.name}</p>
-                    <p className="text-[9px] font-bold text-gray-400 uppercase mt-1 tracking-wider">Baru saja bergabung</p>
+                    <p className="text-sm font-black text-[#1678F3] uppercase italic leading-none group-hover:translate-x-1 transition-transform">{c.name}</p>
+                    <p className="text-[9px] font-bold text-gray-400 uppercase mt-2 tracking-widest">Just joined the family</p>
                   </div>
                 </div>
               ))}
@@ -174,31 +196,38 @@ const Customers = () => {
 
       {/* --- MODAL FORM --- */}
       {isModalOpen && (
-        <div className="fixed inset-0 z-[999] flex items-center justify-center p-4 backdrop-blur-md bg-[#2B3674]/30 animate-in fade-in duration-300">
-          <div className="bg-white w-full max-w-md rounded-[45px] shadow-2xl p-10 relative animate-in zoom-in duration-300 border border-white">
-            <button onClick={() => setIsModalOpen(false)} className="absolute right-8 top-8 text-gray-300 hover:text-red-500 transition-colors"><X size={24} strokeWidth={3} /></button>
+        <div className="fixed inset-0 z-[999] flex items-center justify-center p-6 backdrop-blur-sm bg-[#1678F3]/10 animate-in fade-in duration-300">
+          <div className="bg-white w-full max-w-md rounded-[55px] shadow-2xl p-12 relative animate-in zoom-in duration-300 border border-white">
+            <button onClick={() => setIsModalOpen(false)} className="absolute right-10 top-10 text-gray-300 hover:text-[#1678F3] transition-all hover:rotate-90"><X size={28} strokeWidth={4} /></button>
             
-            <h3 className="text-2xl font-black text-[#2B3674] italic uppercase tracking-tight">New Customer</h3>
-            <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-8">Tambah data pelanggan baru</p>
+            <h3 className="text-3xl font-black text-[#1678F3] italic uppercase tracking-tighter">New Customer</h3>
+            <p className="text-[10px] font-black text-[#4DBAE9] uppercase tracking-[0.3em] mb-10">Registrasi pelanggan baru</p>
 
-            <form onSubmit={handleAddCustomer} className="space-y-4">
-              <input 
-                required
-                className="w-full bg-gray-50 border-none p-5 rounded-2xl outline-none focus:ring-2 focus:ring-[#6358DC] text-sm font-bold text-[#2B3674]"
-                placeholder="Nama Pelanggan"
-                value={newCustomer.name}
-                onChange={(e) => setNewCustomer({...newCustomer, name: e.target.value})}
-              />
-              <input 
-                required
-                className="w-full bg-gray-50 border-none p-5 rounded-2xl outline-none focus:ring-2 focus:ring-[#6358DC] text-sm font-bold text-[#2B3674]"
-                placeholder="Nomor WhatsApp"
-                value={newCustomer.phone}
-                onChange={(e) => setNewCustomer({...newCustomer, phone: e.target.value})}
-              />
-              <div className="relative">
-                <select 
-                  className="w-full bg-gray-50 border-none p-5 rounded-2xl outline-none focus:ring-2 focus:ring-[#6358DC] text-sm font-black italic uppercase text-[#2B3674] appearance-none cursor-pointer"
+            <form onSubmit={handleAddCustomer} className="space-y-6">
+              <div className="space-y-2">
+                <label className="text-[9px] font-black uppercase tracking-widest ml-2 text-gray-400">Full Name</label>
+                <input 
+                  required
+                  className="w-full bg-[#F8FAFC] border-2 border-transparent focus:border-blue-100 p-5 rounded-[22px] outline-none text-sm font-bold text-[#1678F3] shadow-inner transition-all"
+                  placeholder="Contoh: Jihan Zahra"
+                  value={newCustomer.name}
+                  onChange={(e) => setNewCustomer({...newCustomer, name: e.target.value})}
+                />
+              </div>
+              <div className="space-y-2">
+                <label className="text-[9px] font-black uppercase tracking-widest ml-2 text-gray-400">WhatsApp Number</label>
+                <input 
+                  required
+                  className="w-full bg-[#F8FAFC] border-2 border-transparent focus:border-blue-100 p-5 rounded-[22px] outline-none text-sm font-bold text-[#1678F3] shadow-inner transition-all"
+                  placeholder="0812xxxx"
+                  value={newCustomer.phone}
+                  onChange={(e) => setNewCustomer({...newCustomer, phone: e.target.value})}
+                />
+              </div>
+              <div className="space-y-2">
+                 <label className="text-[9px] font-black uppercase tracking-widest ml-2 text-gray-400">Membership Type</label>
+                 <select 
+                  className="w-full bg-[#F8FAFC] border-2 border-transparent focus:border-blue-100 p-5 rounded-[22px] outline-none text-sm font-black italic uppercase text-[#1678F3] shadow-inner cursor-pointer appearance-none"
                   value={newCustomer.status}
                   onChange={(e) => setNewCustomer({...newCustomer, status: e.target.value})}
                 >
@@ -206,7 +235,8 @@ const Customers = () => {
                   <option value="Member">MEMBER (VIP)</option>
                 </select>
               </div>
-              <button type="submit" className="w-full bg-[#6358DC] text-white py-5 rounded-[22px] font-black italic uppercase text-xs shadow-xl shadow-indigo-100 hover:scale-[1.02] transition-all mt-4">
+              
+              <button type="submit" className="w-full bg-[#1678F3] text-white py-6 rounded-[25px] font-black italic uppercase text-xs tracking-[0.2em] shadow-2xl shadow-blue-200 hover:scale-[1.03] active:scale-95 transition-all mt-6">
                 Simpan Pelanggan
               </button>
             </form>

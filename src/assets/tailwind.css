@@ -1,99 +1,58 @@
 @import "tailwindcss";
 
-@font-face {
-    font-family: 'Barlow';
-    src: url('./fonts/Barlow-Regular.ttf');
-}
-
-@font-face {
-    font-family: 'Barlow';
-    src: url('./fonts/Barlow-SemiBold.ttf');
-}
-
-@font-face {
-    font-family: 'Barlow';
-    src: url('./fonts/Barlow-MediumItalic.ttf');
-}
-
-@font-face {
-    font-family: 'Barlow';
-    src: url('./fonts/Barlow-Italic.ttf');
-}
-
-@font-face {
-    font-family: 'Barlow';
-    src: url('./fonts/Barlow-Bold.ttf');
-}
-
-@font-face {
-    font-family: 'Poppins';
-    src: url('./fonts/Poppins-SemiBoldItalic.ttf');
-}
-
-@font-face {
-    font-family: 'Poppins';
-    src: url('./fonts/Poppins-Regular.ttf');
-}
-
-@font-face {
-    font-family: 'Poppins';
-    src: url('./fonts/Poppins-MediumItalic.ttf');
-}
-
-@font-face {
-    font-family: 'Poppins';
-    src: url('./fonts/Poppins-SemiBoldItalic.ttf');
-}
+/* --- IMPORT FONTS TETAP SAMA --- */
+@font-face { font-family: 'Barlow'; src: url('./fonts/Barlow-Regular.ttf'); }
+@font-face { font-family: 'Barlow'; src: url('./fonts/Barlow-Bold.ttf'); font-weight: bold; }
+@font-face { font-family: 'Poppins'; src: url('./fonts/Poppins-Regular.ttf'); }
 
 @theme {
     --font-barlow: "Barlow", sans-serif;
     --font-poppins: "Poppins", sans-serif;
-    --font-barlow-semi-bold: "Barlow SemiBold", sans-serif;
-    --font-barlow-medium-italic: "Barlow Medium Italic", sans-serif;
-    --font-barlow-bold: "Barlow Bold", sans-serif;
-    --font-poppins-semi-bold-italic: "Poppins SemiBold Italic", sans-serif;
-    --font-poppins-regular: "Poppins Regular", sans-serif;
-    --font-poppins-medium-italic: "Poppins Medium Italic", sans-serif;
 
-    --color-latar: #f3f4f6;
-    --color-teks: #374151;
-    --color-teks-samping: #6b7280;
-    --color-garis: #e5e7eb;
-    --color-hijau: #00B074;
-    --color-merah: #ef4444;
-    --color-biru: #3b82f6;
-    --color-kuning: #f59e0b;
-}
-
-@theme {
- 
-    --font-barlow: "Barlow", sans-serif;
-    --font-poppins: "Poppins", sans-serif;
-
-
-    --color-primary: #4DBAE9;     
-    --color-secondary: #1678F3;    
-    --color-accent: #64A6F9;      
-    --color-latar: #EDF2F6;       
-    --color-surface: #FFFFFF;     
+    /* WARNA CERAH & BERSIH (NO GRAY!) */
+    --color-primary: #4DBAE9;      /* Biru Langit */
+    --color-secondary: #1678F3;    /* Biru Cerah Utama */
+    --color-accent: #64A6F9;       /* Biru Pastel */
+    --color-latar: #E0F2FE;        /* Background Biru Sangat Muda (Seger!) */
+    --color-surface: #FFFFFF;      /* Putih Bersih */
     
-    /* Semantic Colors */
-    --color-sukses: #00B074;       
-    --color-proses: #F59E0B;      
-    --color-gagal: #EF4444;       
+    /* SEMANTIC */
+    --color-sukses: #10B981;       /* Hijau Emerald */
+    --color-proses: #F59E0B;       /* Oranye Cerah */
+    --color-gagal: #EF4444;        /* Merah */
 
-    /* Typography Helpers */
-    --tracking-tighter: -0.05em;   
+    /* CUSTOM RADIUS & SHADOW */
+    --radius-laundry: 45px;        /* Corner super bulat */
+    --radius-card: 35px;
 }
-
 
 @layer base {
   body {
-    @apply bg-latar text-secondary font-barlow;
+    /* Background pake gradient biar gak flat/jelek */
+    background: linear-gradient(135deg, #E0F2FE 0%, #F0F9FF 100%);
+    @apply text-secondary font-barlow min-h-screen;
   }
-  
 
+  /* CUSTOM COMPONENTS UNTUK DASHBOARD */
+  
+  /* 1. Card Utama yang Super Rounded */
+  .card-laundry {
+    @apply bg-white/80 backdrop-blur-md rounded-[45px] shadow-xl shadow-blue-100/50 border border-white;
+  }
+
+  /* 2. Judul Mepet Bold */
   .heading-tight {
     @apply font-black tracking-tighter uppercase italic font-barlow;
+    text-shadow: 2px 2px 0px rgba(77, 186, 233, 0.1);
+  }
+
+  /* 3. Button Kapsul */
+  .btn-laundry {
+    @apply px-6 py-3 rounded-full font-black uppercase tracking-widest transition-all active:scale-95 shadow-lg;
+  }
+
+  /* 4. Input Bulat */
+  .input-laundry {
+    @apply bg-white border-2 border-blue-50 rounded-[25px] px-6 py-4 outline-none focus:border-primary transition-all shadow-sm;
   }
 }

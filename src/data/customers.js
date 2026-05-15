@@ -1,15 +1,32 @@
-const names = ["Ahmad Subarjo", "Siti Aminah", "Budi Setiawan", "Putri Rahayu", "Jihan Zahra", "Dedi Kurniawan", "Bambang Pamungkas", "Ani Yudhoyono"];
-
-export const customers = Array.from({ length: 30 }, (_, i) => {
-    const name = names[i] || `Customer ${i + 1}`;
-    
-    return {
-        id: `CUST-${(i + 1).toString().padStart(3, '0')}`,
-        name: name,
-        email: name.toLowerCase().replace(/\s/g, '') + "@mail.com",
-        phone: `08123${Math.floor(100000 + Math.random() * 900000)}`,
-        // --- LOGIKA BARU: Kalau i genap jadi VIP, kalau ganjil jadi Reguler ---
-        status: i % 2 === 0 ? "VIP" : "Reguler", 
-        total_orders: Math.floor(Math.random() * 50) + 1
-    };
-});
+export const customers = [
+  { id: "CUST-001", name: "Ahmad Subarjo", email: "ahmadsubarjo@mail.com", phone: "08123667421", status: "VIP", total_orders: 42 },
+  { id: "CUST-002", name: "Siti Aminah", email: "sitiaminah@mail.com", phone: "08123882190", status: "Reguler", total_orders: 12 },
+  { id: "CUST-003", name: "Budi Setiawan", email: "budisetiawan@mail.com", phone: "08123445123", status: "VIP", total_orders: 28 },
+  { id: "CUST-004", name: "Putri Rahayu", email: "putrirahayu@mail.com", phone: "08123990887", status: "Reguler", total_orders: 5 },
+  { id: "CUST-005", name: "Jihan Zahra", email: "jihanzahra@mail.com", phone: "08123556441", status: "VIP", total_orders: 35 },
+  { id: "CUST-006", name: "Dedi Kurniawan", email: "dedikurniawan@mail.com", phone: "08123771223", status: "Reguler", total_orders: 19 },
+  { id: "CUST-007", name: "Bambang Pamungkas", email: "bambangpamungkas@mail.com", phone: "08123112998", status: "VIP", total_orders: 48 },
+  { id: "CUST-008", name: "Ani Yudhoyono", email: "aniyudhoyono@mail.com", phone: "08123887112", status: "Reguler", total_orders: 3 },
+  { id: "CUST-009", name: "Rizky Ramadhan", email: "rizkyramadhan@mail.com", phone: "08123441990", status: "VIP", total_orders: 25 },
+  { id: "CUST-010", name: "Indah Permatasari", email: "indahpermatasari@mail.com", phone: "08123661223", status: "Reguler", total_orders: 14 },
+  { id: "CUST-011", name: "Eko Prasetyo", email: "ekoprasetyo@mail.com", phone: "08123221990", status: "VIP", total_orders: 31 },
+  { id: "CUST-012", name: "Dewi Lestari", email: "dewilestari@mail.com", phone: "08123554112", status: "Reguler", total_orders: 7 },
+  { id: "CUST-013", name: "Agus Saputra", email: "agussaputra@mail.com", phone: "08123991223", status: "VIP", total_orders: 22 },
+  { id: "CUST-014", name: "Maya Sartika", email: "mayasartika@mail.com", phone: "08123334556", status: "Reguler", total_orders: 11 },
+  { id: "CUST-015", name: "Hendra Wijaya", email: "hendrawijaya@mail.com", phone: "08123778112", status: "VIP", total_orders: 50 },
+  { id: "CUST-016", name: "Siska Amanda", email: "siskaamanda@mail.com", phone: "08123114556", status: "Reguler", total_orders: 2 },
+  { id: "CUST-017", name: "Fajar Shiddiq", email: "fajarshiddiq@mail.com", phone: "08123662113", status: "VIP", total_orders: 39 },
+  { id: "CUST-018", name: "Rina Nose", email: "rinanose@mail.com", phone: "08123884112", status: "Reguler", total_orders: 15 },
+  { id: "CUST-019", name: "Dimas Anggara", email: "dimasanggara@mail.com", phone: "08123223998", status: "VIP", total_orders: 27 },
+  { id: "CUST-020", name: "Sule Sutisna", email: "sulesutisna@mail.com", phone: "08123775112", status: "Reguler", total_orders: 8 },
+  { id: "CUST-021", "name": "Gading Marten", "email": "gadingmarten@mail.com", "phone": "08123119002", "status": "VIP", "total_orders": 33 },
+  { id: "CUST-022", "name": "Nagita Slavina", "email": "nagitaslavina@mail.com", "phone": "08123448112", "status": "Reguler", "total_orders": 6 },
+  { id: "CUST-023", "name": "Raffi Ahmad", "email": "raffiahmad@mail.com", "phone": "08123667119", "status": "VIP", "total_orders": 45 },
+  { id: "CUST-024", "name": "Zaskia Mecca", "email": "zaskiamecca@mail.com", "phone": "08123881223", "status": "Reguler", "total_orders": 10 },
+  { id: "CUST-025", "name": "Baim Wong", "email": "baimwong@mail.com", "phone": "08123224556", "status": "VIP", "total_orders": 21 },
+  { id: "CUST-026", "name": "Paula Verhoeven", "email": "paulaverhoeven@mail.com", "phone": "08123776112", "status": "Reguler", "total_orders": 4 },
+  { id: "CUST-027", "name": "Deddy Corbuzier", "email": "deddycorbuzier@mail.com", "phone": "08123113998", "status": "VIP", "total_orders": 29 },
+  { id: "CUST-028", "name": "Najwa Shihab", "email": "najwashihab@mail.com", "phone": "08123665112", "status": "Reguler", "total_orders": 18 },
+  { id: "CUST-029", "name": "Andre Taulany", "email": "andretaulany@mail.com", "phone": "08123227113", "status": "VIP", "total_orders": 37 },
+  { id: "CUST-030", "name": "Nunung Srimulat", "email": "nunungsrimulat@mail.com", "phone": "08123889112", "status": "Reguler", "total_orders": 13 }
+];

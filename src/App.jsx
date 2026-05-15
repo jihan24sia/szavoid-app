@@ -12,6 +12,8 @@ const Services = React.lazy(() => import("./pages/Services"));
 const Notifications = React.lazy(() => import("./pages/Notifications"));
 const History = React.lazy(() => import("./pages/History"));
 const Payments = React.lazy(() => import("./pages/Payments"));
+const CustomerDetail = React.lazy(() => import("./pages/CustomerDetail"));
+const ServiceDetail = React.lazy(() => import("./pages/ServiceDetail"));
 
 // Layouts
 const MainLayout = React.lazy(() => import("./layouts/MainLayout"));
@@ -53,7 +55,9 @@ function App() {
           
           <Route path="/tracking" element={<Tracking />} />
           <Route path="/customers" element={<Customers />} />
+          <Route path="/customers/:id" element={<CustomerDetail />} />
           <Route path="/services" element={<Services />} />
+          <Route path="/services/:id" element={<ServiceDetail />} />
           <Route path="/notifications" element={<Notifications />} />
           <Route path="/history" element={<History />} />
           <Route path="/payments" element={<Payments />} />

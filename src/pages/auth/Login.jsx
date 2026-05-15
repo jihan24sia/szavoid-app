@@ -1,16 +1,17 @@
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { Lock, User, EyeOff, Minus, Square, X } from "lucide-react"; 
+import { Lock, User, Eye, EyeOff, Minus, Square, X, Sparkles, Waves } from "lucide-react"; 
 import axios from "axios";
 
 export default function Login() {
     const navigate = useNavigate();
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
+    const [showPassword, setShowPassword] = useState(false);
     const [dataForm, setDataForm] = useState({
         email: "",
-        password: "",
+        Sandi: "",
     });
 
     const handleChange = (evt) => {
@@ -23,89 +24,139 @@ export default function Login() {
         setLoading(true);
         setError("");
 
+        // Dummy Login menggunakan dummyjson
         axios.post("https://dummyjson.com/user/login", {
             username: dataForm.email,
             password: dataForm.password,
         })
         .then(() => navigate("/"))
-        .catch((err) => setError(err.response?.data?.message || "Login Gagal!"))
+        .catch((err) => setError(err.response?.data?.message || "Login Gagal! Periksa kembali akun Anda."))
         .finally(() => setLoading(false));
     };
 
     return (
-        // Wrapper utama supaya konten di tengah layar & background bersih
-        <div className="fixed inset-0 bg-[#F0F4F9] flex items-center justify-center p-6 z-[999]">
+        <div className="fixed inset-0 bg-[#F8FAFC] flex items-center justify-center p-6 z-[999]">
             
-            {/* CARD UTAMA (White Box) */}
-            <div className="bg-white w-full max-w-[1100px] h-[650px] rounded-[50px] shadow-2xl flex overflow-hidden relative border border-white">
+            {/* CARD UTAMA */}
+            <div className="bg-white w-full max-w-[1100px] h-[680px] rounded-[60px] shadow-[0_35px_100px_rgba(30,136,229,0.15)] flex overflow-hidden relative border border-white">
                 
-                {/* --- SISI KIRI: FORM (60%) --- */}
-                <div className="w-full lg:w-[60%] p-16 flex flex-col justify-between z-10">
+                {/* --- SISI KIRI: FORM (55%) --- */}
+                <div className="w-full lg:w-[55%] p-12 md:p-20 flex flex-col justify-between z-10 bg-white">
                     {/* Brand Logo */}
-                    <div className="mb-8">
-                        <h1 className="text-2xl font-bold text-black tracking-tight">BrightWash</h1>
-                        <p className="text-[10px] text-gray-400 font-semibold uppercase tracking-widest">Subtitle web application</p>
+                    <div>
+                        <div className="flex items-center gap-2">
+                            <div className="w-9 h-9 bg-[#1E88E5] rounded-xl flex items-center justify-center shadow-lg shadow-blue-200">
+                                <Sparkles size={20} className="text-white" />
+                            </div>
+                            <h1 className="text-2xl font-black text-[#1E88E5] tracking-tighter uppercase italic">BrightWash</h1>
+                        </div>
+                        <p className="text-[10px] text-gray-300 font-black uppercase tracking-[0.4em] mt-2 ml-1">Sistem Laundri Premium</p>
                     </div>
 
-                    {/* Form Center */}
-                    <div className="max-w-[400px]">
-                        <h2 className="text-6xl font-semibold text-black mb-3 tracking-tighter">Get's Started</h2>
-                        <p className="text-gray-400 font-medium mb-10">
-                            Don't have Account ? <Link to="/register" className="text-[#1E88E5] font-bold hover:underline">Sign Up</Link>
+                    {/* Form Content */}
+                    <div className="max-w-[400px] w-full">
+                        <h2 className="text-6xl font-black text-[#0F172A] mb-2 tracking-tighter italic uppercase">Login.</h2>
+                        <p className="text-gray-400 font-bold text-sm mb-10 ml-1">
+                            Member baru?<Link to="/register" className="text-[#1E88E5] border-b-2 border-blue-50 hover:border-blue-500 transition-all ml-1">Buat Akun</Link>
                         </p>
 
-                        {error && <p className="mb-4 text-red-500 text-xs font-bold italic">{error}</p>}
+                        {error && (
+                            <div className="bg-red-50 border-l-4 border-red-500 p-4 mb-6 rounded-r-xl animate-pulse">
+                                <p className="text-red-600 text-[10px] font-black uppercase tracking-widest">{error}</p>
+                            </div>
+                        )}
 
-                        <form onSubmit={handleSubmit} className="space-y-6">
+                        <form onSubmit={handleSubmit} className="space-y-4">
+                            {/* Input Username */}
                             <div className="space-y-2">
-                                <label className="text-gray-400 text-sm font-semibold ml-1">Username</label>
-                                <div className="relative">
-                                    <User className="absolute left-5 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
+                                <label className="text-gray-400 text-[10px] font-black uppercase tracking-widest ml-4">Username</label>
+                                <div className="relative group">
+                                    <User className="absolute left-6 top-1/2 -translate-y-1/2 text-gray-300 group-focus-within:text-[#1E88E5] transition-colors" size={20} />
                                     <input
                                         type="text" name="email" required onChange={handleChange}
-                                        className="w-full bg-white border border-gray-100 rounded-full py-4 pl-14 pr-6 text-gray-700 outline-none focus:ring-2 focus:ring-blue-100 focus:border-[#1E88E5] transition-all shadow-sm"
-                                        placeholder="Insert Username"
+                                        className="w-full bg-gray-50/50 border-2 border-transparent rounded-full py-4 pl-16 pr-6 text-sm font-bold text-gray-700 outline-none focus:bg-white focus:border-[#1E88E5] transition-all"
+                                        placeholder="Masukkan nama pengguna Anda"
                                     />
                                 </div>
                             </div>
 
+                            {/* Input Password */}
                             <div className="space-y-2">
-                                <label className="text-gray-400 text-sm font-semibold ml-1">Password</label>
-                                <div className="relative">
-                                    <Lock className="absolute left-5 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
+                                <label className="text-gray-400 text-[10px] font-black uppercase tracking-widest ml-4">Sandi</label>
+                                <div className="relative group">
+                                    <Lock className="absolute left-6 top-1/2 -translate-y-1/2 text-gray-300 group-focus-within:text-[#1E88E5] transition-colors" size={20} />
                                     <input
-                                        type="password" name="password" required onChange={handleChange}
-                                        className="w-full bg-white border border-gray-100 rounded-full py-4 pl-14 pr-14 text-gray-700 outline-none focus:ring-2 focus:ring-blue-100 focus:border-[#1E88E5] transition-all shadow-sm"
+                                        type={showPassword ? "text" : "password"} name="password" required onChange={handleChange}
+                                        className="w-full bg-gray-50/50 border-2 border-transparent rounded-full py-4 pl-16 pr-16 text-sm font-bold text-gray-700 outline-none focus:bg-white focus:border-[#1E88E5] transition-all"
                                         placeholder="••••••••"
                                     />
-                                    <EyeOff className="absolute right-5 top-1/2 -translate-y-1/2 text-gray-300 cursor-pointer" size={20} />
+                                    <button 
+                                        type="button"
+                                        onClick={() => setShowPassword(!showPassword)}
+                                        className="absolute right-6 top-1/2 -translate-y-1/2 text-gray-300 hover:text-[#1E88E5] transition-colors"
+                                    >
+                                        {showPassword ? <Eye size={20} /> : <EyeOff size={20} />}
+                                    </button>
                                 </div>
                             </div>
 
+                            {/* Forgot Password Link */}
+                            <div className="flex justify-end pr-4">
+                                <Link 
+                                    to="/forgot" 
+                                    className="text-[10px] font-black text-gray-400 uppercase tracking-widest hover:text-[#1E88E5] transition-colors"
+                                >
+                                    Lupa Sandi?
+                                </Link>
+                            </div>
+
+                            {/* Submit Button */}
                             <button
                                 disabled={loading}
-                                className="w-full bg-[#1E88E5] hover:bg-[#1976D2] text-white font-bold py-4 rounded-full mt-6 flex items-center justify-center gap-3 shadow-xl shadow-blue-200 transition-all active:scale-95"
+                                className="w-full bg-[#1E88E5] hover:bg-[#1565C0] text-white font-black py-5 rounded-full mt-6 flex items-center justify-center gap-3 shadow-2xl shadow-blue-200 transition-all active:scale-95 uppercase text-xs tracking-[0.2em] italic"
                             >
-                                {loading ? <AiOutlineLoading3Quarters className="animate-spin" size={20} /> : "Login →"}
+                                {loading ? <AiOutlineLoading3Quarters className="animate-spin" size={20} /> : "Mulai →"}
                             </button>
                         </form>
                     </div>
                     
-                    {/* Empty spacer untuk footer-like alignment */}
-                    <div className="h-4"></div>
+                    <p className="text-[9px] text-gray-300 font-bold uppercase tracking-[0.3em]">© 2026 BrightWash Pekanbaru.</p>
                 </div>
 
-                {/* --- SISI KANAN: BLUE CURVE AREA (40%) --- */}
-                <div className="hidden lg:block w-[40%] bg-white relative">
-                    {/* Area Biru Melengkung */}
-                    <div className="absolute inset-0 bg-[#1E88E5] rounded-l-[180px] shadow-[-20px_0_30px_rgba(30,136,229,0.2)]">
-                        {/* Mockup Window Buttons */}
-                        <div className="absolute top-8 right-10 flex gap-6 text-white/80">
-                            <Minus size={22} className="cursor-pointer hover:text-white" />
-                            <Square size={16} className="cursor-pointer hover:text-white mt-1" />
-                            <X size={22} className="cursor-pointer hover:text-white" />
+                {/* --- SISI KANAN: THEME AREA (45%) --- */}
+                <div className="hidden lg:flex w-[45%] relative items-center justify-center p-12 overflow-hidden">
+                    {/* Background Gradient & Pattern */}
+                    <div className="absolute inset-0 bg-gradient-to-br from-[#1E88E5] to-[#4DBAE9] rounded-l-[100px]"></div>
+                    <Waves className="absolute bottom-[-60px] right-[-60px] text-white/10 scale-[5] rotate-12 pointer-events-none" />
+
+                    {/* Window Control Mockup */}
+                    <div className="absolute top-10 right-10 flex gap-4 text-white/40">
+                        <Minus size={20} className="cursor-pointer hover:text-white" />
+                        <Square size={14} className="mt-1 cursor-pointer hover:text-white" />
+                        <X size={20} className="cursor-pointer hover:text-white" />
+                    </div>
+
+                    {/* Center Card Samping */}
+                    <div className="relative z-10 text-white text-center">
+                        <div className="bg-white/10 backdrop-blur-xl border border-white/20 p-12 rounded-[60px] shadow-2xl">
+                            <h3 className="text-5xl font-black italic uppercase tracking-tighter leading-[0.9] mb-4">
+                                Bersih & <br /> Cepat.
+                            </h3>
+                            <p className="text-sm font-medium opacity-70 leading-relaxed mb-8">
+                                Kelola layanan laundry Anda <br /> dengan pengalaman dashboard modern.
+                            </p>
+                            
+                            {/* Mini Status Dots */}
+                            <div className="flex justify-center gap-2">
+                                <div className="h-1.5 w-10 bg-white rounded-full"></div>
+                                <div className="h-1.5 w-1.5 bg-white/30 rounded-full"></div>
+                                <div className="h-1.5 w-1.5 bg-white/30 rounded-full"></div>
+                            </div>
                         </div>
                     </div>
+                    
+                    {/* Decorative Circle */}
+                    <div className="absolute -bottom-20 -left-20 w-64 h-64 bg-blue-400/20 rounded-full blur-3xl"></div>
                 </div>
 
             </div>
