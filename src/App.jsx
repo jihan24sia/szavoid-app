@@ -9,7 +9,7 @@ const Customers = React.lazy(() => import("./pages/Customers"));
 const NewOrder = React.lazy(() => import("./pages/orders/NewOrder")); 
 const Tracking = React.lazy(() => import("./pages/Tracking"));
 const Services = React.lazy(() => import("./pages/Services"));
-const Notifications = React.lazy(() => import("./pages/Notifications"));
+const Interactions = React.lazy(() => import("./pages/Interactions"));
 const History = React.lazy(() => import("./pages/History"));
 const Payments = React.lazy(() => import("./pages/Payments"));
 const CustomerDetail = React.lazy(() => import("./pages/CustomerDetail"));
@@ -58,7 +58,7 @@ function App() {
           <Route path="/customers/:id" element={<CustomerDetail />} />
           <Route path="/services" element={<Services />} />
           <Route path="/services/:id" element={<ServiceDetail />} />
-          <Route path="/notifications" element={<Notifications />} />
+          <Route path="/interactions" element={<Interactions />} />
           <Route path="/history" element={<History />} />
           <Route path="/payments" element={<Payments />} />
 

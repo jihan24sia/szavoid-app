@@ -11,7 +11,8 @@ import {
   Bell,
   LogOut,
   RotateCcw,
-  Waves
+  Waves,
+  MessageSquare
 } from 'lucide-react';
 
 const Sidebar = () => {
@@ -31,7 +32,7 @@ const Sidebar = () => {
     { path: '/tracking', name: 'Tracking Status', icon: <MapPin size={20} /> },
     { path: '/customers', name: 'Data Pelanggan', icon: <Users size={20} /> },
     { path: '/services', name: 'Layanan & Harga', icon: <Tag size={20} /> },
-    { path: '/notifications', name: 'Notifikasi', icon: <Bell size={20} /> },
+    { path: '/interactions', name: 'Interaksi', icon: <MessageSquare size={20} /> },
     { path: '/history', name: 'Riwayat', icon: <RotateCcw size={20} /> },
   ];
 
