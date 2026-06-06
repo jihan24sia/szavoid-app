@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react'; // <-- Mengimport useState bawaan React
 import { LayoutGrid, Wind, Clock, Droplets, FileSpreadsheet } from 'lucide-react';
 
 // Import komponen dasar bawaan project
@@ -18,6 +18,11 @@ import SopSteps from '../components/ui/SopSteps';
 import ActionTooltip from '../components/ui/ActionTooltip';
 
 const DashboardAdmin = () => {
+  // ========================================================
+  // 🚀 PENERAPAN USESTATE BARU: Status Buka/Tutup Memo Toko (True/False)
+  // ========================================================
+  const [showMemo, setShowMemo] = useState(false);
+
   // Properti initial dan color dikembalikan agar OrderRow tidak crash!
   const orders = [
     { id: '#BW-001', name: 'Jihan Zahra', package: 'Cuci Setrika', weight: '5kg', date: '05 Mei 2026', status: 'Proses', initial: 'JZ', color: 'bg-blue-600' },
@@ -47,6 +52,38 @@ const DashboardAdmin = () => {
         <SectionHeader title="BrightWash Dashboard" subtitle="Monitoring Operasional Laundry" />
         <AdminProfile name="Jihan" />
       </header>
+
+      {/* ======================================================== */}
+      {/* 📥 BOX INTERACTIVE BARU: Fitur Memo Internal Menggunakan useState */}
+      {/* ======================================================== */}
+      <div className="w-full bg-blue-50 border border-blue-100 rounded-2xl p-5 shadow-sm transition-all">
+        <div className="flex justify-between items-center">
+          <div className="flex items-center gap-3">
+            <span className="text-xl">📢</span>
+            <div>
+              <h4 className="font-bold text-sm text-blue-900">Memo Operasional BrightWash Hari Ini</h4>
+              <p className="text-xs text-blue-600">Klik tombol di samping untuk membaca detail catatan sistem.</p>
+            </div>
+          </div>
+          
+          {/* Tombol yang mengubah isi state true/false saat diklik */}
+          <button 
+            onClick={() => setShowMemo(!showMemo)} 
+            className="text-xs font-black uppercase tracking-wider bg-[#1678F3] text-white px-5 py-2.5 rounded-full shadow-sm hover:scale-105 active:scale-95 transition-all"
+          >
+            {showMemo ? 'Tutup Catatan' : 'Buka Catatan'}
+          </button>
+        </div>
+
+        {/* LOGIKA REAKTIF USESTATE: Jika showMemo berstatus TRUE (buka), tulisan di bawah ini akan dirender otomatis */}
+        {showMemo && (
+          <div className="mt-4 pt-4 border-t border-blue-200 border-dashed text-xs text-blue-800 space-y-1 bg-white p-4 rounded-xl shadow-inner">
+            <p className="font-semibold text-orange-600">⚠️ PENGUMUMAN WORKSHOP:</p>
+            <p>1. Mesin Cuci nomor #03 sedang *maintenance* pembersihan tabung hingga pukul 16.00 WIB.</p>
+            <p>2. Pastikan stok deterjen cair sisa wangi Lavender di gudang dicek ulang malam ini.</p>
+          </div>
+        )}
+      </div>
 
       {/* --- MAIN GRID --- */}
       <div className="grid grid-cols-12 gap-8">
@@ -85,7 +122,6 @@ const DashboardAdmin = () => {
 
                 {/* IMPLEMENTASI KOMPONEN 3: TOOLTIP */}
                 <ActionTooltip text="Membuka riwayat log seluruh data antrian secara lengkap">
-                  {/* GANTI AREA TOMBOL LIHAT SEMUA JADI SEPERTI INI */}
                   {/* --- AREA TOMBOL LIHAT SEMUA (VERSI FIX & AMAN DIKLIK) --- */}
                   <div className="tooltip tooltip-left" data-tip="Membuka riwayat log seluruh data antrian secara lengkap">
                     <button

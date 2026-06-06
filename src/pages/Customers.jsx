@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react'; // <-- Mengimport useState & useRef
 import { useNavigate } from 'react-router-dom';
 import {
   Plus, Search, MoreVertical, Users,
-  ShoppingBag, Star, X, History, Waves, Smartphone
+  ShoppingBag, Star, X, History, Waves, Smartphone, ArrowUpCircle
 } from 'lucide-react';
 
 // Import data pelanggan yang sudah kita update tadi
@@ -14,9 +14,14 @@ const Customers = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   
+  // ========================================================
+  // 🚀 PENERAPAN USEREF: Menandai Atap Paling Atas Halaman Utama
+  // ========================================================
+  const pageTopRef = useRef(null);
+
   // State form disesuaikan dengan data terbaru
   const [newCustomer, setNewCustomer] = useState({ 
-    name: '', 
+    // name: '', 
     nickname: '',
     phone: '', 
     gender: 'Laki-laki',
@@ -24,7 +29,14 @@ const Customers = () => {
     status: 'Reguler' 
   });
 
-  // --- FUNGSI TAMBAH PELANGGAN (Sesuai Struktur Baru) ---
+  // ========================================================
+  // ⚡ FUNGSI GULIR HALAMAN: Memaksa Seluruh Layar Naik ke Atas
+  // ========================================================
+  const handleScrollToTop = () => {
+    pageTopRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  // --- FUNGSI TAMBAH PELANGGAN ---
   const handleAddCustomer = (e) => {
     e.preventDefault();
     
@@ -36,7 +48,7 @@ const Customers = () => {
       nickname: newCustomer.nickname || newCustomer.name.split(' ')[0].toLowerCase(),
       gender: newCustomer.gender,
       birth_date: newCustomer.birth_date || "01 Jan 2000",
-      avatar: `https://i.pravatar.cc/150?u=${idBaru}`, // Avatar otomatis unik
+      avatar: `https://i.pravatar.cc/150?u=${idBaru}`,
       phone: newCustomer.phone,
       email: `${newCustomer.name.toLowerCase().replace(/\s/g, '')}@mail.com`,
       total_orders: 0,
@@ -54,7 +66,10 @@ const Customers = () => {
   );
 
   return (
-    <div className="animate-in fade-in slide-in-from-right-6 duration-700 h-full flex flex-col gap-8 p-1">
+    <div className="animate-in fade-in slide-in-from-right-6 duration-700 h-full flex flex-col gap-8 p-1 relative">
+
+      {/* 📍 JANGKAR USEREF: Ditaruh di atap paling atas halaman */}
+      <div ref={pageTopRef} className="absolute top-0 left-0"></div>
 
       {/* --- HEADER --- */}
       <div className="flex flex-col md:flex-row justify-between items-center gap-6">
@@ -118,7 +133,6 @@ const Customers = () => {
                     >
                       <td className="px-10 py-6">
                         <div className="flex items-center gap-4">
-                          {/* Pakai Foto Profil/Avatar */}
                           <img 
                             src={c.avatar} 
                             alt={c.name} 
@@ -191,7 +205,7 @@ const Customers = () => {
         </div>
       </div>
 
-      {/* --- MODAL FORM --- (Sudah di-Update Field-nya) */}
+      {/* --- MODAL FORM --- */}
       {isModalOpen && (
         <div className="fixed inset-0 z-[999] flex items-center justify-center p-6 backdrop-blur-md bg-[#1678F3]/10">
           <div className="bg-white w-full max-w-lg rounded-[55px] shadow-2xl p-12 relative border border-white">
@@ -231,6 +245,18 @@ const Customers = () => {
           </div>
         </div>
       )}
+
+      {/* ========================================================
+      // 📥 FLOATING BUTTON: Tombol Melayang buat Gulir Halaman Ke Atas
+      // ======================================================== */}
+      <button 
+        onClick={handleScrollToTop} 
+        className="fixed bottom-8 right-8 z-[99] bg-[#1678F3] hover:bg-blue-600 text-white p-4 rounded-full shadow-2xl hover:scale-110 active:scale-95 transition-all flex items-center justify-center group"
+        title="Gulir ke paling atas"
+      >
+        <ArrowUpCircle size={28} strokeWidth={2.5} className="group-hover:-translate-y-0.5 transition-transform" />
+      </button>
+
     </div>
   );
 };

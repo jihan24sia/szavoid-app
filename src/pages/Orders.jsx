@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react'; // <-- Mengimport useState & useEffect
 import { ClipboardList, Filter, Clock, CheckCircle2, AlertCircle } from 'lucide-react';
 
 // Import All Components
@@ -13,17 +13,35 @@ import TableRow from '../components/TableRow';
 
 const Orders = ({ orders = [] }) => { 
   const [searchTerm, setSearchTerm] = useState("");
+  
+  // ========================================================
+  // 🚀 TAMBAHAN STATE & USEEFFECT SECARA ELEGAN
+  // ========================================================
+  const [selectedStatus, setSelectedStatus] = useState("Semua");
+  const [displayOrders, setDisplayOrders] = useState(orders);
 
-  const filteredOrders = orders.filter(o => 
-    o.customer.toLowerCase().includes(searchTerm.toLowerCase()) || 
-    o.id.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  useEffect(() => {
+   
+    const hasilFilter = orders.filter(o => {
+     
+      const matchText = o.customer.toLowerCase().includes(searchTerm.toLowerCase()) || 
+                        o.id.toLowerCase().includes(searchTerm.toLowerCase());
+      
+      // Cocokkan dengan filter tombol status yang aktif
+      const matchStatus = selectedStatus === "Semua" || o.status === selectedStatus;
+      
+      return matchText && matchStatus;
+    });
+
+    setDisplayOrders(hasilFilter);
+
+  }, [searchTerm, selectedStatus, orders]); 
 
   const stats = [
-    { label: 'Antrean', count: orders.filter(o => o.status === 'Antri').length, icon: <Clock size={22}/>, color: 'text-orange-400', bg: 'bg-orange-50' },
-    { label: 'Proses', count: orders.filter(o => o.status === 'Proses').length, icon: <AlertCircle size={22}/>, color: 'text-[#1678F3]', bg: 'bg-blue-50' },
-    { label: 'Selesai', count: orders.filter(o => o.status === 'Selesai').length, icon: <CheckCircle2 size={22}/>, color: 'text-green-500', bg: 'bg-green-50' },
-    { label: 'Total', count: orders.length, icon: <ClipboardList size={22}/>, color: 'text-[#4DBAE9]', bg: 'bg-cyan-50' },
+    { label: 'Antrean', count: orders.filter(o => o.status === 'Antri').length, icon: <Clock size={22}/>, color: 'text-orange-400', bg: 'bg-orange-50', statusKey: 'Antri' },
+    { label: 'Proses', count: orders.filter(o => o.status === 'Proses').length, icon: <AlertCircle size={22}/>, color: 'text-[#1678F3]', bg: 'bg-blue-50', statusKey: 'Proses' },
+    { label: 'Selesai', count: orders.filter(o => o.status === 'Selesai').length, icon: <CheckCircle2 size={22}/>, color: 'text-green-500', bg: 'bg-green-50', statusKey: 'Selesai' },
+    { label: 'Total', count: orders.length, icon: <ClipboardList size={22}/>, color: 'text-[#4DBAE9]', bg: 'bg-cyan-50', statusKey: 'Semua' },
   ];
 
   const columns = [
@@ -45,25 +63,42 @@ const Orders = ({ orders = [] }) => {
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
-          <button className="bg-white p-4 rounded-[22px] text-[#1678F3] shadow-lg hover:scale-105 transition-all">
+          <button 
+            onClick={() => setSelectedStatus("Semua")} // Tombol reset filter cepat
+            className="bg-white p-4 rounded-[22px] text-[#1678F3] shadow-lg hover:scale-105 transition-all"
+            title="Reset Filter"
+          >
             <Filter size={22} />
           </button>
         </div>
       </div>
 
-      {/* STATS SECTION */}
+      {/* STATS SECTION (Bisa diklik untuk nge-filter status memanfaatkan useEffect!) */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
         {stats.map((stat, i) => (
-          <StatusSummaryCard key={i} {...stat} />
+          <div 
+            key={i} 
+            onClick={() => setSelectedStatus(stat.statusKey)}
+            className={`cursor-pointer transition-all duration-200 transform hover:scale-102 active:scale-98 ${
+              selectedStatus === stat.statusKey ? 'ring-4 ring-[#1678F3] rounded-[26px]' : ''
+            }`}
+          >
+            <StatusSummaryCard {...stat} />
+          </div>
         ))}
+      </div>
+
+      {/* INDIKATOR FILTER AKTIF */}
+      <div className="text-xs text-gray-400 font-bold uppercase tracking-wider px-2 -mb-4">
+        Menampilkan Status: <span className="text-[#1678F3]">{selectedStatus}</span> ({displayOrders.length} data)
       </div>
 
       {/* TABLE SECTION */}
       <DataTable>
         <TableHeader columns={columns} />
         <tbody className="divide-y divide-blue-50">
-          {filteredOrders.length > 0 ? (
-            filteredOrders.map((order) => (
+          {displayOrders.length > 0 ? (
+            displayOrders.map((order) => (
               <TableRow key={order.id}>
                 <td className="px-10 py-6 text-[11px] font-black text-[#1678F3]">
                    <span className="bg-blue-50 px-3 py-1 rounded-lg">{order.id}</span>
