@@ -32,23 +32,34 @@ const Services = () => {
   };
 
   return (
-    <div className="p-2 animate-in fade-in duration-700 relative">
+
+    <div className="h-full flex flex-col gap-8">
       
-      {/* --- HEADER --- */}
-      <div className="flex justify-between items-center mb-10 px-2">
-        <div>
-          <h2 className="text-3xl font-black text-[#1678F3] tracking-tighter uppercase italic leading-none">Layanan & Harga</h2>
-          <p className="text-gray-400 font-bold text-[10px] uppercase tracking-[0.3em] mt-2 italic">Daftar Harga BrightWash</p>
+      {/* --- HEADER SECTION (STYLE SINKRON SAMA HISTORY & ROLE) --- */}
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 px-2">
+        <div className="flex items-center gap-4">
+          {/* Garis Aksen Biru Wajib TA BrightWash */}
+          <div className="w-2 h-10 bg-[#1678F3] rounded-full"></div>
+          <div>
+            <h2 className="text-4xl font-black text-[#1678F3] tracking-tighter uppercase italic leading-none">
+              Layanan <span className="text-[#4DBAE9]">& Harga</span>
+            </h2>
+            <p className="text-[#4DBAE9] text-[10px] font-black uppercase tracking-[0.4em] mt-1">
+              Daftar Tarif Premium BrightWash
+            </p>
+          </div>
         </div>
+
+        {/* Tombol Tambah Layanan */}
         <button 
           onClick={() => setIsModalOpen(true)} 
-          className="bg-[#1678F3] text-white px-6 py-4 rounded-[22px] font-black italic flex items-center gap-2 shadow-xl shadow-blue-200 hover:scale-105 active:scale-95 transition-all uppercase text-[10px] tracking-widest border-b-4 border-blue-700"
+          className="self-start md:self-auto bg-[#1678F3] text-white px-6 py-4 rounded-[22px] font-black italic flex items-center gap-2 shadow-xl shadow-blue-200 hover:scale-105 active:scale-95 transition-all uppercase text-[10px] tracking-widest border-b-4 border-blue-700"
         >
           <Plus size={18} strokeWidth={4} /> Tambah Layanan
         </button>
       </div>
 
-   
+      {/* --- GRID KARTU LAYANAN --- */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6">
         {serviceList.map((s, i) => (
           <Link 
@@ -64,7 +75,9 @@ const Services = () => {
                 <div className="bg-white/90 backdrop-blur-md w-12 h-12 rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-500">
                   {React.cloneElement(s.icon, { size: 22, strokeWidth: 2.5 })}
                 </div>
-                <button className="text-white/40 hover:text-white"><MoreVertical size={18} /></button>
+                <button className="text-white/40 hover:text-white" onClick={(e) => e.preventDefault()}>
+                  <MoreVertical size={18} />
+                </button>
               </div>
 
               <div>
@@ -81,10 +94,10 @@ const Services = () => {
         ))}
       </div>
 
-      {/* --- MODAL FORM TAMBAH LAYANAN --- */}
+      {/* --- MODAL FORM TAMBAH LAYANAN (HAPUS TOTAL ANIMASI JEDUG INSTAN) --- */}
       {isModalOpen && (
-        <div className="fixed inset-0 z-[999] flex items-center justify-center p-6 bg-[#1678F3]/20 backdrop-blur-sm animate-in fade-in duration-300">
-          <div className="relative bg-white w-full max-w-md rounded-[50px] shadow-2xl p-10 animate-in zoom-in duration-300">
+        <div className="fixed inset-0 z-[999] flex items-center justify-center p-6 bg-[#1678F3]/20 backdrop-blur-sm">
+          <div className="relative bg-white w-full max-w-md rounded-[50px] shadow-2xl p-10">
             <button onClick={() => setIsModalOpen(false)} className="absolute right-10 top-10 text-gray-300 hover:text-rose-500 transition-colors">
               <X size={24} strokeWidth={3} />
             </button>

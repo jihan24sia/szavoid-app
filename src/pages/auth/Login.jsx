@@ -2,16 +2,19 @@ import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { Lock, User, Eye, EyeOff, Minus, Square, X, Sparkles, Waves } from "lucide-react"; 
-import axios from "axios";
+// 💡 Import supabase client kamu (sesuaikan path foldernya ya!)
+import { supabase } from "../supabaseClient";
 
 export default function Login() {
     const navigate = useNavigate();
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
     const [showPassword, setShowPassword] = useState(false);
+    
+    // Properti disesuaikan menjadi email dan password untuk Supabase
     const [dataForm, setDataForm] = useState({
         email: "",
-        Sandi: "",
+        password: "",
     });
 
     const handleChange = (evt) => {
@@ -24,14 +27,25 @@ export default function Login() {
         setLoading(true);
         setError("");
 
-        // Dummy Login menggunakan dummyjson
-        axios.post("https://dummyjson.com/user/login", {
-            username: dataForm.email,
-            password: dataForm.password,
-        })
-        .then(() => navigate("/"))
-        .catch((err) => setError(err.response?.data?.message || "Login Gagal! Periksa kembali akun Anda."))
-        .finally(() => setLoading(false));
+        try {
+          
+            const { data, error: authError } = await supabase.auth.signInWithPassword({
+                email: dataForm.email,
+                password: dataForm.password,
+            });
+
+            if (authError) throw authError;
+
+         
+            alert("Login Berhasil! Selamat Datang di BrightWash.");
+            navigate("/"); 
+            
+        } catch (err) {
+           
+            setError(err.message || "Login Gagal! Periksa kembali akun Anda.");
+        } finally {
+            setLoading(false);
+        }
     };
 
     return (
@@ -57,7 +71,7 @@ export default function Login() {
                     <div className="max-w-[400px] w-full">
                         <h2 className="text-6xl font-black text-[#0F172A] mb-2 tracking-tighter italic uppercase">Login.</h2>
                         <p className="text-gray-400 font-bold text-sm mb-10 ml-1">
-                            Member baru?<Link to="/register" className="text-[#1E88E5] border-b-2 border-blue-50 hover:border-blue-500 transition-all ml-1">Buat Akun</Link>
+                            Member baru?<Link to="/register" className="text-[#1E88E5] border-b-2 border-blue-50 hover:border-blue-500 transition-all ml-1 font-black uppercase text-xs tracking-wider">Buat Akun</Link>
                         </p>
 
                         {error && (
@@ -67,15 +81,16 @@ export default function Login() {
                         )}
 
                         <form onSubmit={handleSubmit} className="space-y-4">
-                            {/* Input Username */}
+                            {/* Input Email/Username */}
                             <div className="space-y-2">
-                                <label className="text-gray-400 text-[10px] font-black uppercase tracking-widest ml-4">Username</label>
+                                <label className="text-gray-400 text-[10px] font-black uppercase tracking-widest ml-4">Email Address</label>
                                 <div className="relative group">
                                     <User className="absolute left-6 top-1/2 -translate-y-1/2 text-gray-300 group-focus-within:text-[#1E88E5] transition-colors" size={20} />
                                     <input
-                                        type="text" name="email" required onChange={handleChange}
+                                        type="email" name="email" required onChange={handleChange} value={dataForm.email}
                                         className="w-full bg-gray-50/50 border-2 border-transparent rounded-full py-4 pl-16 pr-6 text-sm font-bold text-gray-700 outline-none focus:bg-white focus:border-[#1E88E5] transition-all"
-                                        placeholder="Masukkan nama pengguna Anda"
+                                        placeholder="masukkan@email.com"
+                                        disabled={loading}
                                     />
                                 </div>
                             </div>
@@ -86,14 +101,16 @@ export default function Login() {
                                 <div className="relative group">
                                     <Lock className="absolute left-6 top-1/2 -translate-y-1/2 text-gray-300 group-focus-within:text-[#1E88E5] transition-colors" size={20} />
                                     <input
-                                        type={showPassword ? "text" : "password"} name="password" required onChange={handleChange}
+                                        type={showPassword ? "text" : "password"} name="password" required onChange={handleChange} value={dataForm.password}
                                         className="w-full bg-gray-50/50 border-2 border-transparent rounded-full py-4 pl-16 pr-16 text-sm font-bold text-gray-700 outline-none focus:bg-white focus:border-[#1E88E5] transition-all"
                                         placeholder="••••••••"
+                                        disabled={loading}
                                     />
                                     <button 
                                         type="button"
                                         onClick={() => setShowPassword(!showPassword)}
                                         className="absolute right-6 top-1/2 -translate-y-1/2 text-gray-300 hover:text-[#1E88E5] transition-colors"
+                                        disabled={loading}
                                     >
                                         {showPassword ? <Eye size={20} /> : <EyeOff size={20} />}
                                     </button>
@@ -112,8 +129,9 @@ export default function Login() {
 
                             {/* Submit Button */}
                             <button
+                                type="submit"
                                 disabled={loading}
-                                className="w-full bg-[#1E88E5] hover:bg-[#1565C0] text-white font-black py-5 rounded-full mt-6 flex items-center justify-center gap-3 shadow-2xl shadow-blue-200 transition-all active:scale-95 uppercase text-xs tracking-[0.2em] italic"
+                                className="w-full bg-[#1E88E5] hover:bg-[#1565C0] text-white font-black py-5 rounded-full mt-6 flex items-center justify-center gap-3 shadow-2xl shadow-blue-200 transition-all active:scale-95 uppercase text-xs tracking-[0.2em] italic disabled:bg-gray-300 disabled:shadow-none"
                             >
                                 {loading ? <AiOutlineLoading3Quarters className="animate-spin" size={20} /> : "Mulai →"}
                             </button>

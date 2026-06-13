@@ -44,8 +44,9 @@ const NewOrder = ({ onAddOrder }) => {
     setWeight(0);
   };
 
-  return (
-    <div className="animate-in fade-in slide-in-from-bottom-4 duration-700">
+return (
+   
+    <div className="h-full flex flex-col gap-8">
       <div className="mb-10">
         <SectionHeader title="Buat Order Baru" subtitle="Input Data Cucian Pelanggan" />
       </div>

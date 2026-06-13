@@ -51,8 +51,8 @@ const Orders = ({ orders = [] }) => {
     { label: 'Total' }
   ];
 
-  return (
-    <div className="animate-in fade-in slide-in-from-right-4 duration-700 h-full flex flex-col gap-8">
+return (
+    <div className="h-full flex flex-col gap-8">
       
       {/* HEADER SECTION */}
       <div className="flex flex-col md:flex-row justify-between items-center gap-6">

@@ -59,8 +59,9 @@ const Interactions = () => {
     }
   ];
 
-  return (
-    <div className="animate-in fade-in slide-in-from-bottom-4 duration-700">
+return (
+    <div className="h-full flex flex-col gap-8">
+      
       {/* HEADER */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-10 gap-4">
         <div className="flex items-center gap-4">

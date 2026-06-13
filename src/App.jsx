@@ -14,6 +14,7 @@ const History = React.lazy(() => import("./pages/History"));
 const Payments = React.lazy(() => import("./pages/Payments"));
 const CustomerDetail = React.lazy(() => import("./pages/CustomerDetail"));
 const ServiceDetail = React.lazy(() => import("./pages/ServiceDetail"));
+const ManageUsers = React.lazy(() => import("./pages/ManageUsers"));
 
 // Layouts
 const MainLayout = React.lazy(() => import("./layouts/MainLayout"));
@@ -58,6 +59,7 @@ function App() {
           <Route path="/customers/:id" element={<CustomerDetail />} />
           <Route path="/services" element={<Services />} />
           <Route path="/services/:id" element={<ServiceDetail />} />
+          <Route path="/manage-users" element={<ManageUsers />} />
           <Route path="/interactions" element={<Interactions />} />
           <Route path="/history" element={<History />} />
           <Route path="/payments" element={<Payments />} />

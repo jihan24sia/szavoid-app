@@ -1,30 +1,68 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { Lock, Mail, User, Eye, EyeOff, Sparkles, Waves, ArrowRight } from 'lucide-react';
+import { Lock, Mail, User, Eye, EyeOff, Sparkles, Waves, ArrowRight, Phone, Shield } from 'lucide-react';
+import { supabase } from '../supabaseClient'; 
 
 export default function Register() {
     const navigate = useNavigate();
     const [showPass, setShowPass] = useState(false);
     const [loading, setLoading] = useState(false);
 
-    const handleRegister = (e) => {
+    // --- State Form Kontrol ---
+    const [name, setName] = useState('');
+    const [email, setEmail] = useState('');
+    const [phone, setPhone] = useState('');
+    const [password, setPassword] = useState('');
+    const [role, setRole] = useState('Member'); 
+
+    const handleRegister = async (e) => {
         e.preventDefault();
         setLoading(true);
-        // Simulasi register
-        setTimeout(() => {
+
+        try {
+            
+            const { data: authData, error: authError } = await supabase.auth.signUp({
+                email: email,
+                password: password,
+            });
+
+            if (authError) throw authError;
+
+            const user = authData.user;
+
+            if (user) {
+               
+                const { error: dbError } = await supabase
+                    .from('users')
+                    .insert([
+                        { 
+                            id: user.id, 
+                            name: name,
+                            phone: phone,
+                            role: role,
+                            email: email
+                        }
+                    ]);
+
+                if (dbError) throw dbError;
+
+                alert('Akun BrightWash berhasil dibuat! Silakan login.');
+                navigate('/login');
+            }
+        } catch (error) {
+            alert(`Waduh Gagal Daftar: ${error.message}`);
+        } finally {
             setLoading(false);
-            navigate('/login');
-        }, 1500);
+        }
     };
 
     return (
         <div className="fixed inset-0 bg-[#F8FAFC] flex items-center justify-center p-6 z-[999]">
-            
             {/* CARD UTAMA */}
             <div className="bg-white w-full max-w-[1100px] h-[680px] rounded-[60px] shadow-[0_35px_100px_rgba(30,136,229,0.15)] flex overflow-hidden relative border border-white">
                 
                 {/* --- SISI KIRI: FORM (55%) --- */}
-                <div className="w-full lg:w-[55%] p-12 md:p-20 flex flex-col justify-between z-10 bg-white overflow-y-auto custom-scrollbar">
+                <div className="w-full lg:w-[55%] p-12 md:p-16 flex flex-col justify-between z-10 bg-white overflow-y-auto custom-scrollbar">
                     {/* Brand Logo */}
                     <div>
                         <div className="flex items-center gap-2">
@@ -37,48 +75,69 @@ export default function Register() {
                     </div>
 
                     {/* Form Content */}
-                    <div className="max-w-[400px] w-full py-8">
-                        <h2 className="text-5xl font-black text-[#0F172A] mb-2 tracking-tighter italic uppercase">Join Us.</h2>
-                        <p className="text-gray-400 font-bold text-sm mb-8 ml-1">
-                            Already a member? <Link to="/login" className="text-[#FF71A4] border-b-2 border-pink-50 hover:border-pink-500 transition-all ml-1 font-black uppercase text-[12px]">Sign In</Link>
+                    <div className="max-w-[400px] w-full py-4 mx-auto lg:mx-0">
+                        <h2 className="text-4xl font-black text-[#0F172A] mb-1 tracking-tighter italic uppercase">Join Us.</h2>
+                        <p className="text-gray-400 font-bold text-xs mb-6 ml-1">
+                           Sudah menjadi anggota? <Link to="/login" className="text-[#FF71A4] border-b-2 border-pink-50 hover:border-pink-500 transition-all ml-1 font-black uppercase text-[11px]">Masuk</Link>
                         </p>
 
-                        <form onSubmit={handleRegister} className="space-y-4">
+                        <form onSubmit={handleRegister} className="space-y-3.5">
                             {/* Input Full Name */}
-                            <div className="space-y-1.5">
-                                <label className="text-gray-400 text-[9px] font-black uppercase tracking-widest ml-4">Owner Name</label>
+                            <div className="space-y-1">
+                                <label className="text-gray-400 text-[9px] font-black uppercase tracking-widest ml-4">Nama Lengkap</label>
                                 <div className="relative group">
                                     <User className="absolute left-6 top-1/2 -translate-y-1/2 text-gray-300 group-focus-within:text-[#1E88E5] transition-colors" size={18} />
                                     <input
                                         type="text" required
-                                        className="w-full bg-gray-50/50 border-2 border-transparent rounded-full py-3.5 pl-14 pr-6 text-sm font-bold text-gray-700 outline-none focus:bg-white focus:border-[#1E88E5] transition-all"
-                                        placeholder="Full Name"
+                                        value={name} onChange={(e) => setName(e.target.value)}
+                                        className="w-full bg-gray-50/50 border-2 border-transparent rounded-full py-3 pl-14 pr-6 text-xs font-bold text-gray-700 outline-none focus:bg-white focus:border-[#1E88E5] transition-all"
+                                        placeholder="Jihan Cantik"
+                                        disabled={loading}
+                                    />
+                                </div>
+                            </div>
+
+                            {/* Input Phone */}
+                            <div className="space-y-1">
+                                <label className="text-gray-400 text-[9px] font-black uppercase tracking-widest ml-4">Nomor WhatsApp</label>
+                                <div className="relative group">
+                                    <Phone className="absolute left-6 top-1/2 -translate-y-1/2 text-gray-300 group-focus-within:text-[#1E88E5] transition-colors" size={18} />
+                                    <input
+                                        type="text" required
+                                        value={phone} onChange={(e) => setPhone(e.target.value)}
+                                        className="w-full bg-gray-50/50 border-2 border-transparent rounded-full py-3 pl-14 pr-6 text-xs font-bold text-gray-700 outline-none focus:bg-white focus:border-[#1E88E5] transition-all"
+                                        placeholder="08123456789"
+                                        disabled={loading}
                                     />
                                 </div>
                             </div>
 
                             {/* Input Email */}
-                            <div className="space-y-1.5">
-                                <label className="text-gray-400 text-[9px] font-black uppercase tracking-widest ml-4">Email Address</label>
+                            <div className="space-y-1">
+                                <label className="text-gray-400 text-[9px] font-black uppercase tracking-widest ml-4">Alamat Email</label>
                                 <div className="relative group">
                                     <Mail className="absolute left-6 top-1/2 -translate-y-1/2 text-gray-300 group-focus-within:text-[#1E88E5] transition-colors" size={18} />
                                     <input
                                         type="email" required
-                                        className="w-full bg-gray-50/50 border-2 border-transparent rounded-full py-3.5 pl-14 pr-6 text-sm font-bold text-gray-700 outline-none focus:bg-white focus:border-[#1E88E5] transition-all"
+                                        value={email} onChange={(e) => setEmail(e.target.value)}
+                                        className="w-full bg-gray-50/50 border-2 border-transparent rounded-full py-3 pl-14 pr-6 text-xs font-bold text-gray-700 outline-none focus:bg-white focus:border-[#1E88E5] transition-all"
                                         placeholder="you@example.com"
+                                        disabled={loading}
                                     />
                                 </div>
                             </div>
 
                             {/* Input Password */}
-                            <div className="space-y-1.5">
-                                <label className="text-gray-400 text-[9px] font-black uppercase tracking-widest ml-4">Create Password</label>
+                            <div className="space-y-1">
+                                <label className="text-gray-400 text-[9px] font-black uppercase tracking-widest ml-4">Buat Sandi</label>
                                 <div className="relative group">
                                     <Lock className="absolute left-6 top-1/2 -translate-y-1/2 text-gray-300 group-focus-within:text-[#1E88E5] transition-colors" size={18} />
                                     <input
                                         type={showPass ? "text" : "password"} required
-                                        className="w-full bg-gray-50/50 border-2 border-transparent rounded-full py-3.5 pl-14 pr-14 text-sm font-bold text-gray-700 outline-none focus:bg-white focus:border-[#1E88E5] transition-all"
+                                        value={password} onChange={(e) => setPassword(e.target.value)}
+                                        className="w-full bg-gray-50/50 border-2 border-transparent rounded-full py-3 pl-14 pr-14 text-xs font-bold text-gray-700 outline-none focus:bg-white focus:border-[#1E88E5] transition-all"
                                         placeholder="••••••••"
+                                        disabled={loading}
                                     />
                                     <button 
                                         type="button"
@@ -90,26 +149,41 @@ export default function Register() {
                                 </div>
                             </div>
 
+                            {/* Input Dropdown Role */}
+                            <div className="space-y-1">
+                                <label className="text-gray-400 text-[9px] font-black uppercase tracking-widest ml-4">Role</label>
+                                <div className="relative group">
+                                    <Shield className="absolute left-6 top-1/2 -translate-y-1/2 text-gray-300 group-focus-within:text-[#1E88E5] transition-colors" size={18} />
+                                    <select
+                                        value={role} onChange={(e) => setRole(e.target.value)}
+                                        className="w-full bg-gray-50/50 border-2 border-transparent rounded-full py-3 pl-14 pr-6 text-xs font-black uppercase text-gray-700 outline-none focus:bg-white focus:border-[#1E88E5] transition-all appearance-none cursor-pointer"
+                                        disabled={loading}
+                                    >
+                                        <option value="Member">Pelanggan (Member)</option>
+                                        <option value="Admin">Staff (Admin)</option>
+                                    </select>
+                                </div>
+                            </div>
+
                             {/* Submit Button */}
                             <button
+                                type="submit"
                                 disabled={loading}
-                                className="w-full bg-[#1E88E5] hover:bg-[#1565C0] text-white font-black py-4.5 rounded-full mt-6 flex items-center justify-center gap-3 shadow-2xl shadow-blue-200 transition-all active:scale-95 uppercase text-xs tracking-[0.2em] italic py-4"
+                                className="w-full bg-[#1E88E5] hover:bg-[#1565C0] text-white font-black py-3.5 rounded-full mt-4 flex items-center justify-center gap-3 shadow-2xl shadow-blue-200 transition-all active:scale-95 uppercase text-xs tracking-[0.2em] italic disabled:bg-gray-300 disabled:shadow-none"
                             >
-                                {loading ? "Processing..." : <span className="flex items-center gap-2">Create Account <ArrowRight size={16}/></span>}
+                                {loading ? "Processing..." : <span className="flex items-center gap-2">Daftar <ArrowRight size={16}/></span>}
                             </button>
                         </form>
                     </div>
                     
-                    <p className="text-[9px] text-gray-300 font-bold uppercase tracking-[0.3em]">© 2024 BrightWash Studio Inc.</p>
+                    <p className="text-[9px] text-gray-300 font-bold uppercase tracking-[0.3em]">© 2026 BrightWash Studio Inc.</p>
                 </div>
 
                 {/* --- SISI KANAN: THEME AREA (45%) --- */}
                 <div className="hidden lg:flex w-[45%] relative items-center justify-center p-12 overflow-hidden">
-                    {/* Background Gradient & Pattern */}
                     <div className="absolute inset-0 bg-gradient-to-br from-[#1E88E5] to-[#4DBAE9] rounded-l-[100px]"></div>
                     <Waves className="absolute top-[-60px] left-[-60px] text-white/10 scale-[5] -rotate-12 pointer-events-none" />
 
-                    {/* Center Card Samping */}
                     <div className="relative z-10 text-white text-center">
                         <div className="bg-white/10 backdrop-blur-xl border border-white/20 p-12 rounded-[60px] shadow-2xl">
                             <div className="w-16 h-16 bg-white/20 rounded-3xl flex items-center justify-center mb-6 mx-auto">
@@ -123,8 +197,6 @@ export default function Register() {
                             </p>
                         </div>
                     </div>
-                    
-                    {/* Decorative Circle */}
                     <div className="absolute -top-20 -right-20 w-64 h-64 bg-white/10 rounded-full blur-3xl"></div>
                 </div>
 

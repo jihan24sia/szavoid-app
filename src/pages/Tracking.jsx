@@ -12,8 +12,9 @@ const Tracking = () => {
     { status: 'Proses Cuci', desc: 'Pakaian sedang dalam tahap pembersihan premium', time: '03 Mei, 14:00', icon: <Clock />, active: false, color: 'bg-gray-200' },
   ];
 
-  return (
-    <div className="animate-in fade-in slide-in-from-bottom-6 duration-700">
+ return (
+  
+    <div className="h-full flex flex-col gap-8">
       {/* Header Halaman */}
       <div className="mb-10 flex items-center gap-4">
         <div className="w-2 h-10 bg-[#1678F3] rounded-full"></div>

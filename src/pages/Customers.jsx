@@ -65,8 +65,9 @@ const Customers = () => {
     c.phone.includes(searchTerm)
   );
 
-  return (
-    <div className="animate-in fade-in slide-in-from-right-6 duration-700 h-full flex flex-col gap-8 p-1 relative">
+return (
+
+    <div className="h-full flex flex-col gap-8">
 
       {/* 📍 JANGKAR USEREF: Ditaruh di atap paling atas halaman */}
       <div ref={pageTopRef} className="absolute top-0 left-0"></div>

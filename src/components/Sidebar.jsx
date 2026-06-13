@@ -12,7 +12,8 @@ import {
   LogOut,
   RotateCcw,
   Waves,
-  MessageSquare
+  MessageSquare,
+  KeyRound
 } from 'lucide-react';
 
 const Sidebar = () => {
@@ -34,6 +35,7 @@ const Sidebar = () => {
     { path: '/services', name: 'Layanan & Harga', icon: <Tag size={20} /> },
     { path: '/interactions', name: 'Interaksi', icon: <MessageSquare size={20} /> },
     { path: '/history', name: 'Riwayat', icon: <RotateCcw size={20} /> },
+    { path: '/manage-users', name: 'Role Management', icon: <KeyRound size={20} /> },
   ];
 
   return (
