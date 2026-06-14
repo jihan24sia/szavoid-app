@@ -1,9 +1,8 @@
-import React, { useState, useEffect } from 'react'; // <-- Mengimport useState & useEffect
-import { ClipboardList, Filter, Clock, CheckCircle2, AlertCircle } from 'lucide-react';
+import React, { useState, useEffect } from 'react'; 
+import { supabase } from './supabaseClient'; // Pastikan path config Supabase kamu sudah benar
+import { ClipboardList, Filter, Clock, CheckCircle2, AlertCircle, Search, RefreshCw } from 'lucide-react';
 
 // Import All Components
-import StatusSummaryCard from '../components/StatusSummaryCard';
-import SearchBar from '../components/SearchBar';
 import OrderStatusBadge from '../components/OrderStatusBadge';
 import EmptyState from '../components/EmptyState';
 import SectionHeader from '../components/SectionHeader';
@@ -11,114 +10,200 @@ import DataTable from '../components/DataTable';
 import TableHeader from '../components/TableHeader';
 import TableRow from '../components/TableRow';
 
-const Orders = ({ orders = [] }) => { 
+const Orders = () => { 
   const [searchTerm, setSearchTerm] = useState("");
-  
-  // ========================================================
-  // 🚀 TAMBAHAN STATE & USEEFFECT SECARA ELEGAN
-  // ========================================================
   const [selectedStatus, setSelectedStatus] = useState("Semua");
-  const [displayOrders, setDisplayOrders] = useState(orders);
+  const [dbOrders, setDbOrders] = useState([]);
+  const [displayOrders, setDisplayOrders] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  // 1. Ambil data secara real-time / berkala dari database Supabase
+  const fetchAllOrders = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('orders')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+      if (data) setDbOrders(data);
+    } catch (err) {
+      console.error("Gagal mengambil data admin orders:", err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-   
-    const hasilFilter = orders.filter(o => {
-     
-      const matchText = o.customer.toLowerCase().includes(searchTerm.toLowerCase()) || 
-                        o.id.toLowerCase().includes(searchTerm.toLowerCase());
+    fetchAllOrders();
+
+    // Buat listener realtime agar jika member klik order, halaman admin langsung terupdate otomatis
+    const orderSubscription = supabase
+      .channel('public:orders')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'orders' }, () => {
+        fetchAllOrders();
+      })
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(orderSubscription);
+    };
+  }, []);
+
+  // 2. Filter data berdasarkan input search bar & status card
+  useEffect(() => {
+    const hasilFilter = dbOrders.filter(o => {
+      const customerName = o.customer_name || "";
+      const orderId = o.id || "";
+
+      const matchText = customerName.toLowerCase().includes(searchTerm.toLowerCase()) || 
+                        orderId.toLowerCase().includes(searchTerm.toLowerCase());
       
-      // Cocokkan dengan filter tombol status yang aktif
       const matchStatus = selectedStatus === "Semua" || o.status === selectedStatus;
       
       return matchText && matchStatus;
     });
 
     setDisplayOrders(hasilFilter);
-
-  }, [searchTerm, selectedStatus, orders]); 
+  }, [searchTerm, selectedStatus, dbOrders]); 
 
   const stats = [
-    { label: 'Antrean', count: orders.filter(o => o.status === 'Antri').length, icon: <Clock size={22}/>, color: 'text-orange-400', bg: 'bg-orange-50', statusKey: 'Antri' },
-    { label: 'Proses', count: orders.filter(o => o.status === 'Proses').length, icon: <AlertCircle size={22}/>, color: 'text-[#1678F3]', bg: 'bg-blue-50', statusKey: 'Proses' },
-    { label: 'Selesai', count: orders.filter(o => o.status === 'Selesai').length, icon: <CheckCircle2 size={22}/>, color: 'text-green-500', bg: 'bg-green-50', statusKey: 'Selesai' },
-    { label: 'Total', count: orders.length, icon: <ClipboardList size={22}/>, color: 'text-[#4DBAE9]', bg: 'bg-cyan-50', statusKey: 'Semua' },
+    { label: 'Antrean', count: dbOrders.filter(o => o.status === 'Antri').length, icon: <Clock size={20}/>, color: 'text-amber-500', bg: 'bg-amber-50/60 border border-amber-100', statusKey: 'Antri' },
+    { label: 'Proses', count: dbOrders.filter(o => o.status === 'Proses').length, icon: <AlertCircle size={20}/>, color: 'text-blue-600', bg: 'bg-blue-50/60 border border-blue-100', statusKey: 'Proses' },
+    { label: 'Selesai', count: dbOrders.filter(o => o.status === 'Selesai').length, icon: <CheckCircle2 size={20}/>, color: 'text-emerald-500', bg: 'bg-emerald-50/60 border border-emerald-100', statusKey: 'Selesai' },
+    { label: 'Total Order', count: dbOrders.length, icon: <ClipboardList size={20}/>, color: 'text-slate-700', bg: 'bg-slate-50/80 border border-slate-100', statusKey: 'Semua' },
   ];
 
   const columns = [
     { label: 'Order ID' },
-    { label: 'Pelanggan' },
-    { label: 'Status', center: true },
-    { label: 'Total' }
+    { label: 'Nama Pelanggan / Paket' },
+    { label: 'Status' },
+    { label: 'Total Biaya' }
   ];
 
-return (
-    <div className="h-full flex flex-col gap-8">
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-[#F8FAFC] flex items-center justify-center text-slate-500 gap-2 font-bold text-sm">
+        <RefreshCw className="animate-spin text-blue-600 w-5 h-5" /> Memuat Seluruh Antrean Toko...
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-[#F8FAFC] text-slate-800 antialiased p-2 flex flex-col gap-8">
       
-      {/* HEADER SECTION */}
-      <div className="flex flex-col md:flex-row justify-between items-center gap-6">
-        <SectionHeader title="Order Management" subtitle="Pantau & Update Status Cucian" />
-        <div className="flex gap-4 w-full md:w-auto">
-          <SearchBar 
-            placeholder="Cari ID Pelanggan / Nama..." 
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
+      {/* 1. HEADER SECTION */}
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 bg-white p-8 rounded-[32px] border border-slate-100 shadow-sm">
+        <SectionHeader 
+          title="Order Management"
+          subtitle="Pantau, filter, dan kelola seluruh antrean status cucian secara real-time."
+          variant="default"
+        />
+
+        {/* SEARCH BAR & FILTER RESET */}
+        <div className="flex items-center gap-3 w-full md:w-auto">
+          <div className="relative w-full md:w-80">
+            <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
+            <input 
+              type="text"
+              placeholder="Cari ID / Nama Pelanggan..." 
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="w-full bg-slate-50/80 border border-slate-100 rounded-2xl py-3.5 pl-12 pr-4 text-xs font-semibold text-slate-700 placeholder-slate-400 outline-none focus:bg-white focus:border-blue-600 focus:ring-4 focus:ring-blue-50 transition-all shadow-inner"
+            />
+          </div>
           <button 
-            onClick={() => setSelectedStatus("Semua")} // Tombol reset filter cepat
-            className="bg-white p-4 rounded-[22px] text-[#1678F3] shadow-lg hover:scale-105 transition-all"
+            onClick={() => { setSelectedStatus("Semua"); setSearchTerm(""); }} 
+            className="bg-white p-3.5 rounded-2xl text-slate-600 border border-slate-100 shadow-sm hover:text-blue-600 hover:border-blue-200 transition-all hover:scale-105 active:scale-95"
             title="Reset Filter"
           >
-            <Filter size={22} />
+            <Filter size={18} />
           </button>
         </div>
       </div>
 
-      {/* STATS SECTION (Bisa diklik untuk nge-filter status memanfaatkan useEffect!) */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
-        {stats.map((stat, i) => (
-          <div 
-            key={i} 
-            onClick={() => setSelectedStatus(stat.statusKey)}
-            className={`cursor-pointer transition-all duration-200 transform hover:scale-102 active:scale-98 ${
-              selectedStatus === stat.statusKey ? 'ring-4 ring-[#1678F3] rounded-[26px]' : ''
-            }`}
-          >
-            <StatusSummaryCard {...stat} />
-          </div>
-        ))}
+      {/* 2. STATS CARDS SECTION */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-5">
+        {stats.map((stat, i) => {
+          const isSelected = selectedStatus === stat.statusKey;
+          return (
+            <div 
+              key={i} 
+              onClick={() => setSelectedStatus(stat.statusKey)}
+              className={`cursor-pointer p-6 rounded-[28px] transition-all duration-300 transform active:scale-95 bg-white border ${
+                isSelected 
+                  ? 'border-blue-600 ring-4 ring-blue-50 shadow-md shadow-blue-100/50 -translate-y-1' 
+                  : 'border-slate-100 shadow-sm hover:border-slate-200 hover:-translate-y-0.5'
+              }`}
+            >
+              <div className="flex justify-between items-start">
+                <div className="space-y-1">
+                  <span className="text-xs text-slate-400 font-bold uppercase tracking-wider block">{stat.label}</span>
+                  <span className="text-3xl font-black text-slate-900 tracking-tight block">{stat.count}</span>
+                </div>
+                {/* FIX STRING LITERAL TEMPLATE CSS */}
+                <div className={`w-10 h-10 ${stat.bg} ${stat.color} rounded-xl flex items-center justify-center shadow-sm`}>
+                  {stat.icon}
+                </div>
+              </div>
+            </div>
+          );
+        })}
       </div>
 
-      {/* INDIKATOR FILTER AKTIF */}
-      <div className="text-xs text-gray-400 font-bold uppercase tracking-wider px-2 -mb-4">
-        Menampilkan Status: <span className="text-[#1678F3]">{selectedStatus}</span> ({displayOrders.length} data)
+      {/* 3. ACTIVE FILTER INDICATOR */}
+      <div className="flex items-center gap-2 px-2 -mb-2">
+        <div className="h-2 w-2 bg-blue-600 rounded-full animate-pulse"></div>
+        <div className="text-[11px] text-slate-400 font-extrabold uppercase tracking-widest">
+          Menampilkan: <span className="text-blue-600 font-black">{selectedStatus}</span> 
+          <span className="text-slate-300 mx-2">|</span> Ditemukan: <span className="text-slate-700">{displayOrders.length} item</span>
+        </div>
       </div>
 
-      {/* TABLE SECTION */}
-      <DataTable>
-        <TableHeader columns={columns} />
-        <tbody className="divide-y divide-blue-50">
-          {displayOrders.length > 0 ? (
-            displayOrders.map((order) => (
-              <TableRow key={order.id}>
-                <td className="px-10 py-6 text-[11px] font-black text-[#1678F3]">
-                   <span className="bg-blue-50 px-3 py-1 rounded-lg">{order.id}</span>
+      {/* 4. PREMIUM DATA TABLE SECTION */}
+      <div className="bg-white rounded-[32px] border border-slate-100 shadow-sm overflow-hidden p-4">
+        <DataTable>
+          <TableHeader columns={columns} />
+          <tbody className="divide-y divide-slate-50">
+            {displayOrders.length > 0 ? (
+              displayOrders.map((order) => (
+                <TableRow key={order.id} className="hover:bg-slate-50/50 transition-colors">
+                  {/* ID */}
+                  <td className="px-8 py-5 text-left">
+                    <span className="font-mono font-black text-[10px] text-blue-600 bg-blue-50/60 border border-blue-100 px-2.5 py-1.5 rounded-xl shadow-sm">
+                      #{order.id.substring(0, 8)}
+                    </span>
+                  </td>
+                  {/* Nama Pelanggan & Nama Layanan */}
+                  <td className="px-8 py-5 text-left">
+                    <p className="text-sm font-black text-slate-800 uppercase tracking-tight">{order.customer_name}</p>
+                    <p className="text-[10px] text-blue-500 font-extrabold uppercase mt-0.5">📦 {order.service_name} ({order.qty} Kg/Pcs)</p>
+                  </td>
+                  {/* Status Badge */}
+                  <td className="px-8 py-5 text-left">
+                    <div className="inline-block">
+                      <OrderStatusBadge status={order.status} />
+                    </div>
+                  </td>
+                  {/* Total Tagihan */}
+                  <td className="px-8 py-5 text-left">
+                    <span className="font-black text-sm text-slate-900 tracking-tight">
+                      Rp {(order.total_price || 0).toLocaleString('id-ID')}
+                    </span>
+                  </td>
+                </TableRow>
+              ))
+            ) : (
+              <tr>
+                <td colSpan="4" className="py-12">
+                  <EmptyState message="Ups! Tidak ada data orderan yang cocok dengan kriteria Anda." />
                 </td>
-                <td className="px-10 py-6">
-                  <p className="text-sm font-black text-[#1678F3] uppercase italic">{order.customer}</p>
-                </td>
-                <td className="px-10 py-6 text-center">
-                  <OrderStatusBadge status={order.status} />
-                </td>
-                <td className="px-10 py-6 font-black text-[#1678F3] italic">{order.total}</td>
-              </TableRow>
-            ))
-          ) : (
-            <tr>
-              <td colSpan="5"><EmptyState message="Ups! Orderan tidak ketemu..." /></td>
-            </tr>
-          )}
-        </tbody>
-      </DataTable>
+              </tr>
+            )}
+          </tbody>
+        </DataTable>
+      </div>
+
     </div>
   );
 };

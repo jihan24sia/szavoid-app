@@ -6,7 +6,7 @@ import Loading from "./components/Loading";
 const Dashboard = React.lazy(() => import("./pages/Dashboard"));
 const Orders = React.lazy(() => import("./pages/Orders"));
 const Customers = React.lazy(() => import("./pages/Customers"));
-const NewOrder = React.lazy(() => import("./pages/orders/NewOrder")); 
+const NewOrder = React.lazy(() => import("./pages/orders/NewOrder"));
 const Tracking = React.lazy(() => import("./pages/Tracking"));
 const Services = React.lazy(() => import("./pages/Services"));
 const Interactions = React.lazy(() => import("./pages/Interactions"));
@@ -15,6 +15,8 @@ const Payments = React.lazy(() => import("./pages/Payments"));
 const CustomerDetail = React.lazy(() => import("./pages/CustomerDetail"));
 const ServiceDetail = React.lazy(() => import("./pages/ServiceDetail"));
 const ManageUsers = React.lazy(() => import("./pages/ManageUsers"));
+const GuestPage = React.lazy(() => import("./pages/GuestPage"));
+const MemberDashboard = React.lazy(() => import("./pages/MemberDashboard"));
 
 // Layouts
 const MainLayout = React.lazy(() => import("./layouts/MainLayout"));
@@ -27,7 +29,6 @@ const Forgot = React.lazy(() => import("./pages/auth/Forgot"));
 
 // Error Pages
 const NotFound = React.lazy(() => import("./pages/NotFound"));
-
 
 function App() {
   // Master data order disimpan di sini supaya tidak hilang saat pindah halaman
@@ -44,16 +45,21 @@ function App() {
   return (
     <Suspense fallback={<Loading />}>
       <Routes>
-        {/* Private Routes (Admin BrightWash) */}
+
+        {/* ================= GUEST ROUTE UTAMA ================= */}
+        <Route path="/" element={<GuestPage />} />
+
+        {/* ================= KHUSUS HALAMAN MEMBER (MURNI TANPA SIDEBAR ADMIN) ================= */}
+        {/* Dikeluarkan dari MainLayout supaya menggunakan layout mandiri Member yang rapi */}
+
+        <Route path="/memberdashboard/:userId" element={<MemberDashboard />} />
+
+        {/* ================= PRIVATE ROUTES (KHUSUS ADMIN) ================= */}
+        {/* Semua halaman di bawah ini dibungkus MainLayout (Ada Sidebar Admin Jihan & Navbar) */}
         <Route element={<MainLayout />}>
-          <Route path="/" element={<Dashboard />} />
-          
-          {/* Kirim fungsi penambah order ke halaman NewOrder */}
+          <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/orders/new" element={<NewOrder onAddOrder={handleAddOrder} />} />
-          
-          {/* Kirim data master order ke halaman tabel Orders */}
           <Route path="/orders" element={<Orders orders={allOrders} />} />
-          
           <Route path="/tracking" element={<Tracking />} />
           <Route path="/customers" element={<Customers />} />
           <Route path="/customers/:id" element={<CustomerDetail />} />
@@ -63,18 +69,18 @@ function App() {
           <Route path="/interactions" element={<Interactions />} />
           <Route path="/history" element={<History />} />
           <Route path="/payments" element={<Payments />} />
-
-          {/* Error & Utils */}
-      
-          <Route path="*" element={<NotFound />} />
         </Route>
 
-        {/* Auth Routes */}
+        {/* ================= AUTH ROUTES ================= */}
         <Route element={<AuthLayout />}>
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/forgot" element={<Forgot />} />
         </Route>
+
+        {/* ================= ERROR PAGE ================= */}
+        <Route path="*" element={<NotFound />} />
+
       </Routes>
     </Suspense>
   );

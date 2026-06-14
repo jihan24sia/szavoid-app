@@ -1,14 +1,16 @@
 import React, { useEffect, useState } from 'react';
-import { supabase } from './supabaseClient'; // 💡 Sesuaikan path ke client kamu ya!
+import { supabase } from './supabaseClient'; // Adjust path according to your structure
 import { Search, RefreshCw, ArrowLeft, ShieldCheck, Mail, Phone, User } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+
+// --- IMPORT KOMPONEN INTERNAL MASTER ---
+import SectionHeader from '../components/SectionHeader';
 
 export default function ManageUsers() {
     const navigate = useNavigate();
     const [users, setUsers] = useState([]);
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
-
 
     const fetchUsers = async () => {
         try {
@@ -31,132 +33,125 @@ export default function ManageUsers() {
         fetchUsers();
     }, []);
 
-    // 2️⃣ Fitur Pencarian Real-time
+    // Fitur Pencarian Real-time
     const filteredUsers = users.filter(u => 
         u.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
         u.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
         u.phone?.includes(searchTerm)
     );
 
-   return (
-  
-    <div className="h-full flex flex-col gap-8">
+    return (
+        <div className="min-h-screen bg-[#F8FAFC] text-slate-800 antialiased p-2 flex flex-col gap-8">
             
-            {/* --- HEADER SECTION (STYLE KEMBAR IDENTIK) --- */}
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 px-2">
-                <div className="flex items-center gap-4">
-                    {/* Garis Aksen Biru di Samping Judul */}
-                    <div className="w-2 h-10 bg-[#1678F3] rounded-full"></div>
-                    <div>
-                        <h2 className="text-4xl font-black text-[#1678F3] tracking-tighter uppercase italic leading-none flex items-center gap-2">
-                            Role <span className="text-[#4DBAE9]">Management</span>
-                        </h2>
-                        <p className="text-[#4DBAE9] text-[10px] font-black uppercase tracking-[0.4em] mt-1">
-                            Pengaturan Hak Akses Staf & Pelanggan
-                        </p>
-                    </div>
-                </div>
+            {/* --- 1. HEADER SECTION (MENGGUNAKAN KOMPONEN RESMI) --- */}
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 bg-white p-8 rounded-[32px] border border-slate-100 shadow-sm">
+                
+                <SectionHeader 
+                    title="Role Management"
+                    subtitle="Pengaturan hak akses staf operasional kasir, manajemen internal, serta direktori data pelanggan."
+                    variant="default"
+                />
 
-                {/* Fitur Search & Tombol Refresh */}
-                <div className="flex gap-3 w-full md:w-auto">
+                {/* Search, Back & Refresh Group */}
+                <div className="flex gap-3 w-full md:w-auto shrink-0">
                     <div className="relative flex-1 md:w-80 group">
-                        <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-300 group-focus-within:text-[#1678F3] transition-colors" size={16} />
+                        <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-blue-600 transition-colors" size={15} />
                         <input 
                             type="text" 
                             placeholder="Cari nama, email, atau nomor WA..." 
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
-                            className="w-full pl-12 pr-4 py-3.5 bg-white/80 backdrop-blur-md rounded-2xl border-none shadow-xl shadow-blue-100/20 text-xs font-bold text-[#1678F3] outline-none focus:ring-2 focus:ring-[#1678F3]/20 transition-all"
+                            className="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200 focus:border-blue-600 focus:bg-white rounded-xl text-xs font-semibold text-slate-800 outline-none transition-all"
                         />
                     </div>
-                    {/* Tombol Back & Refresh */}
+                    
                     <button 
                         onClick={() => navigate(-1)}
-                        className="bg-white p-3.5 rounded-2xl shadow-xl shadow-blue-100/20 text-gray-400 hover:text-[#1678F3] hover:bg-blue-50 transition-all border border-blue-50"
+                        className="bg-white p-3 rounded-xl text-slate-600 border border-slate-200 hover:bg-slate-50 hover:border-slate-300 transition-all shadow-sm"
                         title="Kembali"
                     >
-                        <ArrowLeft size={20} />
+                        <ArrowLeft size={16} />
                     </button>
+                    
                     <button 
                         onClick={fetchUsers}
                         disabled={loading}
-                        className="bg-white p-3.5 rounded-2xl shadow-xl shadow-blue-100/20 text-[#1678F3] hover:bg-blue-50 transition-all border border-blue-50 disabled:opacity-50"
+                        className="bg-white p-3 rounded-xl text-slate-600 border border-slate-200 hover:bg-slate-50 hover:border-slate-300 transition-all shadow-sm disabled:opacity-50"
                         title="Refresh Data"
                     >
-                        <RefreshCw size={20} className={loading ? "animate-spin" : ""} />
+                        <RefreshCw size={16} className={loading ? "animate-spin" : ""} />
                     </button>
                 </div>
             </div>
 
-            {/* --- TABEL MANAJEMEN USER (BLUR & TRANSPARAN STYLE KEMBAR) --- */}
-            <div className="bg-white/70 backdrop-blur-md rounded-[45px] border border-white shadow-2xl shadow-blue-100/40 overflow-hidden flex-1">
+            {/* --- 2. USERS MANAGEMENT DATA TABLE --- */}
+            <div className="bg-white rounded-3xl border border-slate-100 shadow-sm overflow-hidden flex-1">
                 <div className="overflow-x-auto h-full custom-scrollbar">
                     <table className="w-full text-left border-collapse">
-                        <thead className="sticky top-0 bg-[#F8FAFC]/90 backdrop-blur-md z-10">
-                            <tr className="text-[10px] font-black uppercase tracking-[0.3em] text-gray-400">
-                                <th className="px-8 py-6">Profil User</th>
-                                <th className="px-8 py-6">Kontak Detail</th>
-                                <th className="px-8 py-6 text-center">Hak Akses / Role</th>
+                        <thead>
+                            <tr className="bg-slate-50/70 border-b border-slate-100 text-[10px] font-extrabold uppercase tracking-wider text-slate-400">
+                                <th className="px-8 py-4">Profil User</th>
+                                <th className="px-8 py-4">Kontak Detail</th>
+                                <th className="px-8 py-4 text-center">Hak Akses / Role</th>
                             </tr>
                         </thead>
-                        <tbody className="divide-y divide-blue-50/50">
+                        <tbody className="divide-y divide-slate-100">
                             {loading ? (
                                 <tr>
-                                    <td colSpan="3" className="px-8 py-12 text-center text-gray-400 font-bold uppercase tracking-wider animate-pulse">
+                                    <td colSpan="3" className="px-8 py-16 text-center text-slate-400 font-bold uppercase tracking-wider text-xs animate-pulse">
                                         Memanggil data dari Supabase... 🧼
                                     </td>
                                 </tr>
                             ) : filteredUsers.length === 0 ? (
                                 <tr>
-                                    <td colSpan="3" className="px-8 py-12 text-center text-gray-400 font-bold">
+                                    <td colSpan="3" className="px-8 py-16 text-center text-slate-400 font-semibold text-xs">
                                         Data tidak ditemukan atau database kosong.
-                                        {/* */}
                                     </td>
                                 </tr>
                             ) : (
                                 filteredUsers.map((user) => (
-                                    <tr key={user.id} className="hover:bg-white/50 transition-all group">
+                                    <tr key={user.id} className="hover:bg-slate-50/50 transition-colors group">
                                         
-                                        {/* Kolom Profil & Nama */}
-                                        <td className="px-8 py-6">
+                                        {/* Avatar & Profil Details */}
+                                        <td className="px-8 py-5.5">
                                             <div className="flex items-center gap-4">
-                                                <div className="w-10 h-10 bg-blue-50 text-[#1678F3] rounded-xl border border-blue-100 flex items-center justify-center font-black text-xs uppercase shadow-sm">
+                                                <div className="w-10 h-10 bg-slate-50 text-slate-700 rounded-xl border border-slate-200 flex items-center justify-center font-extrabold text-xs uppercase shadow-inner group-hover:bg-blue-50 group-hover:text-blue-600 group-hover:border-blue-100 transition-colors">
                                                     {user.name ? user.name.charAt(0) : <User size={14} />}
                                                 </div>
                                                 <div className="flex flex-col">
-                                                    <p className="text-sm font-black text-[#1678F3] uppercase italic tracking-tighter">
+                                                    <p className="text-sm font-bold text-slate-900 tracking-tight">
                                                         {user.name || "No Name"}
                                                     </p>
-                                                    <p className="text-[9px] font-mono text-gray-400 mt-0.5 tracking-tight">
-                                                        ID: {user.id}
+                                                    <p className="text-[10px] font-mono text-slate-400 mt-0.5 tracking-tight">
+                                                        UUID: {user.id}
                                                     </p>
                                                 </div>
                                             </div>
                                         </td>
 
-                                        {/* Kolom Kontak (Email & Phone) */}
-                                        <td className="px-8 py-6">
-                                            <div className="space-y-1 text-xs font-bold text-gray-500">
+                                        {/* Kontak Informasi (Email & WhatsApp) */}
+                                        <td className="px-8 py-5.5">
+                                            <div className="space-y-1.5 text-xs font-semibold text-slate-600">
                                                 <div className="flex items-center gap-2">
-                                                    <Mail size={12} className="text-gray-300" />
+                                                    <Mail size={13} className="text-slate-300" />
                                                     <span>{user.email || "-"}</span>
                                                 </div>
-                                                <div className="flex items-center gap-2 text-green-600">
-                                                    <Phone size={12} className="text-green-300" />
+                                                <div className="flex items-center gap-2 text-emerald-600">
+                                                    <Phone size={13} className="text-emerald-300" />
                                                     <span>{user.phone || "-"}</span>
                                                 </div>
                                             </div>
                                         </td>
 
-                                        {/* Kolom Badge Status Role */}
-                                        <td className="px-8 py-6">
+                                        {/* Badge Tingkatan Akses / Role */}
+                                        <td className="px-8 py-5.5">
                                             <div className="flex items-center justify-center">
-                                                <span className={`inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-[9px] font-black uppercase tracking-widest border ${
+                                                <span className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[10px] font-extrabold uppercase tracking-wider border ${
                                                     user.role === 'Admin' 
-                                                        ? 'bg-purple-50 text-purple-500 border-purple-100' 
-                                                        : 'bg-emerald-50 text-emerald-500 border-emerald-100'
+                                                        ? 'bg-purple-50 text-purple-700 border-purple-200' 
+                                                        : 'bg-blue-50 text-blue-700 border-blue-200'
                                                 }`}>
-                                                    <ShieldCheck size={12} strokeWidth={3} />
+                                                    <ShieldCheck size={12} strokeWidth={2.5} />
                                                     {user.role || 'Member'}
                                                 </span>
                                             </div>
@@ -170,11 +165,11 @@ export default function ManageUsers() {
                 </div>
             </div>
 
-            {/* Footer Khas */}
-            <div className="px-2 text-center md:text-left">
-                <p className="text-gray-300 text-[10px] font-black uppercase tracking-[0.2em]">
+            {/* --- 3. PERSISTENT LEDGER FOOTER --- */}
+            <div className="px-2">
+                <span className="inline-block bg-slate-100 text-slate-500 font-bold text-[9px] uppercase tracking-widest px-3 py-1.5 rounded-md border border-slate-200">
                     Total Sinkronisasi: {filteredUsers.length} Entitas Pengguna
-                </p>
+                </span>
             </div>
 
         </div>

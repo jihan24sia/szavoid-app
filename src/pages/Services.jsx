@@ -1,15 +1,19 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Tag, Zap, Star, ShieldCheck, Plus, X, Footprints, MoreVertical, Waves, Sparkles, ShirtIcon, BedDouble } from 'lucide-react';
+import { Zap, Plus, X, Footprints, MoreVertical, Waves, Sparkles, Shirt, BedDouble, Droplets } from 'lucide-react';
+
+// --- IMPORT KOMPONEN INTERNAL MASTER ---
+import SectionHeader from '../components/SectionHeader';
 
 const Services = () => {
-  // 1. STATE MASTER DATA (Dikasih ID supaya bisa diklik ke detail)
+  // 1. STATE MASTER DATA
   const [serviceList, setServiceList] = useState([
-    { id: 'cuci-kering', name: 'Cuci Kering', price: '7.000', unit: 'Kg', icon: <Waves className="text-[#1678F3]" /> },
-    { id: 'cuci-setrika', name: 'Cuci Setrika', price: '10.000', unit: 'Kg', icon: <ShirtIcon className="text-orange-400" /> },
-    { id: 'express-6-jam', name: 'Express 6 Jam', price: '15.000', unit: 'Kg', icon: <Zap className="text-amber-400" /> },
-    { id: 'bed-cover', name: 'Bed Cover', price: '35.000', unit: 'Pcs', icon: <BedDouble className="text-emerald-400" /> },
-    { id: 'cuci-sepatu', name: 'Cuci Sepatu', price: '25.000', unit: 'Pasang', icon: <Footprints className="text-pink-400" /> },
+    { id: 'cuci-kering', name: 'Cuci Komplit (Cuci + Setrika)', price: '10.000', unit: 'Kg', icon: <Droplets className="text-blue-600" />, bgColor: 'bg-blue-50' },
+    { id: 'cuci-setrika', name: 'Setrika Saja (Kiloan)', price: '7.000', unit: 'Kg', icon: <Shirt className="text-orange-500" />, bgColor: 'bg-orange-50' },
+    { id: 'express-6-jam', name: 'Super Express 3 Jam', price: '15.000', unit: 'Kg', icon: <Zap className="text-amber-500" />, bgColor: 'bg-amber-50' },
+    { id: 'bed-cover', name: 'Bedcover & Blanket', price: '25.000', unit: 'Kg', icon: <BedDouble className="text-emerald-500" />, bgColor: 'bg-emerald-50' },
+    { id: 'cuci-sepatu', name: 'Premium Shoes Clean', price: '35.000', unit: 'Pasang', icon: <Footprints className="text-rose-500" />, bgColor: 'bg-rose-50' },
+    { id: 'jas-gaun', name: 'Premium Satuan (Jas/Gaun)', price: 'Mulai Rp 15k', unit: 'Pcs', icon: <Sparkles className="text-rose-500" />, bgColor: 'bg-rose-50' },
   ]);
 
   // 2. LOGIKA MODAL TAMBAH LAYANAN
@@ -18,75 +22,79 @@ const Services = () => {
 
   const handleAddService = (e) => {
     e.preventDefault();
-    // Generate ID sederhana dari nama
     const generatedId = newService.name.toLowerCase().replace(/ /g, '-');
-    
-    setServiceList([...serviceList, { 
-        ...newService, 
-        id: generatedId, 
-        icon: <Sparkles className="text-blue-500" /> 
+
+    setServiceList([...serviceList, {
+      ...newService,
+      id: generatedId,
+      icon: <Sparkles className="text-indigo-600" />,
+      bgColor: 'bg-indigo-50'
     }]);
-    
-    setIsModalOpen(false); 
-    setNewService({ name: '', price: '', unit: 'Kg' }); 
+
+    setIsModalOpen(false);
+    NewService({ name: '', price: '', unit: 'Kg' });
   };
 
   return (
+    <div className="min-h-screen bg-[#F8FAFC] text-slate-800 antialiased p-2 flex flex-col gap-8">
 
-    <div className="h-full flex flex-col gap-8">
-      
-      {/* --- HEADER SECTION (STYLE SINKRON SAMA HISTORY & ROLE) --- */}
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 px-2">
-        <div className="flex items-center gap-4">
-          {/* Garis Aksen Biru Wajib TA BrightWash */}
-          <div className="w-2 h-10 bg-[#1678F3] rounded-full"></div>
-          <div>
-            <h2 className="text-4xl font-black text-[#1678F3] tracking-tighter uppercase italic leading-none">
-              Layanan <span className="text-[#4DBAE9]">& Harga</span>
-            </h2>
-            <p className="text-[#4DBAE9] text-[10px] font-black uppercase tracking-[0.4em] mt-1">
-              Daftar Tarif Premium BrightWash
-            </p>
-          </div>
-        </div>
+      {/* --- 1. HEADER SECTION (MENGGUNAKAN KOMPONEN RESMI) --- */}
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 bg-white p-8 rounded-[32px] border border-slate-100 shadow-sm">
+
+        <SectionHeader
+          title="Layanan & Harga"
+          subtitle="Daftar konfigurasi tarif katalog pengerjaan laundry premium BrightWash."
+          variant="default"
+        />
 
         {/* Tombol Tambah Layanan */}
-        <button 
-          onClick={() => setIsModalOpen(true)} 
-          className="self-start md:self-auto bg-[#1678F3] text-white px-6 py-4 rounded-[22px] font-black italic flex items-center gap-2 shadow-xl shadow-blue-200 hover:scale-105 active:scale-95 transition-all uppercase text-[10px] tracking-widest border-b-4 border-blue-700"
+        <button
+          onClick={() => setIsModalOpen(true)}
+          className="bg-blue-600 text-white px-6 py-3.5 rounded-2xl font-black flex items-center gap-2 hover:bg-blue-700 hover:scale-[1.02] active:scale-[0.98] transition-all shadow-md shadow-blue-900/10 uppercase text-xs tracking-widest shrink-0"
         >
-          <Plus size={18} strokeWidth={4} /> Tambah Layanan
+          <Plus size={16} /> Tambah Layanan
         </button>
       </div>
 
-      {/* --- GRID KARTU LAYANAN --- */}
+      {/* --- 2. GRID KARTU LAYANAN (MODERN CLEAN WHITE STYLE) --- */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6">
         {serviceList.map((s, i) => (
-          <Link 
-            to={`/services/${s.id}`} 
-            key={i} 
-            className="group block relative bg-gradient-to-br from-[#1678F3] to-[#4DBAE9] rounded-[45px] p-8 text-white shadow-2xl shadow-blue-100 hover:-translate-y-3 transition-all duration-500 overflow-hidden border-b-8 border-blue-600/20"
+          <Link
+            to={`/services/${s.id}`}
+            key={i}
+            className="group block relative bg-white rounded-3xl p-6 border border-slate-100 shadow-sm hover:border-blue-200 hover:shadow-md hover:-translate-y-1 transition-all duration-300 overflow-hidden"
           >
-            {/* Background Decor */}
-            <Waves className="absolute -right-8 -bottom-8 text-white/10 scale-[2.5] pointer-events-none group-hover:rotate-12 transition-transform duration-700" />
-            
-            <div className="relative z-10">
-              <div className="flex justify-between items-start mb-8">
-                <div className="bg-white/90 backdrop-blur-md w-12 h-12 rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-500">
-                  {React.cloneElement(s.icon, { size: 22, strokeWidth: 2.5 })}
+            {/* Ambient Water Waves Icon Decor di Background */}
+            <Waves className="absolute -right-6 -bottom-6 text-slate-100/40 scale-[2] pointer-events-none group-hover:text-blue-50/50 group-hover:scale-[2.2] transition-all duration-500" />
+
+            <div className="relative z-10 flex flex-col justify-between h-full min-h-[160px]">
+              <div className="flex justify-between items-start">
+                {/* Badge Icon Pastel Container */}
+                <div className={`${s.bgColor} w-11 h-11 rounded-xl flex items-center justify-center border border-transparent group-hover:scale-105 transition-transform`}>
+                  {React.cloneElement(s.icon, { size: 18, strokeWidth: 2.5 })}
                 </div>
-                <button className="text-white/40 hover:text-white" onClick={(e) => e.preventDefault()}>
-                  <MoreVertical size={18} />
+
+                {/* Action Trigger */}
+                <button
+                  className="text-slate-300 hover:text-slate-600 p-1 rounded-lg transition-colors"
+                  onClick={(e) => { e.preventDefault(); e.stopPropagation(); }}
+                >
+                  <MoreVertical size={16} />
                 </button>
               </div>
 
-              <div>
-                <h4 className="font-black text-white text-sm uppercase italic tracking-tight mb-1">{s.name}</h4>
-                <p className="text-[9px] font-black text-white/60 uppercase tracking-widest mb-6 italic">Premium Quality</p>
-                
-                <div className="flex items-baseline gap-1">
-                  <span className="text-2xl font-black italic text-white leading-none">Rp {s.price}</span>
-                  <span className="text-[10px] font-black text-white/50 uppercase">/{s.unit}</span>
+              {/* Detail Teks Informasi Produk */}
+              <div className="mt-6">
+                <h4 className="font-black text-slate-900 text-sm uppercase tracking-tight group-hover:text-blue-600 transition-colors">
+                  {s.name}
+                </h4>
+                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mt-0.5">
+                  Premium Wash
+                </p>
+
+                <div className="flex items-baseline gap-0.5 mt-4 pt-3 border-t border-slate-50">
+                  <span className="text-xl font-black tracking-tight text-slate-900">Rp {s.price}</span>
+                  <span className="text-[10px] font-extrabold text-slate-400 uppercase">/{s.unit}</span>
                 </div>
               </div>
             </div>
@@ -94,48 +102,61 @@ const Services = () => {
         ))}
       </div>
 
-      {/* --- MODAL FORM TAMBAH LAYANAN (HAPUS TOTAL ANIMASI JEDUG INSTAN) --- */}
+      {/* --- 3. MODAL FORM TAMBAH LAYANAN --- */}
       {isModalOpen && (
-        <div className="fixed inset-0 z-[999] flex items-center justify-center p-6 bg-[#1678F3]/20 backdrop-blur-sm">
-          <div className="relative bg-white w-full max-w-md rounded-[50px] shadow-2xl p-10">
-            <button onClick={() => setIsModalOpen(false)} className="absolute right-10 top-10 text-gray-300 hover:text-rose-500 transition-colors">
-              <X size={24} strokeWidth={3} />
+        <div className="fixed inset-0 z-[999] flex items-center justify-center p-4 backdrop-blur-md bg-slate-900/40">
+          <div className="bg-white w-full max-w-sm rounded-[32px] shadow-2xl p-8 relative border border-slate-100 animate-in fade-in zoom-in-95 duration-200">
+            <button
+              onClick={() => setIsModalOpen(false)}
+              className="absolute right-6 top-6 text-slate-400 hover:text-slate-900 transition-colors"
+            >
+              <X size={20} />
             </button>
 
-            <h3 className="text-2xl font-black text-[#1678F3] italic uppercase tracking-tighter mb-8">Tambah Layanan</h3>
-            
-            <form onSubmit={handleAddService} className="space-y-6">
-              <div>
-                <label className="text-[10px] font-black uppercase text-gray-400 ml-2 tracking-[0.2em]">Nama Layanan</label>
-                <input 
-                  required type="text" placeholder="Misal: Cuci Boneka" 
-                  className="w-full bg-gray-50 border-none p-4 rounded-2xl outline-none focus:ring-2 focus:ring-[#1678F3] text-sm font-bold text-[#1678F3] mt-2"
-                  onChange={(e) => setNewService({...newService, name: e.target.value})} 
+            <h3 className="text-2xl font-black text-slate-900 tracking-tight">Tambah Layanan</h3>
+            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-6">Buat Katalog Tarif Baru</p>
+
+            <form onSubmit={handleAddService} className="space-y-4">
+              <div className="space-y-1.5">
+                <label className="text-[10px] font-extrabold uppercase tracking-wider text-slate-400 ml-1">Nama Layanan</label>
+                <input
+                  required
+                  type="text"
+                  placeholder="Misal: Cuci Karpet"
+                  className="w-full bg-slate-50 border border-slate-200 focus:border-blue-600 focus:bg-white p-3.5 rounded-xl outline-none text-xs font-semibold text-slate-800 transition-all"
+                  onChange={(e) => setNewService({ ...newService, name: e.target.value })}
                 />
               </div>
 
-              <div>
-                <label className="text-[10px] font-black uppercase text-gray-400 ml-2 tracking-[0.2em]">Harga (Rp)</label>
-                <input 
-                  required type="text" placeholder="25.000" 
-                  className="w-full bg-gray-50 border-none p-4 rounded-2xl outline-none focus:ring-2 focus:ring-[#1678F3] text-sm font-bold text-[#1678F3] mt-2"
-                  onChange={(e) => setNewService({...newService, price: e.target.value})} 
-                />
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-1.5">
+                  <label className="text-[10px] font-extrabold uppercase tracking-wider text-slate-400 ml-1">Harga (Rp)</label>
+                  <input
+                    required
+                    type="text"
+                    placeholder="25.000"
+                    className="w-full bg-slate-50 border border-slate-200 focus:border-blue-600 focus:bg-white p-3.5 rounded-xl outline-none text-xs font-semibold text-slate-800 transition-all"
+                    onChange={(e) => setNewService({ ...newService, price: e.target.value })}
+                  />
+                </div>
+
+                <div className="space-y-1.5">
+                  <label className="text-[10px] font-extrabold uppercase tracking-wider text-slate-400 ml-1">Satuan</label>
+                  <select
+                    className="w-full bg-slate-50 border border-slate-200 p-3.5 rounded-xl outline-none text-xs font-black uppercase text-slate-700 focus:bg-white focus:border-blue-600 transition-all cursor-pointer"
+                    onChange={(e) => setNewService({ ...newService, unit: e.target.value })}
+                  >
+                    <option value="Kg">Per Kg</option>
+                    <option value="Pcs">Per Pcs</option>
+                    <option value="Pasang">Per Pasang</option>
+                  </select>
+                </div>
               </div>
 
-              <div>
-                <label className="text-[10px] font-black uppercase text-gray-400 ml-2 tracking-[0.2em]">Satuan</label>
-                <select 
-                  className="w-full bg-gray-50 border-none p-4 rounded-2xl outline-none focus:ring-2 focus:ring-[#1678F3] text-sm font-black italic uppercase text-[#1678F3] mt-2 cursor-pointer appearance-none"
-                  onChange={(e) => setNewService({...newService, unit: e.target.value})}
-                >
-                  <option value="Kg">Per Kg</option>
-                  <option value="Pcs">Per Pcs</option>
-                  <option value="Pasang">Per Pasang</option>
-                </select>
-              </div>
-
-              <button type="submit" className="w-full bg-[#1678F3] text-white py-5 rounded-[25px] font-black italic uppercase text-xs shadow-xl shadow-blue-100 hover:brightness-110 transition-all mt-4 border-b-4 border-blue-700">
+              <button
+                type="submit"
+                className="w-full bg-blue-600 hover:bg-blue-700 text-white py-4 rounded-xl font-black uppercase text-xs tracking-widest shadow-md shadow-blue-900/10 transition-all mt-4"
+              >
                 Simpan Layanan Baru
               </button>
             </form>

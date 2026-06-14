@@ -1,7 +1,7 @@
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { Lock, User, Eye, EyeOff, Minus, Square, X, Sparkles, Waves } from "lucide-react"; 
+import { Lock, User, Eye, EyeOff, Minus, Square, X, Sparkles, Waves } from "lucide-react";
 // 💡 Import supabase client kamu (sesuaikan path foldernya ya!)
 import { supabase } from "../supabaseClient";
 
@@ -10,7 +10,7 @@ export default function Login() {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
     const [showPassword, setShowPassword] = useState(false);
-    
+
     // Properti disesuaikan menjadi email dan password untuk Supabase
     const [dataForm, setDataForm] = useState({
         email: "",
@@ -28,32 +28,58 @@ export default function Login() {
         setError("");
 
         try {
-          
+            // 1. Proses Autentikasi Login ke Supabase Auth
             const { data, error: authError } = await supabase.auth.signInWithPassword({
                 email: dataForm.email,
                 password: dataForm.password,
             });
 
             if (authError) throw authError;
+            const user = data?.user;
 
-         
-            alert("Login Berhasil! Selamat Datang di BrightWash.");
-            navigate("/"); 
-            
+            if (user) {
+                // 2. Ambil data 'role' dari tabel 'profiles'
+                const { data: profile, error: profileError } = await supabase
+                    .from("users")
+                    .select("role")
+                    .eq("id", user.id)
+                    .maybeSingle();
+
+                if (profileError) throw profileError;
+
+                // 3. Logika Pengalihan Halaman Berdasarkan Role
+                if (profile && profile.role) {
+                    // Memaksa tulisan "Admin" atau "Admin " dari database menjadi "admin" bersih
+                    const cleanRole = profile.role.trim().toLowerCase();
+
+                    if (cleanRole === "admin") {
+                        alert("Login Berhasil! Selamat Datang Admin BrightWash.");
+                        navigate("/dashboard");
+                        return;
+                    } else if (cleanRole === "member") {
+                        alert("Login Berhasil! Selamat Datang di BrightWash Member Area.");
+                        navigate(`/memberdashboard/${user.id}`);
+                        return;
+                    }
+                } else {
+                    // ⚠️ JIKA SKENARIO INI TERJADI: Berarti trigger Supabase kamu belum memasukkan data ke tabel profiles
+                    alert("Data profil Anda belum terbuat di database. Hubungi developer atau cek database trigger Supabase.");
+                    setError("Profil pengguna tidak ditemukan di tabel database.");
+                }
+            }
+
         } catch (err) {
-           
             setError(err.message || "Login Gagal! Periksa kembali akun Anda.");
         } finally {
             setLoading(false);
         }
     };
-
     return (
         <div className="fixed inset-0 bg-[#F8FAFC] flex items-center justify-center p-6 z-[999]">
-            
+
             {/* CARD UTAMA */}
             <div className="bg-white w-full max-w-[1100px] h-[680px] rounded-[60px] shadow-[0_35px_100px_rgba(30,136,229,0.15)] flex overflow-hidden relative border border-white">
-                
+
                 {/* --- SISI KIRI: FORM (55%) --- */}
                 <div className="w-full lg:w-[55%] p-12 md:p-20 flex flex-col justify-between z-10 bg-white">
                     {/* Brand Logo */}
@@ -106,7 +132,7 @@ export default function Login() {
                                         placeholder="••••••••"
                                         disabled={loading}
                                     />
-                                    <button 
+                                    <button
                                         type="button"
                                         onClick={() => setShowPassword(!showPassword)}
                                         className="absolute right-6 top-1/2 -translate-y-1/2 text-gray-300 hover:text-[#1E88E5] transition-colors"
@@ -119,8 +145,8 @@ export default function Login() {
 
                             {/* Forgot Password Link */}
                             <div className="flex justify-end pr-4">
-                                <Link 
-                                    to="/forgot" 
+                                <Link
+                                    to="/forgot"
                                     className="text-[10px] font-black text-gray-400 uppercase tracking-widest hover:text-[#1E88E5] transition-colors"
                                 >
                                     Lupa Sandi?
@@ -137,7 +163,7 @@ export default function Login() {
                             </button>
                         </form>
                     </div>
-                    
+
                     <p className="text-[9px] text-gray-300 font-bold uppercase tracking-[0.3em]">© 2026 BrightWash Pekanbaru.</p>
                 </div>
 
@@ -163,7 +189,7 @@ export default function Login() {
                             <p className="text-sm font-medium opacity-70 leading-relaxed mb-8">
                                 Kelola layanan laundry Anda <br /> dengan pengalaman dashboard modern.
                             </p>
-                            
+
                             {/* Mini Status Dots */}
                             <div className="flex justify-center gap-2">
                                 <div className="h-1.5 w-10 bg-white rounded-full"></div>
@@ -172,7 +198,7 @@ export default function Login() {
                             </div>
                         </div>
                     </div>
-                    
+
                     {/* Decorative Circle */}
                     <div className="absolute -bottom-20 -left-20 w-64 h-64 bg-blue-400/20 rounded-full blur-3xl"></div>
                 </div>

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { Lock, Mail, User, Eye, EyeOff, Sparkles, Waves, ArrowRight, Phone, Shield } from 'lucide-react';
-import { supabase } from '../supabaseClient'; 
+import { supabase } from '../supabaseClient';
 
 export default function Register() {
     const navigate = useNavigate();
@@ -13,42 +13,34 @@ export default function Register() {
     const [email, setEmail] = useState('');
     const [phone, setPhone] = useState('');
     const [password, setPassword] = useState('');
-    const [role, setRole] = useState('Member'); 
+    const [role, setRole] = useState('Member');
 
     const handleRegister = async (e) => {
         e.preventDefault();
         setLoading(true);
 
         try {
-            
+            // 1. Daftarkan akun ke Supabase Auth + kirim metadata 'name' & 'role'
             const { data: authData, error: authError } = await supabase.auth.signUp({
                 email: email,
                 password: password,
+                options: {
+                    data: {
+                        name: name,
+                        phone: phone, // Kita sertakan phone agar masuk database
+                        role: role.toLowerCase(), // 'admin' atau 'member'
+                    }
+                }
             });
-
             if (authError) throw authError;
 
-            const user = authData.user;
-
-            if (user) {
-               
-                const { error: dbError } = await supabase
-                    .from('users')
-                    .insert([
-                        { 
-                            id: user.id, 
-                            name: name,
-                            phone: phone,
-                            role: role,
-                            email: email
-                        }
-                    ]);
-
-                if (dbError) throw dbError;
-
+            // 2. Karena trigger database sudah otomatis mengisi tabel profiles, 
+            // kita tidak perlu lagi memanggil perintah `.from('profiles').insert()` di sini!
+            if (authData.user) {
                 alert('Akun BrightWash berhasil dibuat! Silakan login.');
                 navigate('/login');
             }
+
         } catch (error) {
             alert(`Waduh Gagal Daftar: ${error.message}`);
         } finally {
@@ -60,7 +52,7 @@ export default function Register() {
         <div className="fixed inset-0 bg-[#F8FAFC] flex items-center justify-center p-6 z-[999]">
             {/* CARD UTAMA */}
             <div className="bg-white w-full max-w-[1100px] h-[680px] rounded-[60px] shadow-[0_35px_100px_rgba(30,136,229,0.15)] flex overflow-hidden relative border border-white">
-                
+
                 {/* --- SISI KIRI: FORM (55%) --- */}
                 <div className="w-full lg:w-[55%] p-12 md:p-16 flex flex-col justify-between z-10 bg-white overflow-y-auto custom-scrollbar">
                     {/* Brand Logo */}
@@ -78,7 +70,7 @@ export default function Register() {
                     <div className="max-w-[400px] w-full py-4 mx-auto lg:mx-0">
                         <h2 className="text-4xl font-black text-[#0F172A] mb-1 tracking-tighter italic uppercase">Join Us.</h2>
                         <p className="text-gray-400 font-bold text-xs mb-6 ml-1">
-                           Sudah menjadi anggota? <Link to="/login" className="text-[#FF71A4] border-b-2 border-pink-50 hover:border-pink-500 transition-all ml-1 font-black uppercase text-[11px]">Masuk</Link>
+                            Sudah menjadi anggota? <Link to="/login" className="text-[#FF71A4] border-b-2 border-pink-50 hover:border-pink-500 transition-all ml-1 font-black uppercase text-[11px]">Masuk</Link>
                         </p>
 
                         <form onSubmit={handleRegister} className="space-y-3.5">
@@ -139,7 +131,7 @@ export default function Register() {
                                         placeholder="••••••••"
                                         disabled={loading}
                                     />
-                                    <button 
+                                    <button
                                         type="button"
                                         onClick={() => setShowPass(!showPass)}
                                         className="absolute right-6 top-1/2 -translate-y-1/2 text-gray-300 hover:text-[#1E88E5]"
@@ -171,11 +163,11 @@ export default function Register() {
                                 disabled={loading}
                                 className="w-full bg-[#1E88E5] hover:bg-[#1565C0] text-white font-black py-3.5 rounded-full mt-4 flex items-center justify-center gap-3 shadow-2xl shadow-blue-200 transition-all active:scale-95 uppercase text-xs tracking-[0.2em] italic disabled:bg-gray-300 disabled:shadow-none"
                             >
-                                {loading ? "Processing..." : <span className="flex items-center gap-2">Daftar <ArrowRight size={16}/></span>}
+                                {loading ? "Processing..." : <span className="flex items-center gap-2">Daftar <ArrowRight size={16} /></span>}
                             </button>
                         </form>
                     </div>
-                    
+
                     <p className="text-[9px] text-gray-300 font-bold uppercase tracking-[0.3em]">© 2026 BrightWash Studio Inc.</p>
                 </div>
 

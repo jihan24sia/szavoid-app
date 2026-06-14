@@ -22,12 +22,12 @@ const Sidebar = () => {
   const handleLogout = () => {
     const yakin = window.confirm("Yakin ingin keluar dari BrightWash?");
     if (yakin) {
-        navigate('/login');
+        navigate('/');
     }
   };
 
   const menuItems = [
-    { path: '/', name: 'Dashboard', icon: <LayoutDashboard size={20} />, exact: true },
+    { path: '/dashboard', name: 'Dashboard', icon: <LayoutDashboard size={20} />, exact: true },
     { path: '/orders/new', name: 'Pemesanan Baru', icon: <PlusCircle size={20} /> },
     { path: '/orders', name: 'Manajemen Order', icon: <ClipboardList size={20} />, exact: true },
     { path: '/tracking', name: 'Tracking Status', icon: <MapPin size={20} /> },

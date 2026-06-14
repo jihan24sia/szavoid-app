@@ -1,11 +1,14 @@
 import React from 'react';
 import { 
-  Bell, Clock, AlertCircle, ShoppingBag, Waves, ShieldQuestion, 
-  MessageSquare, Star, FileText, LifeBuoy, CheckCircle2 
+  Clock, AlertCircle, Waves, ShieldQuestion, 
+  MessageSquare, Star, FileText, LifeBuoy 
 } from 'lucide-react';
 
+// --- IMPORT KOMPONEN INTERNAL MASTER ---
+import SectionHeader from '../components/SectionHeader';
+
 const Interactions = () => {
-  // Data diubah menjadi Riwayat Interaksi & Aktivitas
+  // Data log riwayat aktivitas & interaksi dengan skema warna terkalibrasi
   const interactions = [
     {
       id: 1,
@@ -13,8 +16,9 @@ const Interactions = () => {
       title: "Komplain: Baju Tertukar (#BW-9178)",
       desc: "Pelanggan Jihan melaporkan 1 kemeja putih tertukar. Admin perlu verifikasi CCTV area packing.",
       time: "2 Menit yang lalu",
-      icon: <AlertCircle className="text-red-500" />,
-      bg: "bg-red-50",
+      icon: <AlertCircle className="text-rose-600" />,
+      bg: "bg-rose-50 border-rose-100",
+      badgeStyle: "bg-rose-50 text-rose-600 border-rose-200",
       isNew: true
     },
     {
@@ -23,8 +27,9 @@ const Interactions = () => {
       title: "Tiket Bantuan: Kendala Pickup",
       desc: "Tiket #HELP-002: Kurir tidak menemukan alamat pelanggan. Sudah dihubungi via WhatsApp.",
       time: "15 Menit yang lalu",
-      icon: <LifeBuoy className="text-orange-500" />,
-      bg: "bg-orange-50",
+      icon: <LifeBuoy className="text-amber-600" />,
+      bg: "bg-amber-50 border-amber-100",
+      badgeStyle: "bg-amber-50 text-amber-600 border-amber-200",
       isNew: true
     },
     {
@@ -34,7 +39,8 @@ const Interactions = () => {
       desc: "Pelanggan memberikan review: 'Hasil setrika sangat rapi dan wangi parfumnya tahan lama!'.",
       time: "1 Jam yang lalu",
       icon: <Star className="text-yellow-500" />,
-      bg: "bg-yellow-50",
+      bg: "bg-yellow-50/50 border-yellow-100",
+      badgeStyle: "bg-yellow-50 text-yellow-600 border-yellow-200",
       isNew: false
     },
     {
@@ -43,8 +49,9 @@ const Interactions = () => {
       title: "Catatan Internal: Preferensi Wangi",
       desc: "Admin Jihan menambahkan catatan: 'Pelanggan atas nama Budi alergi pewangi Rose, gunakan Ocean Fresh'.",
       time: "5 Jam yang lalu",
-      icon: <FileText className="text-[#1678F3]" />,
-      bg: "bg-blue-50",
+      icon: <FileText className="text-blue-600" />,
+      bg: "bg-blue-50 border-blue-100",
+      badgeStyle: "bg-blue-50 text-blue-600 border-blue-200",
       isNew: false
     },
     {
@@ -53,120 +60,126 @@ const Interactions = () => {
       title: "Chat Selesai: Tanya Harga",
       desc: "Interaksi chat dengan pelanggan baru mengenai paket Express 6 Jam telah ditutup oleh CS.",
       time: "1 Hari yang lalu",
-      icon: <MessageSquare className="text-green-500" />,
-      bg: "bg-green-50",
+      icon: <MessageSquare className="text-emerald-600" />,
+      bg: "bg-emerald-50 border-emerald-100",
+      badgeStyle: "bg-emerald-50 text-emerald-600 border-emerald-200",
       isNew: false
     }
   ];
 
-return (
-    <div className="h-full flex flex-col gap-8">
+  return (
+    <div className="min-h-screen bg-[#F8FAFC] text-slate-800 antialiased p-2 flex flex-col gap-8">
       
-      {/* HEADER */}
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-10 gap-4">
-        <div className="flex items-center gap-4">
-          <div className="w-2 h-10 bg-[#1678F3] rounded-full"></div>
-          <div>
-            <h2 className="text-4xl font-black text-[#1678F3] tracking-tighter uppercase italic leading-none">Interactions</h2>
-            <p className="text-[#4DBAE9] font-black text-[10px] uppercase tracking-[0.4em] mt-1">Pusat Kendali Interaksi BrightWash</p>
-          </div>
-        </div>
-        <button className="text-[10px] font-black uppercase tracking-widest text-[#1678F3] bg-white border-2 border-blue-50 px-8 py-4 rounded-[22px] shadow-xl shadow-blue-100/20 hover:bg-blue-50 transition-all italic">
+      {/* --- 1. HEADER SECTION (MENGGUNAKAN KOMPONEN RESMI) --- */}
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 bg-white p-8 rounded-[32px] border border-slate-100 shadow-sm">
+        
+        <SectionHeader 
+          title="Interactions Log"
+          subtitle="Pusat kendali umpan balik, keluhan pelanggan, tiket bantuan, dan catatan internal admin."
+          variant="default"
+        />
+
+        <button className="text-[10px] font-black uppercase tracking-widest text-slate-600 bg-white border border-slate-200 px-5 py-3.5 rounded-xl hover:bg-slate-50 active:scale-[0.98] transition-all shadow-sm shrink-0">
           Arsip Semua Interaksi
         </button>
       </div>
 
+      {/* --- 2. LAYOUT GRID CORE --- */}
       <div className="grid grid-cols-12 gap-8">
-        {/* Kolom Log Interaksi (Kiri) */}
-        <div className="col-span-12 lg:col-span-8 space-y-5">
+        
+        {/* KOLOM LOG LIST (KIRI) */}
+        <div className="col-span-12 lg:col-span-8 space-y-4">
           {interactions.map((n) => (
             <div
               key={n.id}
-              className={`group flex items-center gap-6 p-6 rounded-[40px] border border-white transition-all duration-500 cursor-pointer backdrop-blur-md ${
+              className={`group flex items-start gap-5 p-5 rounded-2xl border transition-all duration-300 cursor-pointer ${
                 n.isNew 
-                ? 'bg-white/80 shadow-2xl shadow-blue-100/50 scale-[1.02]' 
-                : 'bg-white/40 opacity-80 hover:opacity-100 hover:bg-white/60'
+                ? 'bg-white border-blue-100 shadow-sm shadow-blue-100/30' 
+                : 'bg-white/70 border-slate-100 opacity-90 hover:opacity-100 hover:bg-white'
               }`}
             >
-              {/* Icon Box */}
-              <div className={`w-16 h-16 rounded-[25px] flex items-center justify-center shrink-0 ${n.bg} shadow-inner transition-transform group-hover:rotate-6`}>
-                {React.cloneElement(n.icon, { size: 24, strokeWidth: 2.5 })}
+              {/* Container Box Icon */}
+              <div className={`w-12 h-12 rounded-xl flex items-center justify-center shrink-0 border ${n.bg} transition-transform group-hover:scale-105`}>
+                {React.cloneElement(n.icon, { size: 20, strokeWidth: 2.5 })}
               </div>
 
-              <div className="flex-1">
-                <div className="flex justify-between items-center mb-1">
-                  <div className="flex flex-col">
-                    <span className={`text-[7px] font-black tracking-[0.2em] mb-1 px-2 py-0.5 rounded-full w-fit ${n.isNew ? 'bg-blue-500 text-white' : 'bg-gray-100 text-gray-400'}`}>
+              {/* Konten Detail Data */}
+              <div className="flex-1 pt-0.5">
+                <div className="flex justify-between items-start gap-4 mb-1">
+                  <div className="flex flex-col gap-1.5">
+                    <span className={`text-[8px] font-black tracking-widest px-2 py-0.5 rounded border w-fit ${n.badgeStyle}`}>
                       {n.category}
                     </span>
-                    <h4 className={`font-black uppercase italic tracking-tight text-sm ${n.isNew ? 'text-[#1678F3]' : 'text-gray-500'}`}>
+                    <h4 className={`font-black uppercase tracking-tight text-sm ${n.isNew ? 'text-slate-900' : 'text-slate-700'}`}>
                       {n.title}
                     </h4>
                   </div>
-                  <div className="flex items-center gap-1.5 text-gray-400">
-                    <Clock size={12} />
-                    <span className="text-[10px] font-black italic uppercase">{n.time}</span>
+                  <div className="flex items-center gap-1.5 text-slate-400 shrink-0">
+                    <Clock size={12} className="text-slate-300" />
+                    <span className="text-[10px] font-semibold">{n.time}</span>
                   </div>
                 </div>
-                <p className={`text-xs leading-relaxed ${n.isNew ? 'text-gray-600 font-bold' : 'text-gray-400 font-medium'}`}>
+                <p className={`text-xs leading-relaxed mt-2 ${n.isNew ? 'text-slate-600 font-medium' : 'text-slate-400 font-normal'}`}>
                   {n.desc}
                 </p>
               </div>
 
-              {/* Status Dot */}
+              {/* Status Urgent Indicator Dot */}
               {n.isNew && (
-                <div className="flex flex-col items-center gap-1">
-                   <div className="w-3 h-3 bg-[#4DBAE9] rounded-full animate-pulse shadow-lg shadow-blue-200"></div>
-                   <span className="text-[8px] font-black text-[#4DBAE9] uppercase tracking-tighter">Urgent</span>
+                <div className="flex flex-col items-center justify-center gap-1 shrink-0 pt-1">
+                   <div className="w-2.5 h-2.5 bg-rose-500 rounded-full animate-pulse"></div>
+                   <span className="text-[8px] font-black text-rose-500 uppercase tracking-wide">Urgent</span>
                 </div>
               )}
             </div>
           ))}
         </div>
 
-        {/* Info Box Samping (Kanan) */}
-        <div className="col-span-12 lg:col-span-4 space-y-8">
-          {/* Card Statistik Cepat */}
-          <div className="bg-white/80 border border-white p-10 rounded-[50px] shadow-xl">
-             <h4 className="font-black text-[#1678F3] text-[10px] uppercase tracking-[0.3em] mb-8 italic">Interaction Stats</h4>
-             <div className="space-y-4">
-                <StatLine label="Pending Complaint" value="1" color="text-red-500" />
-                <StatLine label="Open Tickets" value="3" color="text-orange-500" />
-                <StatLine label="Total Reviews" value="128" color="text-[#1678F3]" />
+        {/* KOLOM METRICS & ACTION (KANAN) */}
+        <div className="col-span-12 lg:col-span-4 space-y-6">
+          
+          {/* CARD MINI STATUS STATISTICS */}
+          <div className="bg-white border border-slate-100 p-6 rounded-[24px] shadow-sm">
+             <h4 className="font-black text-slate-900 text-xs uppercase tracking-wider mb-6">Interaction Stats</h4>
+             <div className="space-y-1">
+                <StatLine label="Pending Complaint" value="1" color="text-rose-600" />
+                <StatLine label="Open Support Tickets" value="3" color="text-amber-600" />
+                <StatLine label="Total Customer Reviews" value="128" color="text-slate-900" />
              </div>
           </div>
 
-          {/* Pusat Bantuan Card */}
-          <div className="bg-gradient-to-br from-[#1678F3] to-[#4DBAE9] rounded-[50px] p-10 text-white shadow-2xl relative overflow-hidden group">
-            <Waves className="absolute -right-10 -top-10 text-white/10 scale-[3] pointer-events-none group-hover:rotate-12 transition-transform duration-1000" />
+          {/* CARD PUSAT BANTUAN LAYANAN (DARK PREMIUM GUEST STYLE) */}
+          <div className="bg-slate-900 rounded-[32px] p-8 text-white shadow-xl relative overflow-hidden group border border-slate-800">
+            <Waves className="absolute -right-12 -top-12 text-white/5 scale-[3.5] pointer-events-none group-hover:rotate-6 transition-transform duration-1000" />
             
-            <div className="relative z-10 text-center">
-              <div className="w-16 h-16 bg-white/20 backdrop-blur-md rounded-[25px] flex items-center justify-center mx-auto mb-6">
-                <ShieldQuestion size={32} className="text-white" />
+            <div className="relative z-10 text-center flex flex-col items-center">
+              <div className="w-12 h-12 bg-slate-800 text-blue-400 rounded-xl flex items-center justify-center border border-slate-700/50 mb-4 shadow-inner">
+                <ShieldQuestion size={22} />
               </div>
-              <h3 className="text-2xl font-black italic uppercase tracking-tighter mb-3">Butuh Bantuan?</h3>
-              <p className="text-xs leading-relaxed opacity-80 mb-8 font-medium">
-                Ada kendala dalam menangani komplain? Tanya tim senior.
+              <h3 className="text-xl font-black tracking-tight mb-1.5 text-white">Butuh Bantuan?</h3>
+              <p className="text-xs leading-relaxed text-slate-400 mb-6 font-normal max-w-[240px]">
+                Ada kendala teknis atau ragu dalam menangani keluhan komplain pelanggan?
               </p>
               <button
                 onClick={() => window.open("https://wa.me/6285159941023", "_blank")}
-                className="w-full bg-white text-[#1678F3] py-5 rounded-[25px] font-black text-xs shadow-xl hover:scale-105 active:scale-95 transition-all uppercase tracking-[0.2em] italic"
+                className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3.5 rounded-xl font-black text-xs shadow-md shadow-blue-900/10 transition-all uppercase tracking-widest"
               >
-                KONSULTASI ADMIN
+                Konsultasi Admin Senior
               </button>
             </div>
           </div>
+
         </div>
       </div>
     </div>
   );
 };
 
-// Sub-komponen untuk statistik ringkas
+// Sub-komponen penampil baris statistik minimalis
 const StatLine = ({ label, value, color }) => (
-  <div className="flex justify-between items-center border-b border-gray-50 pb-3">
-    <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">{label}</span>
-    <span className={`text-lg font-black italic ${color}`}>{value}</span>
+  <div className="flex justify-between items-center border-b border-slate-50 py-3 last:border-0 last:pb-0">
+    <span className="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider">{label}</span>
+    <span className={`text-base font-black tracking-tight ${color}`}>{value}</span>
   </div>
 );
 
