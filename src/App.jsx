@@ -15,7 +15,11 @@ const Payments = React.lazy(() => import("./pages/Payments"));
 const CustomerDetail = React.lazy(() => import("./pages/CustomerDetail"));
 const ServiceDetail = React.lazy(() => import("./pages/ServiceDetail"));
 const ManageUsers = React.lazy(() => import("./pages/ManageUsers"));
-const GuestPage = React.lazy(() => import("./pages/GuestPageV3"));
+const GuestPage = React.lazy(() => import("./pages/GuestPage"));
+const GuestPageV1 = React.lazy(() => import("./pages/GuestPageV1"));
+const GuestPageV2 = React.lazy(() => import("./pages/GuestPageV2"));
+const GuestPageV3 = React.lazy(() => import("./pages/GuestPageV3"));
+
 const MemberDashboard = React.lazy(() => import("./pages/MemberDashboard"));
 
 // Layouts
@@ -48,6 +52,9 @@ function App() {
 
         {/* ================= GUEST ROUTE UTAMA ================= */}
         <Route path="/" element={<GuestPage />} />
+        <Route path="/guest-v1" element={<GuestPageV1 />} />
+        <Route path="/guest-v2" element={<GuestPageV2 />} />
+        <Route path="/guest-v3" element={<GuestPageV3 />} />
 
         {/* ================= KHUSUS HALAMAN MEMBER (MURNI TANPA SIDEBAR ADMIN) ================= */}
         {/* Dikeluarkan dari MainLayout supaya menggunakan layout mandiri Member yang rapi */}
