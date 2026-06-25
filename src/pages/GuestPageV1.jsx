@@ -2,7 +2,6 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   ArrowRight,
-  BarChart3,
   CheckCircle2,
   Clock,
   Mail,
@@ -12,7 +11,6 @@ import {
   ShieldCheck,
   Sparkles,
   Star,
-  Users,
 } from 'lucide-react';
 import PremiumLaundryImg from '../assets/premiumlaundry.jpg';
 import CuciSetrikaImg from '../assets/cucisetrika.jpg';
@@ -25,49 +23,31 @@ export default function GuestPageV1() {
   const services = [
     {
       name: 'Cuci Komplit',
-      desc: 'Cuci, kering, dan setrika rapi untuk kebutuhan harian pelanggan.',
+      desc: 'Paket cuci, kering, dan setrika untuk pakaian harian.',
       price: 'Rp 10.000/Kg',
       time: '2-3 Hari',
       image: CuciSetrikaImg,
     },
     {
       name: 'Express 3 Jam',
-      desc: 'Layanan cepat untuk pelanggan yang membutuhkan hasil di hari yang sama.',
+      desc: 'Layanan cepat untuk pelanggan yang butuh pakaian selesai segera.',
       price: 'Rp 15.000/Kg',
       time: '3 Jam',
       image: PremiumLaundryImg,
     },
     {
       name: 'Bedcover & Blanket',
-      desc: 'Perawatan cucian besar dengan proses higienis dan pewangi tahan lama.',
+      desc: 'Perawatan cucian besar agar tetap bersih, lembut, dan wangi.',
       price: 'Rp 25.000/Kg',
       time: '3-4 Hari',
       image: BedCoverImg,
     },
     {
-      name: 'Shoes Clean',
-      desc: 'Perawatan sepatu canvas, suede, dan leather dengan treatment khusus.',
+      name: 'Cuci Sepatu',
+      desc: 'Treatment sepatu canvas, suede, dan leather dengan cairan khusus.',
       price: 'Rp 35.000/Psg',
       time: '5 Hari',
       image: CuciSepatuImg,
-    },
-  ];
-
-  const highlights = [
-    {
-      icon: <Users size={22} />,
-      title: 'Customer Database',
-      desc: 'Data pelanggan tersusun rapi untuk kebutuhan follow-up dan loyalty.',
-    },
-    {
-      icon: <BarChart3 size={22} />,
-      title: 'Order Monitoring',
-      desc: 'Status order dapat dipantau dari antrian sampai selesai.',
-    },
-    {
-      icon: <ShieldCheck size={22} />,
-      title: 'Higienis & Aman',
-      desc: 'Proses laundry dibuat terpisah agar cucian pelanggan tidak tertukar.',
     },
   ];
 
@@ -75,117 +55,108 @@ export default function GuestPageV1() {
     {
       name: 'Jihan Zahra',
       role: 'Pelanggan VIP',
-      text: 'Order mudah dipantau, hasil cucian rapi, dan admin cepat merespons.',
+      text: 'Cuciannya rapi, wangi, dan selesai sesuai estimasi. Adminnya juga cepat respons.',
     },
     {
       name: 'Budi Santoso',
       role: 'Pelanggan Reguler',
-      text: 'Harga jelas dari awal dan status cucian gampang dicek.',
+      text: 'Harga jelas dari awal dan hasilnya konsisten. Cocok untuk cucian mingguan.',
     },
     {
       name: 'Siti Rahma',
       role: 'Pelanggan Express',
-      text: 'Layanan express sangat membantu saat butuh pakaian cepat selesai.',
+      text: 'Layanan express sangat membantu saat butuh pakaian cepat untuk kerja.',
     },
   ];
 
   return (
     <div className="min-h-screen bg-slate-950 text-white">
-      <nav className="sticky top-0 z-50 border-b border-white/10 bg-slate-950/90 px-6 py-4 backdrop-blur">
+      <nav className="fixed inset-x-0 top-0 z-50 border-b border-white/10 bg-slate-950/90 px-5 py-4 backdrop-blur-xl">
         <div className="mx-auto flex max-w-7xl items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-blue-600 shadow-lg shadow-blue-600/20">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-600 text-white shadow-lg shadow-blue-500/20">
               <Sparkles size={18} />
             </div>
             <div>
               <p className="text-sm font-black tracking-[0.22em] text-blue-400">BRIGHTWASH</p>
-              <p className="text-[10px] font-bold uppercase tracking-widest text-slate-500">CRM Landing V1</p>
+              <p className="text-[10px] font-bold uppercase tracking-widest text-slate-500">Landing Page V1</p>
             </div>
           </div>
 
           <div className="hidden items-center gap-7 text-[11px] font-black uppercase tracking-widest text-slate-400 md:flex">
-            <a href="#layanan" className="hover:text-white">Layanan</a>
-            <a href="#crm" className="hover:text-white">CRM</a>
-            <a href="#testimoni" className="hover:text-white">Testimoni</a>
-            <a href="#kontak" className="hover:text-white">Kontak</a>
+            <a href="#layanan" className="hover:text-blue-300">Layanan</a>
+            <a href="#testimoni" className="hover:text-blue-300">Testimoni</a>
+            <a href="#kontak" className="hover:text-blue-300">Kontak</a>
           </div>
 
           <button
             onClick={() => navigate('/login')}
             className="flex items-center gap-2 rounded-xl bg-blue-600 px-5 py-3 text-xs font-black uppercase tracking-widest text-white transition hover:bg-blue-500"
           >
-            Masuk
+            Masuk Akun
             <ArrowRight size={15} />
           </button>
         </div>
       </nav>
 
       <main>
-        <section className="px-6 py-20 md:py-28">
-          <div className="mx-auto grid max-w-7xl items-center gap-12 lg:grid-cols-2">
+        <section className="px-5 pb-16 pt-28 md:pb-24 md:pt-32">
+          <div className="mx-auto grid max-w-7xl items-center gap-12 lg:grid-cols-[1.05fr_0.95fr]">
             <div className="space-y-7">
               <div className="inline-flex items-center gap-2 rounded-full border border-blue-500/30 bg-blue-500/10 px-4 py-2 text-[10px] font-black uppercase tracking-widest text-blue-300">
                 <CheckCircle2 size={14} />
-                PRD V1 - Basic Landing Page
+                PRD V1 - Landing Page Dasar
               </div>
 
               <div className="space-y-5">
-                <h1 className="max-w-3xl text-4xl font-black leading-tight tracking-tight md:text-6xl">
-                  Landing Page CRM untuk Laundry Premium yang Rapi dan Mudah Dipantau
+                <h1 className="max-w-4xl text-4xl font-black leading-tight tracking-tight md:text-6xl">
+                  Laundry Premium yang Bersih, Rapi, dan Mudah Dipesan
                 </h1>
                 <p className="max-w-2xl text-sm font-medium leading-7 text-slate-400 md:text-base">
-                  Versi pertama fokus pada tampilan publik: pengenalan layanan,
-                  ringkasan fitur CRM, daftar harga, testimoni, dan kontak utama.
+                  BrightWash menyediakan layanan laundry harian, express, bedcover,
+                  dan sepatu dengan harga jelas, proses higienis, serta hasil cucian
+                  yang wangi dan rapi.
                 </p>
               </div>
 
               <div className="flex flex-col gap-3 sm:flex-row">
                 <button
                   onClick={() => navigate('/login')}
-                  className="rounded-xl bg-blue-600 px-7 py-4 text-xs font-black uppercase tracking-widest text-white shadow-lg shadow-blue-600/20 transition hover:bg-blue-500"
+                  className="rounded-xl bg-blue-600 px-7 py-4 text-xs font-black uppercase tracking-widest text-white shadow-lg shadow-blue-600/25 transition hover:bg-blue-500"
                 >
-                  Mulai Order
+                  Order Sekarang
                 </button>
                 <a
                   href="#layanan"
-                  className="rounded-xl border border-white/10 bg-white/5 px-7 py-4 text-center text-xs font-black uppercase tracking-widest text-white transition hover:bg-white/10"
+                  className="rounded-xl border border-white/10 bg-white/5 px-7 py-4 text-center text-xs font-black uppercase tracking-widest text-white transition hover:border-blue-400/40 hover:bg-white/10"
                 >
                   Lihat Layanan
                 </a>
               </div>
 
-              <div className="grid max-w-xl grid-cols-3 gap-3 pt-3">
-                <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
-                  <p className="text-2xl font-black text-blue-300">4.9</p>
-                  <p className="text-[10px] font-bold uppercase tracking-widest text-slate-500">Rating</p>
-                </div>
-                <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
-                  <p className="text-2xl font-black text-cyan-300">500+</p>
-                  <p className="text-[10px] font-bold uppercase tracking-widest text-slate-500">Order</p>
-                </div>
-                <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
-                  <p className="text-2xl font-black text-amber-300">3 Jam</p>
-                  <p className="text-[10px] font-bold uppercase tracking-widest text-slate-500">Express</p>
-                </div>
+              <div className="grid max-w-xl grid-cols-3 gap-3 pt-2">
+                <StatCard value="4.9/5" label="Rating" />
+                <StatCard value="500+" label="Order" />
+                <StatCard value="3 Jam" label="Express" />
               </div>
             </div>
 
             <div className="relative">
-              <div className="overflow-hidden rounded-[32px] border border-white/10 bg-slate-900 p-3 shadow-2xl shadow-blue-950/30">
+              <div className="overflow-hidden rounded-[30px] border border-white/10 bg-white/[0.04] p-3 shadow-2xl shadow-blue-950/40">
                 <img
                   src={PremiumLaundryImg}
-                  alt="BrightWash laundry premium"
-                  className="h-[520px] w-full rounded-[24px] object-cover"
+                  alt="BrightWash premium laundry"
+                  className="h-[500px] w-full rounded-[22px] object-cover"
                 />
               </div>
-              <div className="absolute -bottom-6 left-6 right-6 rounded-2xl border border-white/10 bg-slate-950/90 p-5 shadow-2xl backdrop-blur">
+              <div className="absolute -bottom-6 left-5 right-5 rounded-2xl border border-white/10 bg-slate-950/95 p-5 shadow-2xl backdrop-blur">
                 <div className="flex items-center gap-4">
-                  <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-blue-600/20 text-blue-300">
-                    <Clock size={22} />
+                  <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-blue-500/10 text-blue-300">
+                    <ShieldCheck size={22} />
                   </div>
                   <div>
-                    <p className="text-sm font-black">Monitoring order lebih jelas</p>
-                    <p className="mt-1 text-xs text-slate-400">Dari masuk, proses, selesai, sampai pembayaran.</p>
+                    <p className="text-sm font-black">Garansi proses higienis</p>
+                    <p className="mt-1 text-xs text-slate-400">Cucian diproses rapi dan tidak dicampur sembarangan.</p>
                   </div>
                 </div>
               </div>
@@ -193,54 +164,27 @@ export default function GuestPageV1() {
           </div>
         </section>
 
-        <section id="crm" className="bg-slate-50 px-6 py-20 text-slate-950">
+        <section id="layanan" className="bg-slate-50 px-5 py-20 text-slate-950">
           <div className="mx-auto max-w-7xl">
-            <div className="mb-10 max-w-2xl">
-              <p className="text-[10px] font-black uppercase tracking-widest text-blue-600">CRM Core</p>
-              <h2 className="mt-3 text-3xl font-black tracking-tight md:text-4xl">Fitur Dasar yang Ditampilkan di V1</h2>
-              <p className="mt-3 text-sm leading-6 text-slate-600">
-                Pada tahap pertama, landing page cukup menjelaskan nilai CRM tanpa integrasi backend kompleks.
-              </p>
-            </div>
+            <SectionTitle
+              eyebrow="Layanan & Harga"
+              title="Paket Laundry Utama"
+              desc="PRD V1 fokus menampilkan informasi layanan yang paling sering dibutuhkan pelanggan."
+              dark={false}
+            />
 
-            <div className="grid gap-5 md:grid-cols-3">
-              {highlights.map((item) => (
-                <div key={item.title} className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-                  <div className="mb-5 flex h-12 w-12 items-center justify-center rounded-xl bg-blue-50 text-blue-600">
-                    {item.icon}
-                  </div>
-                  <h3 className="text-base font-black">{item.title}</h3>
-                  <p className="mt-2 text-sm leading-6 text-slate-600">{item.desc}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        <section id="layanan" className="px-6 py-20">
-          <div className="mx-auto max-w-7xl">
-            <div className="mb-10 flex flex-col justify-between gap-5 md:flex-row md:items-end">
-              <div>
-                <p className="text-[10px] font-black uppercase tracking-widest text-blue-400">Layanan & Harga</p>
-                <h2 className="mt-3 text-3xl font-black tracking-tight md:text-4xl">Paket Laundry Utama</h2>
-              </div>
-              <p className="max-w-md text-sm leading-6 text-slate-400">
-                Data pada V1 masih statis agar tampilan dasar bisa dievaluasi dulu sebelum masuk tahap integrasi.
-              </p>
-            </div>
-
-            <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-4">
+            <div className="mt-10 grid gap-5 md:grid-cols-2 lg:grid-cols-4">
               {services.map((service) => (
-                <article key={service.name} className="overflow-hidden rounded-2xl border border-white/10 bg-white/[0.04]">
+                <article key={service.name} className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
                   <img src={service.image} alt={service.name} className="h-44 w-full object-cover" />
                   <div className="space-y-4 p-5">
                     <div>
                       <h3 className="text-sm font-black">{service.name}</h3>
-                      <p className="mt-2 min-h-16 text-xs leading-5 text-slate-400">{service.desc}</p>
+                      <p className="mt-2 min-h-16 text-xs leading-5 text-slate-600">{service.desc}</p>
                     </div>
-                    <div className="flex items-center justify-between border-t border-white/10 pt-4">
-                      <span className="text-xs font-black text-blue-300">{service.price}</span>
-                      <span className="rounded-lg bg-white/10 px-2 py-1 text-[10px] font-bold text-slate-300">{service.time}</span>
+                    <div className="flex items-center justify-between border-t border-slate-100 pt-4">
+                      <span className="text-xs font-black text-blue-600">{service.price}</span>
+                      <span className="rounded-lg bg-slate-100 px-2 py-1 text-[10px] font-bold text-slate-500">{service.time}</span>
                     </div>
                   </div>
                 </article>
@@ -249,14 +193,36 @@ export default function GuestPageV1() {
           </div>
         </section>
 
-        <section id="testimoni" className="bg-slate-50 px-6 py-20 text-slate-950">
-          <div className="mx-auto max-w-7xl">
-            <div className="mb-10 text-center">
-              <p className="text-[10px] font-black uppercase tracking-widest text-blue-600">Testimoni</p>
-              <h2 className="mt-3 text-3xl font-black tracking-tight md:text-4xl">Respon Pelanggan</h2>
-            </div>
+        <section className="px-5 py-20">
+          <div className="mx-auto grid max-w-7xl gap-5 md:grid-cols-3">
+            <FeatureCard
+              icon={<Sparkles size={22} />}
+              title="Bersih dan Wangi"
+              desc="Pakaian dicuci dengan proses yang menjaga kenyamanan dan kualitas hasil."
+            />
+            <FeatureCard
+              icon={<Clock size={22} />}
+              title="Estimasi Jelas"
+              desc="Setiap layanan memiliki durasi pengerjaan agar pelanggan lebih mudah menunggu."
+            />
+            <FeatureCard
+              icon={<MessageCircle size={22} />}
+              title="Kontak Mudah"
+              desc="Informasi WhatsApp, email, dan alamat tersedia jelas untuk pelanggan."
+            />
+          </div>
+        </section>
 
-            <div className="grid gap-5 md:grid-cols-3">
+        <section id="testimoni" className="bg-slate-50 px-5 py-20 text-slate-950">
+          <div className="mx-auto max-w-7xl">
+            <SectionTitle
+              eyebrow="Testimoni"
+              title="Respon Pelanggan"
+              desc="Review singkat untuk membangun kepercayaan calon pelanggan."
+              dark={false}
+            />
+
+            <div className="mt-10 grid gap-5 md:grid-cols-3">
               {testimonials.map((item) => (
                 <div key={item.name} className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
                   <div className="mb-4 flex gap-1 text-amber-400">
@@ -275,20 +241,21 @@ export default function GuestPageV1() {
           </div>
         </section>
 
-        <section id="kontak" className="px-6 py-20">
-          <div className="mx-auto grid max-w-7xl gap-6 rounded-[32px] border border-white/10 bg-slate-900 p-8 md:grid-cols-3 md:p-10">
+        <section id="kontak" className="px-5 py-20">
+          <div className="mx-auto grid max-w-7xl gap-8 rounded-[28px] border border-white/10 bg-white/[0.04] p-8 md:grid-cols-[0.9fr_1.1fr] md:p-10">
             <div>
-              <p className="text-[10px] font-black uppercase tracking-widest text-blue-400">Kontak</p>
-              <h2 className="mt-3 text-2xl font-black">Hubungi BrightWash</h2>
-              <p className="mt-3 text-sm leading-6 text-slate-400">Siap menerima order dan pertanyaan pelanggan.</p>
+              <p className="text-[10px] font-black uppercase tracking-widest text-blue-300">Kontak</p>
+              <h2 className="mt-3 text-3xl font-black tracking-tight">Hubungi BrightWash</h2>
+              <p className="mt-3 text-sm leading-6 text-slate-400">
+                Hubungi admin untuk informasi layanan, estimasi, pickup, atau bantuan order.
+              </p>
             </div>
-            <div className="space-y-3">
+
+            <div className="grid gap-3 sm:grid-cols-2">
               <InfoRow icon={<Phone size={18} />} label="WhatsApp" value="+62 812-3556-6441" />
               <InfoRow icon={<Mail size={18} />} label="Email" value="support@brightwash.id" />
-            </div>
-            <div className="space-y-3">
-              <InfoRow icon={<MapPin size={18} />} label="Alamat" value="Jl. Arifin Ahmad, Pekanbaru" />
-              <InfoRow icon={<MessageCircle size={18} />} label="Jam Operasional" value="07.00 - 21.00 WIB" />
+              <InfoRow icon={<MapPin size={18} />} label="Workshop" value="Jl. Arifin Ahmad, Pekanbaru" />
+              <InfoRow icon={<MessageCircle size={18} />} label="Operasional" value="07.00 - 21.00 WIB" />
             </div>
           </div>
         </section>
@@ -297,10 +264,43 @@ export default function GuestPageV1() {
   );
 }
 
+function StatCard({ value, label }) {
+  return (
+    <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-4">
+      <p className="text-xl font-black text-blue-300">{value}</p>
+      <p className="mt-1 text-[10px] font-bold uppercase tracking-widest text-slate-500">{label}</p>
+    </div>
+  );
+}
+
+function SectionTitle({ eyebrow, title, desc, dark = true }) {
+  return (
+    <div className="max-w-2xl">
+      <p className={`text-[10px] font-black uppercase tracking-widest ${dark ? 'text-blue-300' : 'text-blue-600'}`}>
+        {eyebrow}
+      </p>
+      <h2 className="mt-3 text-3xl font-black tracking-tight md:text-4xl">{title}</h2>
+      <p className={`mt-3 text-sm leading-6 ${dark ? 'text-slate-400' : 'text-slate-600'}`}>{desc}</p>
+    </div>
+  );
+}
+
+function FeatureCard({ icon, title, desc }) {
+  return (
+    <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-6">
+      <div className="mb-5 flex h-12 w-12 items-center justify-center rounded-xl bg-blue-500/10 text-blue-300">
+        {icon}
+      </div>
+      <h3 className="text-base font-black">{title}</h3>
+      <p className="mt-2 text-sm leading-6 text-slate-400">{desc}</p>
+    </div>
+  );
+}
+
 function InfoRow({ icon, label, value }) {
   return (
-    <div className="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/[0.03] p-4">
-      <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-600/20 text-blue-300">
+    <div className="flex items-center gap-3 rounded-2xl border border-white/10 bg-slate-900 p-4">
+      <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-500/10 text-blue-300">
         {icon}
       </div>
       <div>
