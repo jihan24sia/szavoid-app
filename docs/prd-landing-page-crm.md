@@ -667,7 +667,7 @@ PRD v3 menjadi dokumen final yang siap diberikan ke AI Coding Agent. Versi ini m
 
 ### Bukti Commit v3
 
-Akan diisi setelah commit PRD v3 dibuat.
+Commit PRD v3: `89e7467` - `docs: complete CRM landing page PRD v3`
 
 ---
 
