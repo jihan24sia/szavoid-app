@@ -15,7 +15,7 @@ const Payments = React.lazy(() => import("./pages/Payments"));
 const CustomerDetail = React.lazy(() => import("./pages/CustomerDetail"));
 const ServiceDetail = React.lazy(() => import("./pages/ServiceDetail"));
 const ManageUsers = React.lazy(() => import("./pages/ManageUsers"));
-const GuestPage = React.lazy(() => import("./pages/GuestPage"));
+const GuestPage = React.lazy(() => import("./pages/GuestPageV1"));
 const MemberDashboard = React.lazy(() => import("./pages/MemberDashboard"));
 
 // Layouts
