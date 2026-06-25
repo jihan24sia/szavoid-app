@@ -59,6 +59,44 @@ export default function GuestPageV3() {
     },
   ];
 
+  const pillars = [
+    {
+      title: 'Care',
+      desc: 'Pakaian diperlakukan sesuai jenis bahan dan kebutuhan layanan.',
+    },
+    {
+      title: 'Clarity',
+      desc: 'Harga, estimasi, kontak, dan alur order dibuat mudah dipahami.',
+    },
+    {
+      title: 'Trust',
+      desc: 'Review, proses higienis, dan layanan responsif membangun rasa aman.',
+    },
+  ];
+
+  const qualityChecks = [
+    'Pencatatan nota dan jenis layanan sebelum proses',
+    'Pemisahan cucian berdasarkan order pelanggan',
+    'Pemeriksaan noda dan area pakaian yang butuh perhatian',
+    'Pengeringan dan finishing sesuai jenis bahan',
+    'Packing rapi sebelum order diserahkan ke pelanggan',
+  ];
+
+  const memberBenefits = [
+    {
+      title: 'Riwayat Order',
+      desc: 'Pelanggan lebih mudah melihat kebiasaan layanan dan repeat order.',
+    },
+    {
+      title: 'Prioritas Express',
+      desc: 'Member aktif dapat diarahkan ke layanan cepat saat kuota tersedia.',
+    },
+    {
+      title: 'Preferensi Layanan',
+      desc: 'Catatan parfum, alergi, dan instruksi khusus bisa dibantu admin.',
+    },
+  ];
+
   const services = [
     {
       name: 'Cuci Komplit',
@@ -141,6 +179,21 @@ export default function GuestPageV3() {
       role: 'Pelanggan Express',
       text: 'Layanan express sangat membantu saat butuh pakaian cepat untuk kerja.',
     },
+    {
+      name: 'Mega Utami',
+      role: 'Pelanggan Rumah Tangga',
+      text: 'Bedcover pulang dalam kondisi wangi dan lembut. Tidak bau apek walau cuaca sering mendung.',
+    },
+    {
+      name: 'Hendra Wijaya',
+      role: 'Pelanggan Kantoran',
+      text: 'Kemeja kerja jadi rapi dan nyaman dipakai. Estimasi selesainya juga jelas.',
+    },
+    {
+      name: 'Dina Mariana',
+      role: 'Pelanggan Premium',
+      text: 'Gaun dan kebaya saya ditangani hati-hati. Hasilnya bersih dan tetap aman.',
+    },
   ];
 
   const faqs = [
@@ -155,6 +208,18 @@ export default function GuestPageV3() {
     {
       question: 'Bagaimana cara mulai order?',
       answer: 'Klik tombol Masuk Akun atau hubungi WhatsApp resmi BrightWash untuk dibantu admin.',
+    },
+    {
+      question: 'Apakah tersedia layanan pickup?',
+      answer: 'Tersedia untuk area tertentu di sekitar workshop. Hubungi admin untuk cek jadwal dan area pickup.',
+    },
+    {
+      question: 'Apakah ada layanan pakaian premium?',
+      answer: 'Ada. Jas, gaun, kebaya, dan pakaian berbahan sensitif dapat menggunakan layanan premium satuan.',
+    },
+    {
+      question: 'Bagaimana jika ada instruksi khusus?',
+      answer: 'Pelanggan dapat menyampaikan catatan ke admin, seperti pilihan parfum, noda tertentu, atau request packing.',
     },
   ];
 
@@ -201,12 +266,12 @@ export default function GuestPageV3() {
 
               <div className="space-y-5">
                 <h1 className="max-w-4xl text-4xl font-black leading-tight tracking-tight md:text-6xl">
-                  Rawat Pakaian Anda dengan Layanan Laundry yang Lebih Rapi
+                  Laundry Premium yang Siap Melayani Kebutuhan Harian sampai Pakaian Spesial
                 </h1>
                 <p className="max-w-2xl text-sm font-medium leading-7 text-slate-400 md:text-base">
                   BrightWash membantu pelanggan mendapatkan layanan laundry premium
                   dengan pilihan paket lengkap, proses higienis, estimasi jelas, dan
-                  hasil cucian yang bersih serta wangi.
+                  hasil cucian yang bersih, rapi, serta wangi tahan lama.
                 </p>
               </div>
 
@@ -259,6 +324,33 @@ export default function GuestPageV3() {
           </div>
         </section>
 
+        <section className="px-5 pb-12">
+          <div className="mx-auto max-w-7xl">
+            <div className="rounded-[28px] border border-blue-400/20 bg-blue-500/10 p-6 md:p-8">
+              <div className="flex flex-col gap-5 md:flex-row md:items-center md:justify-between">
+                <div className="flex items-start gap-4">
+                  <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-blue-600 text-white">
+                    <ShieldCheck size={22} />
+                  </div>
+                  <div>
+                    <h2 className="text-lg font-black">Garansi Higienitas dan Kerapian</h2>
+                    <p className="mt-2 max-w-3xl text-sm leading-6 text-slate-300">
+                      BrightWash menjaga proses pencatatan, pemisahan cucian, dan finishing agar pakaian pelanggan aman,
+                      bersih, wangi, dan siap dipakai kembali.
+                    </p>
+                  </div>
+                </div>
+                <button
+                  onClick={() => navigate('/login')}
+                  className="rounded-xl bg-blue-600 px-6 py-3 text-xs font-black uppercase tracking-widest text-white transition hover:bg-blue-500"
+                >
+                  Buat Order
+                </button>
+              </div>
+            </div>
+          </div>
+        </section>
+
         <section id="keunggulan" className="bg-slate-50 px-5 py-20 text-slate-950">
           <div className="mx-auto max-w-7xl">
             <SectionTitle
@@ -276,6 +368,62 @@ export default function GuestPageV3() {
                   </div>
                   <h3 className="text-base font-black">{item.title}</h3>
                   <p className="mt-2 text-sm leading-6 text-slate-600">{item.desc}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section className="px-5 py-20">
+          <div className="mx-auto grid max-w-7xl items-center gap-10 lg:grid-cols-[0.95fr_1.05fr]">
+            <div className="grid gap-5 sm:grid-cols-2">
+              <img
+                src={CuciSetrikaImg}
+                alt="Proses cuci setrika BrightWash"
+                className="h-72 w-full rounded-3xl object-cover"
+              />
+              <div className="space-y-5">
+                <img
+                  src={BedCoverImg}
+                  alt="Perawatan bedcover BrightWash"
+                  className="h-36 w-full rounded-3xl object-cover"
+                />
+                <img
+                  src={CuciSepatuImg}
+                  alt="Perawatan sepatu BrightWash"
+                  className="h-36 w-full rounded-3xl object-cover"
+                />
+              </div>
+            </div>
+
+            <div>
+              <SectionTitle
+                eyebrow="Tentang BrightWash"
+                title="Bukan Sekadar Mencuci, tapi Merawat Pakaian Pelanggan"
+                desc="BrightWash dirancang untuk pelanggan yang ingin layanan laundry lebih jelas, rapi, dan bisa dipercaya. Setiap layanan dibuat dengan informasi harga, estimasi, dan proses yang mudah dipahami."
+              />
+              <div className="mt-8 grid gap-4 sm:grid-cols-3">
+                <MiniMetric value="07.00" label="Mulai Operasional" />
+                <MiniMetric value="21.00" label="Tutup Layanan" />
+                <MiniMetric value="6+" label="Paket Layanan" />
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section className="px-5 py-20">
+          <div className="mx-auto grid max-w-7xl gap-8 lg:grid-cols-[0.75fr_1.25fr]">
+            <SectionTitle
+              eyebrow="Prinsip Layanan"
+              title="Tiga Pilar Pengalaman BrightWash"
+              desc="V3 menampilkan landing page yang lebih matang: bukan hanya daftar harga, tapi juga alasan pelanggan percaya."
+            />
+
+            <div className="grid gap-5 md:grid-cols-3">
+              {pillars.map((item) => (
+                <div key={item.title} className="rounded-2xl border border-white/10 bg-white/[0.04] p-6">
+                  <p className="text-3xl font-black text-blue-300">{item.title}</p>
+                  <p className="mt-4 text-sm leading-6 text-slate-400">{item.desc}</p>
                 </div>
               ))}
             </div>
@@ -315,6 +463,28 @@ export default function GuestPageV3() {
           </div>
         </section>
 
+        <section className="bg-slate-50 px-5 py-20 text-slate-950">
+          <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[0.85fr_1.15fr]">
+            <SectionTitle
+              eyebrow="Quality Control"
+              title="Setiap Order Melewati Pemeriksaan Dasar"
+              desc="V3 memperkuat kepercayaan pelanggan dengan menjelaskan proses kerja secara sederhana dan tidak teknis."
+              dark={false}
+            />
+
+            <div className="grid gap-4">
+              {qualityChecks.map((item, index) => (
+                <div key={item} className="flex items-center gap-4 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+                  <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-blue-50 text-sm font-black text-blue-600">
+                    {String(index + 1).padStart(2, '0')}
+                  </div>
+                  <p className="text-sm font-bold text-slate-700">{item}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
         <section id="proses" className="bg-slate-50 px-5 py-20 text-slate-950">
           <div className="mx-auto max-w-7xl">
             <SectionTitle
@@ -337,6 +507,65 @@ export default function GuestPageV3() {
                   <p className="mt-2 text-sm leading-6 text-slate-600">{item.desc}</p>
                 </div>
               ))}
+            </div>
+          </div>
+        </section>
+
+        <section className="px-5 py-20">
+          <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[1.05fr_0.95fr]">
+            <div>
+              <SectionTitle
+                eyebrow="Member Experience"
+                title="Lebih Nyaman untuk Pelanggan yang Sering Laundry"
+                desc="Pelanggan tetap bisa mendapatkan pengalaman yang lebih personal melalui catatan layanan, riwayat order, dan komunikasi admin."
+              />
+
+              <div className="mt-10 grid gap-5 md:grid-cols-3">
+                {memberBenefits.map((item) => (
+                  <div key={item.title} className="rounded-2xl border border-white/10 bg-white/[0.04] p-6">
+                    <h3 className="text-base font-black text-blue-300">{item.title}</h3>
+                    <p className="mt-3 text-sm leading-6 text-slate-400">{item.desc}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="rounded-[28px] border border-white/10 bg-white/[0.04] p-6">
+              <div className="flex items-start gap-4">
+                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-blue-500/10 text-blue-300">
+                  <Users size={22} />
+                </div>
+                <div>
+                  <h3 className="text-xl font-black">Cocok untuk Rutinitas Mingguan</h3>
+                  <p className="mt-3 text-sm leading-6 text-slate-400">
+                    BrightWash membantu mahasiswa, pekerja, keluarga, dan pelanggan premium yang ingin cucian selesai
+                    tanpa harus mengulang penjelasan kebutuhan setiap kali order.
+                  </p>
+                </div>
+              </div>
+              <div className="mt-6 grid grid-cols-2 gap-3">
+                <MiniDark value="VIP" label="Segmentasi" />
+                <MiniDark value="Notes" label="Catatan" />
+                <MiniDark value="Repeat" label="Order Ulang" />
+                <MiniDark value="Fast" label="Prioritas" />
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section className="bg-slate-50 px-5 py-20 text-slate-950">
+          <div className="mx-auto grid max-w-7xl gap-8 lg:grid-cols-[0.8fr_1.2fr]">
+            <SectionTitle
+              eyebrow="Pickup Area"
+              title="Antar Langsung atau Atur Pickup dengan Admin"
+              desc="Pelanggan dapat mengantar cucian ke workshop atau menanyakan layanan pickup untuk area sekitar."
+              dark={false}
+            />
+
+            <div className="grid gap-5 md:grid-cols-3">
+              <CoverageCard title="Marpoyan" desc="Area sekitar workshop utama BrightWash." />
+              <CoverageCard title="Arifin Ahmad" desc="Cocok untuk pelanggan kantor dan rumah sekitar." />
+              <CoverageCard title="Pekanbaru Kota" desc="Cek jadwal pickup terlebih dahulu melalui admin." />
             </div>
           </div>
         </section>
@@ -391,6 +620,36 @@ export default function GuestPageV3() {
           </div>
         </section>
 
+        <section className="px-5 py-20">
+          <div className="mx-auto max-w-7xl rounded-[32px] border border-blue-400/20 bg-blue-600 p-8 text-white shadow-2xl shadow-blue-950/30 md:p-12">
+            <div className="grid gap-8 lg:grid-cols-[1fr_0.75fr] lg:items-center">
+              <div>
+                <p className="text-[10px] font-black uppercase tracking-widest text-blue-100">Ready to Order</p>
+                <h2 className="mt-3 max-w-3xl text-3xl font-black tracking-tight md:text-5xl">
+                  Cucian Menumpuk? Serahkan ke BrightWash Hari Ini
+                </h2>
+                <p className="mt-4 max-w-2xl text-sm leading-7 text-blue-100">
+                  Pilih paket, hubungi admin, dan nikmati layanan laundry yang rapi, jelas, dan nyaman dari awal sampai selesai.
+                </p>
+              </div>
+              <div className="flex flex-col gap-3 sm:flex-row lg:justify-end">
+                <button
+                  onClick={() => navigate('/login')}
+                  className="rounded-xl bg-white px-7 py-4 text-xs font-black uppercase tracking-widest text-blue-700 transition hover:bg-blue-50"
+                >
+                  Order Sekarang
+                </button>
+                <a
+                  href="#kontak"
+                  className="rounded-xl border border-white/30 px-7 py-4 text-center text-xs font-black uppercase tracking-widest text-white transition hover:bg-white/10"
+                >
+                  Hubungi Admin
+                </a>
+              </div>
+            </div>
+          </div>
+        </section>
+
         <section id="kontak" className="px-5 py-20">
           <div className="mx-auto grid max-w-7xl gap-8 rounded-[28px] border border-white/10 bg-white/[0.04] p-8 md:grid-cols-[0.9fr_1.1fr] md:p-10">
             <div>
@@ -432,6 +691,36 @@ function SectionTitle({ eyebrow, title, desc, dark = true }) {
       </p>
       <h2 className="mt-3 text-3xl font-black tracking-tight md:text-4xl">{title}</h2>
       <p className={`mt-3 text-sm leading-6 ${dark ? 'text-slate-400' : 'text-slate-600'}`}>{desc}</p>
+    </div>
+  );
+}
+
+function MiniMetric({ value, label }) {
+  return (
+    <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-5">
+      <p className="text-2xl font-black text-blue-300">{value}</p>
+      <p className="mt-1 text-[10px] font-bold uppercase tracking-widest text-slate-500">{label}</p>
+    </div>
+  );
+}
+
+function MiniDark({ value, label }) {
+  return (
+    <div className="rounded-2xl border border-white/10 bg-slate-900 p-4">
+      <p className="text-lg font-black text-blue-300">{value}</p>
+      <p className="mt-1 text-[10px] font-bold uppercase tracking-widest text-slate-500">{label}</p>
+    </div>
+  );
+}
+
+function CoverageCard({ title, desc }) {
+  return (
+    <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+      <div className="mb-5 flex h-12 w-12 items-center justify-center rounded-xl bg-blue-50 text-blue-600">
+        <MapPin size={21} />
+      </div>
+      <h3 className="text-base font-black">{title}</h3>
+      <p className="mt-2 text-sm leading-6 text-slate-600">{desc}</p>
     </div>
   );
 }
