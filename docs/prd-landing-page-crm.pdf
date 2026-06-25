@@ -3,7 +3,7 @@
 << /Type /Catalog /Pages 2 0 R >>
 endobj
 2 0 obj
-<< /Type /Pages /Kids [5 0 R 7 0 R 9 0 R 11 0 R] /Count 4 >>
+<< /Type /Pages /Kids [5 0 R 7 0 R 9 0 R 11 0 R 13 0 R 15 0 R 17 0 R 19 0 R] /Count 8 >>
 endobj
 3 0 obj
 << /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>
@@ -333,7 +333,7 @@ endobj
 << /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 3 0 R >> >> /Contents 8 0 R >>
 endobj
 10 0 obj
-<< /Length 1209 >>
+<< /Length 2339 >>
 stream
 BT
 /F1 10 Tf
@@ -381,33 +381,433 @@ BT
 0 -14 Td
 () Tj
 0 -14 Td
-(Akan diisi setelah commit PRD v1 dibuat.) Tj
+(Commit PRD v1: e3fb238 - docs: add CRM landing page PRD v1) Tj
 0 -14 Td
 () Tj
 0 -14 Td
+(---) Tj
+0 -14 Td
 () Tj
+0 -14 Td
+(PRD v2 - Evaluasi Menengah) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(Tujuan Evaluasi v2) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(PRD v2 memperbaiki PRD v1 dengan menambahkan kebutuhan pengelolaan konten landing page oleh) Tj
+0 -14 Td
+(admin internal CRM, tanpa membuat dashboard baru yang besar. Fokus tetap pada skema Supabase) Tj
+0 -14 Td
+(dan instruksi integrasi React yang sederhana.) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(Masalah yang Ditemukan dari v1) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(- PRD v1 sudah cukup untuk public-read, tetapi belum menjelaskan siapa yang boleh mengelola) Tj
+0 -14 Td
+(data.) Tj
+0 -14 Td
+(- Belum ada struktur untuk headline hero, nilai utama, dan statistik ringkas yang tampil di) Tj
+0 -14 Td
+(landing page.) Tj
+0 -14 Td
+(- Belum ada rekomendasi indexing untuk data yang sering diurutkan.) Tj
+0 -14 Td
+(- Belum ada arahan audit sederhana untuk perubahan data.) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(Scope Tambahan v2) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(Data tambahan yang perlu dinamis:) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(- Konten hero landing page) Tj
+0 -14 Td
+(- Highlight/fitur utama pada section tentang kami) Tj
 ET
 endstream
 endobj
 11 0 obj
 << /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 3 0 R >> >> /Contents 10 0 R >>
 endobj
+12 0 obj
+<< /Length 2577 >>
+stream
+BT
+/F1 10 Tf
+14 TL
+50 790 Td
+(- Statistik ringkas seperti jumlah pakaian, user aktif, dan kepuasan) Tj
+0 -14 Td
+(- Audit kolom minimal untuk mengetahui siapa yang terakhir mengubah data) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(Tidak termasuk:) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(- Page builder) Tj
+0 -14 Td
+(- Multi-tenant CRM) Tj
+0 -14 Td
+(- Workflow approval konten) Tj
+0 -14 Td
+(- Sistem versioning konten) Tj
+0 -14 Td
+(- Storage upload gambar) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(User Story Tambahan) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(- Sebagai admin CRM, saya ingin mengubah headline hero dan CTA tanpa mengedit file React.) Tj
+0 -14 Td
+(- Sebagai admin CRM, saya ingin mengatur fitur unggulan BrightWash yang tampil di section) Tj
+0 -14 Td
+(tentang kami.) Tj
+0 -14 Td
+(- Sebagai admin CRM, saya ingin mengatur statistik ringkas agar sesuai data bisnis terbaru.) Tj
+0 -14 Td
+(- Sebagai developer, saya ingin skema data cukup eksplisit sehingga binding React tidak) Tj
+0 -14 Td
+(ambigu.) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(Functional Requirements Tambahan) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(1. Landing page mengambil data hero dari tabel landing_hero.) Tj
+0 -14 Td
+(2. Landing page mengambil highlight fitur dari tabel landing_features.) Tj
+0 -14 Td
+(3. Landing page mengambil statistik ringkas dari tabel landing_stats.) Tj
+0 -14 Td
+(4. Semua data yang tampil ke public harus memiliki is_active = true.) Tj
+0 -14 Td
+(5. Data yang memiliki urutan tampil wajib memakai sort_order.) Tj
+0 -14 Td
+(6. React tetap menyediakan fallback local untuk setiap section.) Tj
+0 -14 Td
+(7. Tidak perlu membuat UI admin baru jika belum diminta. Data dapat dikelola melalui) Tj
+0 -14 Td
+(Supabase Table Editor atau SQL.) Tj
+0 -14 Td
+(8. Jika admin CRUD sudah ada di project, AI Coding Agent boleh memakai pola existing, tetapi) Tj
+0 -14 Td
+(tetap tidak boleh redesign landing page.) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(Non-Functional Requirements Tambahan) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(- Query per section boleh dibuat terpisah agar mudah dibaca.) Tj
+0 -14 Td
+(- Hindari query nested kompleks.) Tj
+0 -14 Td
+(- Tidak menggunakan stored procedure kecuali benar-benar dibutuhkan.) Tj
+0 -14 Td
+(- Komponen GuestPage.jsx tidak boleh dipecah besar-besaran pada fase ini.) Tj
+0 -14 Td
+(- Jika dibuat helper fetch, cukup satu file kecil misalnya src/pages/landingPageData.js atau) Tj
+0 -14 Td
+(mengikuti pola existing.) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(Desain Skema Database Tambahan v2) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(Tabel landing_hero) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(| Kolom | Tipe Data | Constraint | Keterangan |) Tj
+0 -14 Td
+(| --- | --- | --- | --- |) Tj
+ET
+endstream
+endobj
+13 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 3 0 R >> >> /Contents 12 0 R >>
+endobj
+14 0 obj
+<< /Length 3234 >>
+stream
+BT
+/F1 10 Tf
+14 TL
+50 790 Td
+(| id | uuid | primary key default gen_random_uuid\(\) | ID hero |) Tj
+0 -14 Td
+(| eyebrow | text | nullable | Label kecil di atas headline |) Tj
+0 -14 Td
+(| headline | text | not null | Headline utama |) Tj
+0 -14 Td
+(| highlighted_headline | text | nullable | Teks highlight |) Tj
+0 -14 Td
+(| description | text | not null | Deskripsi hero |) Tj
+0 -14 Td
+(| primary_cta_label | text | not null default 'BOOK NOW' | Label CTA utama |) Tj
+0 -14 Td
+(| primary_cta_path | text | not null default '/login' | Path CTA utama |) Tj
+0 -14 Td
+(| secondary_cta_label | text | not null default 'EXPLORE NOW' | Label CTA kedua |) Tj
+0 -14 Td
+(| secondary_cta_anchor | text | not null default '#layanan' | Anchor CTA kedua |) Tj
+0 -14 Td
+(| hero_image_url | text | nullable | URL gambar hero |) Tj
+0 -14 Td
+(| price_start_label | text | nullable | Contoh: Rp 7.000 /Kg |) Tj
+0 -14 Td
+(| rating_label | text | nullable | Contoh: 4.9 |) Tj
+0 -14 Td
+(| rating_source_label | text | nullable | Contoh: From 500+ Google Business |) Tj
+0 -14 Td
+(| is_active | boolean | not null default true | Status aktif |) Tj
+0 -14 Td
+(| created_at | timestamptz | not null default now\(\) | Waktu dibuat |) Tj
+0 -14 Td
+(| updated_at | timestamptz | not null default now\(\) | Waktu update |) Tj
+0 -14 Td
+(| updated_by | uuid | nullable references auth.users\(id\) | User terakhir update |) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(Tabel landing_features) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(| Kolom | Tipe Data | Constraint | Keterangan |) Tj
+0 -14 Td
+(| --- | --- | --- | --- |) Tj
+0 -14 Td
+(| id | uuid | primary key default gen_random_uuid\(\) | ID feature |) Tj
+0 -14 Td
+(| title | text | not null | Judul feature |) Tj
+0 -14 Td
+(| description | text | not null | Deskripsi feature |) Tj
+0 -14 Td
+(| icon_key | text | nullable | Kode icon yang dipetakan di React |) Tj
+0 -14 Td
+(| color_key | text | nullable | Kode warna existing yang dipetakan di React |) Tj
+0 -14 Td
+(| sort_order | integer | not null default 0 | Urutan tampil |) Tj
+0 -14 Td
+(| is_active | boolean | not null default true | Status tampil |) Tj
+0 -14 Td
+(| created_at | timestamptz | not null default now\(\) | Waktu dibuat |) Tj
+0 -14 Td
+(| updated_at | timestamptz | not null default now\(\) | Waktu update |) Tj
+0 -14 Td
+(| updated_by | uuid | nullable references auth.users\(id\) | User terakhir update |) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(Tabel landing_stats) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(| Kolom | Tipe Data | Constraint | Keterangan |) Tj
+0 -14 Td
+(| --- | --- | --- | --- |) Tj
+0 -14 Td
+(| id | uuid | primary key default gen_random_uuid\(\) | ID statistik |) Tj
+0 -14 Td
+(| label | text | not null | Label statistik |) Tj
+0 -14 Td
+(| value_label | text | not null | Nilai siap tampil, contoh: 15K+ |) Tj
+0 -14 Td
+(| sort_order | integer | not null default 0 | Urutan tampil |) Tj
+0 -14 Td
+(| is_active | boolean | not null default true | Status tampil |) Tj
+0 -14 Td
+(| created_at | timestamptz | not null default now\(\) | Waktu dibuat |) Tj
+0 -14 Td
+(| updated_at | timestamptz | not null default now\(\) | Waktu update |) Tj
+0 -14 Td
+(| updated_by | uuid | nullable references auth.users\(id\) | User terakhir update |) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(Index v2) Tj
+0 -14 Td
+() Tj
+ET
+endstream
+endobj
+15 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 3 0 R >> >> /Contents 14 0 R >>
+endobj
+16 0 obj
+<< /Length 2360 >>
+stream
+BT
+/F1 10 Tf
+14 TL
+50 790 Td
+(Tambahkan index ringan:) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(- landing_services \(is_active, sort_order\)) Tj
+0 -14 Td
+(- landing_testimonials \(is_active, sort_order\)) Tj
+0 -14 Td
+(- landing_features \(is_active, sort_order\)) Tj
+0 -14 Td
+(- landing_stats \(is_active, sort_order\)) Tj
+0 -14 Td
+(- landing_hero \(is_active\)) Tj
+0 -14 Td
+(- landing_contact \(is_active\)) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(Aturan RLS v2) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(Public visitor:) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(- anon dan authenticated boleh select data aktif.) Tj
+0 -14 Td
+(- anon tidak boleh insert, update, atau delete.) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(Admin:) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(- Role admin disarankan ditentukan melalui tabel profiles existing jika sudah ada.) Tj
+0 -14 Td
+(- Jika belum ada tabel role existing, gunakan klaim JWT/app metadata Supabase seperti role =) Tj
+0 -14 Td
+('admin'.) Tj
+0 -14 Td
+(- Admin boleh select, insert, update, dan delete pada tabel landing page.) Tj
+0 -14 Td
+(- Validasi detail role admin harus mengikuti pola auth yang sudah ada di project.) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(Contoh policy konseptual:) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(- Public read: using \(is_active = true\)) Tj
+0 -14 Td
+(- Admin write: using \(auth.jwt\(\) ->> 'role' = 'admin'\) with check \(auth.jwt\(\) ->> 'role' =) Tj
+0 -14 Td
+('admin'\)) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(Catatan: AI Coding Agent wajib menyesuaikan policy admin dengan pola role existing di) Tj
+0 -14 Td
+(project, bukan membuat sistem role baru bila sudah ada.) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(Acceptance Criteria v2) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(- PRD menjelaskan data hero, layanan, feature, stats, testimonial, dan kontak.) Tj
+0 -14 Td
+(- Semua tabel public-read memiliki is_active.) Tj
+0 -14 Td
+(- Semua list memiliki sort_order.) Tj
+0 -14 Td
+(- Ada aturan admin write yang tetap fleksibel mengikuti pola auth existing.) Tj
+0 -14 Td
+(- React tetap mempertahankan fallback data.) Tj
+0 -14 Td
+(- Tidak ada instruksi redesign.) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(Hasil Evaluasi v2) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(PRD v2 meningkatkan v1 dari sekadar public data binding menjadi rancangan konten landing) Tj
+0 -14 Td
+(page yang dapat dikelola admin secara sederhana. Evaluasi ini tetap menjaga batasan agar AI) Tj
+0 -14 Td
+(Coding Agent tidak membuat CMS besar atau merombak visual.) Tj
+0 -14 Td
+() Tj
+ET
+endstream
+endobj
+17 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 3 0 R >> >> /Contents 16 0 R >>
+endobj
+18 0 obj
+<< /Length 137 >>
+stream
+BT
+/F1 10 Tf
+14 TL
+50 790 Td
+(Bukti Commit v2) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(Akan diisi setelah commit PRD v2 dibuat.) Tj
+0 -14 Td
+() Tj
+ET
+endstream
+endobj
+19 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 3 0 R >> >> /Contents 18 0 R >>
+endobj
 xref
-0 12
+0 20
 0000000000 65535 f 
 0000000009 00000 n 
 0000000058 00000 n 
-0000000134 00000 n 
-0000000204 00000 n 
-0000002384 00000 n 
-0000002510 00000 n 
-0000004784 00000 n 
-0000004910 00000 n 
-0000007798 00000 n 
-0000007924 00000 n 
-0000009186 00000 n 
+0000000162 00000 n 
+0000000232 00000 n 
+0000002412 00000 n 
+0000002538 00000 n 
+0000004812 00000 n 
+0000004938 00000 n 
+0000007826 00000 n 
+0000007952 00000 n 
+0000010344 00000 n 
+0000010472 00000 n 
+0000013102 00000 n 
+0000013230 00000 n 
+0000016517 00000 n 
+0000016645 00000 n 
+0000019058 00000 n 
+0000019186 00000 n 
+0000019375 00000 n 
 trailer
-<< /Size 12 /Root 1 0 R >>
+<< /Size 20 /Root 1 0 R >>
 startxref
-9314
+19503
 %%EOF

@@ -150,5 +150,163 @@ PRD v1 menghasilkan baseline kebutuhan integrasi data public-read untuk landing 
 
 ### Bukti Commit v1
 
-Akan diisi setelah commit PRD v1 dibuat.
+Commit PRD v1: `e3fb238` - `docs: add CRM landing page PRD v1`
 
+---
+
+## PRD v2 - Evaluasi Menengah
+
+### Tujuan Evaluasi v2
+
+PRD v2 memperbaiki PRD v1 dengan menambahkan kebutuhan pengelolaan konten landing page oleh admin internal CRM, tanpa membuat dashboard baru yang besar. Fokus tetap pada skema Supabase dan instruksi integrasi React yang sederhana.
+
+### Masalah yang Ditemukan dari v1
+
+- PRD v1 sudah cukup untuk public-read, tetapi belum menjelaskan siapa yang boleh mengelola data.
+- Belum ada struktur untuk headline hero, nilai utama, dan statistik ringkas yang tampil di landing page.
+- Belum ada rekomendasi indexing untuk data yang sering diurutkan.
+- Belum ada arahan audit sederhana untuk perubahan data.
+
+### Scope Tambahan v2
+
+Data tambahan yang perlu dinamis:
+
+- Konten hero landing page
+- Highlight/fitur utama pada section tentang kami
+- Statistik ringkas seperti jumlah pakaian, user aktif, dan kepuasan
+- Audit kolom minimal untuk mengetahui siapa yang terakhir mengubah data
+
+Tidak termasuk:
+
+- Page builder
+- Multi-tenant CRM
+- Workflow approval konten
+- Sistem versioning konten
+- Storage upload gambar
+
+### User Story Tambahan
+
+- Sebagai admin CRM, saya ingin mengubah headline hero dan CTA tanpa mengedit file React.
+- Sebagai admin CRM, saya ingin mengatur fitur unggulan BrightWash yang tampil di section tentang kami.
+- Sebagai admin CRM, saya ingin mengatur statistik ringkas agar sesuai data bisnis terbaru.
+- Sebagai developer, saya ingin skema data cukup eksplisit sehingga binding React tidak ambigu.
+
+### Functional Requirements Tambahan
+
+1. Landing page mengambil data hero dari tabel `landing_hero`.
+2. Landing page mengambil highlight fitur dari tabel `landing_features`.
+3. Landing page mengambil statistik ringkas dari tabel `landing_stats`.
+4. Semua data yang tampil ke public harus memiliki `is_active = true`.
+5. Data yang memiliki urutan tampil wajib memakai `sort_order`.
+6. React tetap menyediakan fallback local untuk setiap section.
+7. Tidak perlu membuat UI admin baru jika belum diminta. Data dapat dikelola melalui Supabase Table Editor atau SQL.
+8. Jika admin CRUD sudah ada di project, AI Coding Agent boleh memakai pola existing, tetapi tetap tidak boleh redesign landing page.
+
+### Non-Functional Requirements Tambahan
+
+- Query per section boleh dibuat terpisah agar mudah dibaca.
+- Hindari query nested kompleks.
+- Tidak menggunakan stored procedure kecuali benar-benar dibutuhkan.
+- Komponen `GuestPage.jsx` tidak boleh dipecah besar-besaran pada fase ini.
+- Jika dibuat helper fetch, cukup satu file kecil misalnya `src/pages/landingPageData.js` atau mengikuti pola existing.
+
+### Desain Skema Database Tambahan v2
+
+#### Tabel `landing_hero`
+
+| Kolom | Tipe Data | Constraint | Keterangan |
+| --- | --- | --- | --- |
+| id | uuid | primary key default gen_random_uuid() | ID hero |
+| eyebrow | text | nullable | Label kecil di atas headline |
+| headline | text | not null | Headline utama |
+| highlighted_headline | text | nullable | Teks highlight |
+| description | text | not null | Deskripsi hero |
+| primary_cta_label | text | not null default 'BOOK NOW' | Label CTA utama |
+| primary_cta_path | text | not null default '/login' | Path CTA utama |
+| secondary_cta_label | text | not null default 'EXPLORE NOW' | Label CTA kedua |
+| secondary_cta_anchor | text | not null default '#layanan' | Anchor CTA kedua |
+| hero_image_url | text | nullable | URL gambar hero |
+| price_start_label | text | nullable | Contoh: Rp 7.000 /Kg |
+| rating_label | text | nullable | Contoh: 4.9 |
+| rating_source_label | text | nullable | Contoh: From 500+ Google Business |
+| is_active | boolean | not null default true | Status aktif |
+| created_at | timestamptz | not null default now() | Waktu dibuat |
+| updated_at | timestamptz | not null default now() | Waktu update |
+| updated_by | uuid | nullable references auth.users(id) | User terakhir update |
+
+#### Tabel `landing_features`
+
+| Kolom | Tipe Data | Constraint | Keterangan |
+| --- | --- | --- | --- |
+| id | uuid | primary key default gen_random_uuid() | ID feature |
+| title | text | not null | Judul feature |
+| description | text | not null | Deskripsi feature |
+| icon_key | text | nullable | Kode icon yang dipetakan di React |
+| color_key | text | nullable | Kode warna existing yang dipetakan di React |
+| sort_order | integer | not null default 0 | Urutan tampil |
+| is_active | boolean | not null default true | Status tampil |
+| created_at | timestamptz | not null default now() | Waktu dibuat |
+| updated_at | timestamptz | not null default now() | Waktu update |
+| updated_by | uuid | nullable references auth.users(id) | User terakhir update |
+
+#### Tabel `landing_stats`
+
+| Kolom | Tipe Data | Constraint | Keterangan |
+| --- | --- | --- | --- |
+| id | uuid | primary key default gen_random_uuid() | ID statistik |
+| label | text | not null | Label statistik |
+| value_label | text | not null | Nilai siap tampil, contoh: 15K+ |
+| sort_order | integer | not null default 0 | Urutan tampil |
+| is_active | boolean | not null default true | Status tampil |
+| created_at | timestamptz | not null default now() | Waktu dibuat |
+| updated_at | timestamptz | not null default now() | Waktu update |
+| updated_by | uuid | nullable references auth.users(id) | User terakhir update |
+
+### Index v2
+
+Tambahkan index ringan:
+
+- `landing_services (is_active, sort_order)`
+- `landing_testimonials (is_active, sort_order)`
+- `landing_features (is_active, sort_order)`
+- `landing_stats (is_active, sort_order)`
+- `landing_hero (is_active)`
+- `landing_contact (is_active)`
+
+### Aturan RLS v2
+
+Public visitor:
+
+- `anon` dan `authenticated` boleh `select` data aktif.
+- `anon` tidak boleh `insert`, `update`, atau `delete`.
+
+Admin:
+
+- Role admin disarankan ditentukan melalui tabel `profiles` existing jika sudah ada.
+- Jika belum ada tabel role existing, gunakan klaim JWT/app metadata Supabase seperti `role = 'admin'`.
+- Admin boleh `select`, `insert`, `update`, dan `delete` pada tabel landing page.
+- Validasi detail role admin harus mengikuti pola auth yang sudah ada di project.
+
+Contoh policy konseptual:
+
+- Public read: `using (is_active = true)`
+- Admin write: `using (auth.jwt() ->> 'role' = 'admin') with check (auth.jwt() ->> 'role' = 'admin')`
+
+Catatan: AI Coding Agent wajib menyesuaikan policy admin dengan pola role existing di project, bukan membuat sistem role baru bila sudah ada.
+
+### Acceptance Criteria v2
+
+- PRD menjelaskan data hero, layanan, feature, stats, testimonial, dan kontak.
+- Semua tabel public-read memiliki `is_active`.
+- Semua list memiliki `sort_order`.
+- Ada aturan admin write yang tetap fleksibel mengikuti pola auth existing.
+- React tetap mempertahankan fallback data.
+- Tidak ada instruksi redesign.
+
+### Hasil Evaluasi v2
+
+PRD v2 meningkatkan v1 dari sekadar public data binding menjadi rancangan konten landing page yang dapat dikelola admin secara sederhana. Evaluasi ini tetap menjaga batasan agar AI Coding Agent tidak membuat CMS besar atau merombak visual.
+
+### Bukti Commit v2
+
+Akan diisi setelah commit PRD v2 dibuat.
