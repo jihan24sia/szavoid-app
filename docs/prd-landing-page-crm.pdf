@@ -1,0 +1,413 @@
+%PDF-1.4
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [5 0 R 7 0 R 9 0 R 11 0 R] /Count 4 >>
+endobj
+3 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>
+endobj
+4 0 obj
+<< /Length 2128 >>
+stream
+BT
+/F1 10 Tf
+14 TL
+50 790 Td
+(Product Requirements Document: Landing Page CRM BrightWash) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(Dokumen ini disusun untuk AI Coding Agent agar dapat mengerjakan integrasi backend/Supabase) Tj
+0 -14 Td
+(pada landing page CRM BrightWash secara bertahap, sederhana, dan sesuai pola kode React yang) Tj
+0 -14 Td
+(sudah ada.) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(Safety Rules untuk AI Coding Agent) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(- Dilarang over-engineering. Gunakan logika paling sederhana, mudah dibaca, dan tidak) Tj
+0 -14 Td
+(membuat abstraksi rumit.) Tj
+0 -14 Td
+(- Wajib mengikuti code style, penamaan variabel, struktur komponen React, dan pola file yang) Tj
+0 -14 Td
+(sudah ada.) Tj
+0 -14 Td
+(- Dilarang menyentuh file, komponen, fungsi, atau layout di luar cakupan integrasi landing) Tj
+0 -14 Td
+(page dan Supabase.) Tj
+0 -14 Td
+(- Dilarang mengganti desain visual, susunan section, warna, copywriting utama, dan layout) Tj
+0 -14 Td
+(yang sudah ada kecuali dibutuhkan untuk binding data.) Tj
+0 -14 Td
+(- Fokus pekerjaan adalah integrasi backend dan logika Supabase.) Tj
+0 -14 Td
+(- Jangan refactor struktur UI existing secara sepihak.) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(---) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(PRD v1 - Dasar) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(Tujuan Produk) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(Membuat landing page BrightWash tetap tampil seperti desain existing, tetapi data penting) Tj
+0 -14 Td
+(dapat dikelola dari Supabase agar halaman tidak sepenuhnya hardcoded.) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(Latar Belakang) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(Landing page saat ini berada di src/pages/GuestPage.jsx dan sudah memiliki section utama:) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(- Navbar) Tj
+0 -14 Td
+(- Hero) Tj
+0 -14 Td
+(- Garansi layanan) Tj
+0 -14 Td
+(- Tentang kami) Tj
+0 -14 Td
+(- Layanan dan harga) Tj
+0 -14 Td
+(- Testimonial) Tj
+0 -14 Td
+(- Kontak) Tj
+0 -14 Td
+(- Footer) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(Pada PRD v1, fokus hanya memindahkan data yang paling sering berubah ke database.) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(Scope v1) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(Data yang perlu dinamis:) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(- Daftar layanan dan harga) Tj
+ET
+endstream
+endobj
+5 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 3 0 R >> >> /Contents 4 0 R >>
+endobj
+6 0 obj
+<< /Length 2222 >>
+stream
+BT
+/F1 10 Tf
+14 TL
+50 790 Td
+(- Testimonial pelanggan) Tj
+0 -14 Td
+(- Informasi kontak utama) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(Tidak termasuk:) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(- Redesign landing page) Tj
+0 -14 Td
+(- Sistem admin CRUD lengkap) Tj
+0 -14 Td
+(- Auth role kompleks) Tj
+0 -14 Td
+(- Upload gambar) Tj
+0 -14 Td
+(- Payment integration) Tj
+0 -14 Td
+(- Tracking order realtime) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(User Story) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(- Sebagai calon pelanggan, saya ingin melihat daftar layanan dan harga terbaru di landing) Tj
+0 -14 Td
+(page.) Tj
+0 -14 Td
+(- Sebagai calon pelanggan, saya ingin melihat testimonial pelanggan lain.) Tj
+0 -14 Td
+(- Sebagai calon pelanggan, saya ingin melihat kontak WhatsApp, email, dan alamat workshop.) Tj
+0 -14 Td
+(- Sebagai admin, saya ingin data landing page bisa disiapkan di database Supabase sebelum) Tj
+0 -14 Td
+(React mengambil data.) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(Functional Requirements) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(1. Landing page tetap menggunakan route /.) Tj
+0 -14 Td
+(2. React mengambil data layanan dari tabel landing_services.) Tj
+0 -14 Td
+(3. React mengambil data testimonial dari tabel landing_testimonials.) Tj
+0 -14 Td
+(4. React mengambil data kontak dari tabel landing_contact.) Tj
+0 -14 Td
+(5. Jika fetch gagal, halaman tetap menampilkan data fallback yang sudah ada agar landing) Tj
+0 -14 Td
+(page tidak kosong.) Tj
+0 -14 Td
+(6. Loading state cukup sederhana dan tidak mengubah desain besar halaman.) Tj
+0 -14 Td
+(7. Data hanya dibaca oleh public visitor pada v1.) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(Non-Functional Requirements) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(- Implementasi harus sederhana dan mudah dibaca.) Tj
+0 -14 Td
+(- Query Supabase dibuat langsung di GuestPage.jsx atau helper kecil bila sudah ada pola) Tj
+0 -14 Td
+(existing.) Tj
+0 -14 Td
+(- Tidak menambah state management global.) Tj
+0 -14 Td
+(- Tidak menambah library baru.) Tj
+0 -14 Td
+(- Tidak mengubah routing.) Tj
+0 -14 Td
+(- Tidak mengubah desain visual secara sepihak.) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(Desain Skema Database v1) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(Tabel landing_services) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(| Kolom | Tipe Data | Constraint | Keterangan |) Tj
+0 -14 Td
+(| --- | --- | --- | --- |) Tj
+ET
+endstream
+endobj
+7 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 3 0 R >> >> /Contents 6 0 R >>
+endobj
+8 0 obj
+<< /Length 2836 >>
+stream
+BT
+/F1 10 Tf
+14 TL
+50 790 Td
+(| id | uuid | primary key default gen_random_uuid\(\) | ID layanan |) Tj
+0 -14 Td
+(| slug | text | unique not null | Kode layanan |) Tj
+0 -14 Td
+(| name | text | not null | Nama layanan |) Tj
+0 -14 Td
+(| description | text | not null | Deskripsi singkat |) Tj
+0 -14 Td
+(| price_label | text | not null | Contoh: Rp 10.000 /Kg |) Tj
+0 -14 Td
+(| duration_label | text | not null | Contoh: 2-3 Hari |) Tj
+0 -14 Td
+(| badge_label | text | nullable | Label badge |) Tj
+0 -14 Td
+(| image_url | text | nullable | URL gambar |) Tj
+0 -14 Td
+(| sort_order | integer | not null default 0 | Urutan tampil |) Tj
+0 -14 Td
+(| is_active | boolean | not null default true | Status tampil |) Tj
+0 -14 Td
+(| created_at | timestamptz | not null default now\(\) | Waktu dibuat |) Tj
+0 -14 Td
+(| updated_at | timestamptz | not null default now\(\) | Waktu update |) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(Tabel landing_testimonials) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(| Kolom | Tipe Data | Constraint | Keterangan |) Tj
+0 -14 Td
+(| --- | --- | --- | --- |) Tj
+0 -14 Td
+(| id | uuid | primary key default gen_random_uuid\(\) | ID testimonial |) Tj
+0 -14 Td
+(| customer_name | text | not null | Nama pelanggan |) Tj
+0 -14 Td
+(| customer_role | text | nullable | Label peran pelanggan |) Tj
+0 -14 Td
+(| message | text | not null | Isi review |) Tj
+0 -14 Td
+(| rating | integer | not null check rating between 1 and 5 | Rating |) Tj
+0 -14 Td
+(| sort_order | integer | not null default 0 | Urutan tampil |) Tj
+0 -14 Td
+(| is_active | boolean | not null default true | Status tampil |) Tj
+0 -14 Td
+(| created_at | timestamptz | not null default now\(\) | Waktu dibuat |) Tj
+0 -14 Td
+(| updated_at | timestamptz | not null default now\(\) | Waktu update |) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(Tabel landing_contact) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(| Kolom | Tipe Data | Constraint | Keterangan |) Tj
+0 -14 Td
+(| --- | --- | --- | --- |) Tj
+0 -14 Td
+(| id | uuid | primary key default gen_random_uuid\(\) | ID kontak |) Tj
+0 -14 Td
+(| whatsapp_number | text | not null | Nomor WhatsApp |) Tj
+0 -14 Td
+(| email | text | not null | Email support |) Tj
+0 -14 Td
+(| address | text | not null | Alamat workshop |) Tj
+0 -14 Td
+(| operational_weekday | text | nullable | Jam kerja Senin-Sabtu |) Tj
+0 -14 Td
+(| operational_holiday | text | nullable | Jam libur |) Tj
+0 -14 Td
+(| is_active | boolean | not null default true | Status kontak aktif |) Tj
+0 -14 Td
+(| created_at | timestamptz | not null default now\(\) | Waktu dibuat |) Tj
+0 -14 Td
+(| updated_at | timestamptz | not null default now\(\) | Waktu update |) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(Aturan RLS v1) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(Semua tabel landing page bersifat public read, tetapi tidak boleh public write.) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(Policy:) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(- Enable RLS untuk semua tabel.) Tj
+ET
+endstream
+endobj
+9 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 3 0 R >> >> /Contents 8 0 R >>
+endobj
+10 0 obj
+<< /Length 1209 >>
+stream
+BT
+/F1 10 Tf
+14 TL
+50 790 Td
+(- Allow select untuk role anon dan authenticated ketika is_active = true.) Tj
+0 -14 Td
+(- Tidak membuat policy insert/update/delete untuk anon.) Tj
+0 -14 Td
+(- Operasi tulis dilakukan lewat SQL editor/Supabase service role, bukan dari landing page.) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(Acceptance Criteria v1) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(- Landing page tetap dapat dibuka di /.) Tj
+0 -14 Td
+(- Data layanan tampil dari Supabase jika tersedia.) Tj
+0 -14 Td
+(- Data testimonial tampil dari Supabase jika tersedia.) Tj
+0 -14 Td
+(- Data kontak tampil dari Supabase jika tersedia.) Tj
+0 -14 Td
+(- Fallback data existing tampil jika Supabase error atau tabel kosong.) Tj
+0 -14 Td
+(- Tidak ada perubahan visual besar.) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(Hasil Evaluasi v1) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(PRD v1 menghasilkan baseline kebutuhan integrasi data public-read untuk landing page CRM) Tj
+0 -14 Td
+(BrightWash. Scope sengaja dibatasi agar AI Coding Agent dapat mengeksekusi perubahan backend) Tj
+0 -14 Td
+(terlebih dahulu tanpa mengubah desain.) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(Bukti Commit v1) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(Akan diisi setelah commit PRD v1 dibuat.) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+() Tj
+ET
+endstream
+endobj
+11 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 3 0 R >> >> /Contents 10 0 R >>
+endobj
+xref
+0 12
+0000000000 65535 f 
+0000000009 00000 n 
+0000000058 00000 n 
+0000000134 00000 n 
+0000000204 00000 n 
+0000002384 00000 n 
+0000002510 00000 n 
+0000004784 00000 n 
+0000004910 00000 n 
+0000007798 00000 n 
+0000007924 00000 n 
+0000009186 00000 n 
+trailer
+<< /Size 12 /Root 1 0 R >>
+startxref
+9314
+%%EOF
