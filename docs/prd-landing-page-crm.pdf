@@ -3,7 +3,7 @@
 << /Type /Catalog /Pages 2 0 R >>
 endobj
 2 0 obj
-<< /Type /Pages /Kids [5 0 R 7 0 R 9 0 R 11 0 R 13 0 R 15 0 R 17 0 R 19 0 R] /Count 8 >>
+<< /Type /Pages /Kids [5 0 R 7 0 R 9 0 R 11 0 R 13 0 R 15 0 R 17 0 R 19 0 R 21 0 R 23 0 R 25 0 R 27 0 R 29 0 R 31 0 R 33 0 R 35 0 R] /Count 16 >>
 endobj
 3 0 obj
 << /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>
@@ -765,7 +765,7 @@ endobj
 << /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 3 0 R >> >> /Contents 16 0 R >>
 endobj
 18 0 obj
-<< /Length 137 >>
+<< /Length 2274 >>
 stream
 BT
 /F1 10 Tf
@@ -775,7 +775,95 @@ BT
 0 -14 Td
 () Tj
 0 -14 Td
-(Akan diisi setelah commit PRD v2 dibuat.) Tj
+(Commit PRD v2: 42dc110 - docs: expand CRM landing page PRD v2) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(---) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(PRD v3 - Komplit Landing Page untuk CRM) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(Tujuan Evaluasi v3) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(PRD v3 adalah versi final untuk diberikan kepada AI Coding Agent. Versi ini menyatukan) Tj
+0 -14 Td
+(kebutuhan konsep, skema database, RLS, urutan eksekusi, acceptance criteria, dan batasan) Tj
+0 -14 Td
+(implementasi React agar landing page BrightWash terhubung ke Supabase tanpa merusak desain) Tj
+0 -14 Td
+(existing.) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(Ringkasan Produk) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(BrightWash adalah landing page untuk CRM layanan laundry premium. Landing page berfungsi) Tj
+0 -14 Td
+(sebagai halaman publik untuk calon pelanggan, sedangkan data kontennya disiapkan dari) Tj
+0 -14 Td
+(Supabase agar admin dapat memperbarui informasi bisnis tanpa mengedit file React.) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(Halaman existing yang menjadi target:) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(- File utama: src/pages/GuestPage.jsx) Tj
+0 -14 Td
+(- Route utama: /) Tj
+0 -14 Td
+(- Supabase client: src/pages/supabaseClient.js) Tj
+0 -14 Td
+(- Pola visual: dark premium landing page dengan section hero, layanan, testimonial, kontak,) Tj
+0 -14 Td
+(dan footer.) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(Sasaran Bisnis) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(- Membuat landing page lebih mudah dipelihara.) Tj
+0 -14 Td
+(- Mengurangi hardcoded content untuk data bisnis yang sering berubah.) Tj
+0 -14 Td
+(- Menyiapkan struktur database yang aman untuk public-read.) Tj
+0 -14 Td
+(- Memberikan instruksi jelas agar AI Coding Agent mengeksekusi SQL terlebih dahulu sebelum) Tj
+0 -14 Td
+(binding React.) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(Sasaran Pengguna) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(- Visitor publik: melihat informasi layanan, harga, testimonial, kontak, dan CTA) Tj
+0 -14 Td
+(login/order.) Tj
+0 -14 Td
+(- Admin CRM: mengelola konten landing page melalui Supabase Table Editor atau mekanisme) Tj
+0 -14 Td
+(admin existing.) Tj
+0 -14 Td
+(- Developer/AI Coding Agent: mengintegrasikan data Supabase ke React dengan perubahan) Tj
+0 -14 Td
+(minimal.) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(Prinsip Implementasi) Tj
 0 -14 Td
 () Tj
 ET
@@ -784,30 +872,842 @@ endobj
 19 0 obj
 << /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 3 0 R >> >> /Contents 18 0 R >>
 endobj
+20 0 obj
+<< /Length 2264 >>
+stream
+BT
+/F1 10 Tf
+14 TL
+50 790 Td
+(- Keep it simple.) Tj
+0 -14 Td
+(- Jangan membuat CMS baru kecuali diminta.) Tj
+0 -14 Td
+(- Jangan mengubah desain visual existing.) Tj
+0 -14 Td
+(- Jangan memecah komponen besar jika tidak perlu.) Tj
+0 -14 Td
+(- Gunakan fallback data agar halaman tetap hidup saat Supabase belum siap.) Tj
+0 -14 Td
+(- Gunakan query Supabase yang eksplisit dan mudah dibaca.) Tj
+0 -14 Td
+(- Mapping icon dan warna dilakukan di React dengan whitelist key sederhana, bukan menyimpan) Tj
+0 -14 Td
+(JSX di database.) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(Scope Final v3) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(Section yang harus bisa membaca data dari Supabase:) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(1. Hero) Tj
+0 -14 Td
+(2. Guarantee banner) Tj
+0 -14 Td
+(3. About/feature cards) Tj
+0 -14 Td
+(4. Operational pillars) Tj
+0 -14 Td
+(5. Statistics) Tj
+0 -14 Td
+(6. Services/pricing) Tj
+0 -14 Td
+(7. Testimonials/reviews) Tj
+0 -14 Td
+(8. Contact and operational hours) Tj
+0 -14 Td
+(9. Footer legal/short copy) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(Out of Scope v3) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(- Pembuatan dashboard admin baru.) Tj
+0 -14 Td
+(- Sistem approval konten.) Tj
+0 -14 Td
+(- Upload file ke Supabase Storage.) Tj
+0 -14 Td
+(- Payment gateway.) Tj
+0 -14 Td
+(- Order tracking realtime.) Tj
+0 -14 Td
+(- Refactor UI.) Tj
+0 -14 Td
+(- Migrasi seluruh CRM ke Supabase.) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(Functional Requirements Final) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(1. AI Coding Agent harus membuat SQL DDL dan RLS terlebih dahulu.) Tj
+0 -14 Td
+(2. AI Coding Agent harus menjalankan SQL tersebut di Supabase sebelum menulis kode React.) Tj
+0 -14 Td
+(3. React mengambil data landing page dari Supabase.) Tj
+0 -14 Td
+(4. React tetap menggunakan fallback data existing jika:) Tj
+0 -14 Td
+(- tabel belum ada,) Tj
+0 -14 Td
+(- data kosong,) Tj
+0 -14 Td
+(- koneksi Supabase gagal,) Tj
+0 -14 Td
+(- policy RLS belum benar.) Tj
+0 -14 Td
+(5. Semua list harus diurutkan berdasarkan sort_order ascending.) Tj
+0 -14 Td
+(6. Semua data publik harus difilter is_active = true.) Tj
+0 -14 Td
+(7. Gambar boleh tetap memakai asset lokal existing jika image_url kosong.) Tj
+0 -14 Td
+(8. Icon harus dipilih dari mapping icon_key yang aman di React.) Tj
+0 -14 Td
+(9. Warna harus dipilih dari mapping color_key yang aman di React.) Tj
+ET
+endstream
+endobj
+21 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 3 0 R >> >> /Contents 20 0 R >>
+endobj
+22 0 obj
+<< /Length 2524 >>
+stream
+BT
+/F1 10 Tf
+14 TL
+50 790 Td
+(10. CTA tetap mengarah ke route existing seperti /login atau anchor section existing.) Tj
+0 -14 Td
+(11. Tidak boleh mengganti route /.) Tj
+0 -14 Td
+(12. Tidak boleh mengubah copywriting besar jika data Supabase kosong.) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(Data Fetching Requirements) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(Query minimal:) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(- landing_hero: ambil 1 row aktif terbaru.) Tj
+0 -14 Td
+(- landing_guarantee: ambil 1 row aktif.) Tj
+0 -14 Td
+(- landing_features: ambil rows aktif order by sort_order.) Tj
+0 -14 Td
+(- landing_pillars: ambil rows aktif order by sort_order.) Tj
+0 -14 Td
+(- landing_stats: ambil rows aktif order by sort_order.) Tj
+0 -14 Td
+(- landing_services: ambil rows aktif order by sort_order.) Tj
+0 -14 Td
+(- landing_testimonials: ambil rows aktif order by sort_order.) Tj
+0 -14 Td
+(- landing_contact: ambil 1 row aktif.) Tj
+0 -14 Td
+(- landing_footer: ambil 1 row aktif.) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(Error handling:) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(- Gunakan try/catch atau pengecekan { error }.) Tj
+0 -14 Td
+(- Log error secukupnya dengan console.error.) Tj
+0 -14 Td
+(- Jangan tampilkan error teknis ke visitor.) Tj
+0 -14 Td
+(- Jangan membuat loading blocking full page bila fallback sudah tersedia.) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(Desain Skema Database Final v3) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(Tabel landing_hero) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(| Kolom | Tipe Data | Constraint |) Tj
+0 -14 Td
+(| --- | --- | --- |) Tj
+0 -14 Td
+(| id | uuid | primary key default gen_random_uuid\(\) |) Tj
+0 -14 Td
+(| eyebrow | text | nullable |) Tj
+0 -14 Td
+(| headline | text | not null |) Tj
+0 -14 Td
+(| highlighted_headline | text | nullable |) Tj
+0 -14 Td
+(| description | text | not null |) Tj
+0 -14 Td
+(| primary_cta_label | text | not null default 'BOOK NOW' |) Tj
+0 -14 Td
+(| primary_cta_path | text | not null default '/login' |) Tj
+0 -14 Td
+(| secondary_cta_label | text | not null default 'EXPLORE NOW' |) Tj
+0 -14 Td
+(| secondary_cta_anchor | text | not null default '#layanan' |) Tj
+0 -14 Td
+(| hero_image_url | text | nullable |) Tj
+0 -14 Td
+(| price_start_label | text | nullable |) Tj
+0 -14 Td
+(| rating_label | text | nullable |) Tj
+0 -14 Td
+(| rating_source_label | text | nullable |) Tj
+0 -14 Td
+(| is_active | boolean | not null default true |) Tj
+0 -14 Td
+(| created_at | timestamptz | not null default now\(\) |) Tj
+0 -14 Td
+(| updated_at | timestamptz | not null default now\(\) |) Tj
+0 -14 Td
+(| updated_by | uuid | nullable references auth.users\(id\) |) Tj
+ET
+endstream
+endobj
+23 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 3 0 R >> >> /Contents 22 0 R >>
+endobj
+24 0 obj
+<< /Length 2331 >>
+stream
+BT
+/F1 10 Tf
+14 TL
+50 790 Td
+() Tj
+0 -14 Td
+(Tabel landing_guarantee) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(| Kolom | Tipe Data | Constraint |) Tj
+0 -14 Td
+(| --- | --- | --- |) Tj
+0 -14 Td
+(| id | uuid | primary key default gen_random_uuid\(\) |) Tj
+0 -14 Td
+(| title | text | not null |) Tj
+0 -14 Td
+(| description | text | not null |) Tj
+0 -14 Td
+(| cta_label | text | not null default 'Order Sekarang' |) Tj
+0 -14 Td
+(| cta_path | text | not null default '/login' |) Tj
+0 -14 Td
+(| is_active | boolean | not null default true |) Tj
+0 -14 Td
+(| created_at | timestamptz | not null default now\(\) |) Tj
+0 -14 Td
+(| updated_at | timestamptz | not null default now\(\) |) Tj
+0 -14 Td
+(| updated_by | uuid | nullable references auth.users\(id\) |) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(Tabel landing_features) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(| Kolom | Tipe Data | Constraint |) Tj
+0 -14 Td
+(| --- | --- | --- |) Tj
+0 -14 Td
+(| id | uuid | primary key default gen_random_uuid\(\) |) Tj
+0 -14 Td
+(| title | text | not null |) Tj
+0 -14 Td
+(| description | text | not null |) Tj
+0 -14 Td
+(| icon_key | text | nullable |) Tj
+0 -14 Td
+(| color_key | text | nullable |) Tj
+0 -14 Td
+(| sort_order | integer | not null default 0 |) Tj
+0 -14 Td
+(| is_active | boolean | not null default true |) Tj
+0 -14 Td
+(| created_at | timestamptz | not null default now\(\) |) Tj
+0 -14 Td
+(| updated_at | timestamptz | not null default now\(\) |) Tj
+0 -14 Td
+(| updated_by | uuid | nullable references auth.users\(id\) |) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(Tabel landing_pillars) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(| Kolom | Tipe Data | Constraint |) Tj
+0 -14 Td
+(| --- | --- | --- |) Tj
+0 -14 Td
+(| id | uuid | primary key default gen_random_uuid\(\) |) Tj
+0 -14 Td
+(| title | text | not null |) Tj
+0 -14 Td
+(| description | text | not null |) Tj
+0 -14 Td
+(| icon_key | text | nullable |) Tj
+0 -14 Td
+(| color_key | text | nullable |) Tj
+0 -14 Td
+(| sort_order | integer | not null default 0 |) Tj
+0 -14 Td
+(| is_active | boolean | not null default true |) Tj
+0 -14 Td
+(| created_at | timestamptz | not null default now\(\) |) Tj
+0 -14 Td
+(| updated_at | timestamptz | not null default now\(\) |) Tj
+0 -14 Td
+(| updated_by | uuid | nullable references auth.users\(id\) |) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(Tabel landing_stats) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(| Kolom | Tipe Data | Constraint |) Tj
+ET
+endstream
+endobj
+25 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 3 0 R >> >> /Contents 24 0 R >>
+endobj
+26 0 obj
+<< /Length 2419 >>
+stream
+BT
+/F1 10 Tf
+14 TL
+50 790 Td
+(| --- | --- | --- |) Tj
+0 -14 Td
+(| id | uuid | primary key default gen_random_uuid\(\) |) Tj
+0 -14 Td
+(| label | text | not null |) Tj
+0 -14 Td
+(| value_label | text | not null |) Tj
+0 -14 Td
+(| sort_order | integer | not null default 0 |) Tj
+0 -14 Td
+(| is_active | boolean | not null default true |) Tj
+0 -14 Td
+(| created_at | timestamptz | not null default now\(\) |) Tj
+0 -14 Td
+(| updated_at | timestamptz | not null default now\(\) |) Tj
+0 -14 Td
+(| updated_by | uuid | nullable references auth.users\(id\) |) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(Tabel landing_services) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(| Kolom | Tipe Data | Constraint |) Tj
+0 -14 Td
+(| --- | --- | --- |) Tj
+0 -14 Td
+(| id | uuid | primary key default gen_random_uuid\(\) |) Tj
+0 -14 Td
+(| slug | text | unique not null |) Tj
+0 -14 Td
+(| name | text | not null |) Tj
+0 -14 Td
+(| description | text | not null |) Tj
+0 -14 Td
+(| price_label | text | not null |) Tj
+0 -14 Td
+(| duration_label | text | not null |) Tj
+0 -14 Td
+(| badge_label | text | nullable |) Tj
+0 -14 Td
+(| image_url | text | nullable |) Tj
+0 -14 Td
+(| color_key | text | nullable |) Tj
+0 -14 Td
+(| sort_order | integer | not null default 0 |) Tj
+0 -14 Td
+(| is_active | boolean | not null default true |) Tj
+0 -14 Td
+(| created_at | timestamptz | not null default now\(\) |) Tj
+0 -14 Td
+(| updated_at | timestamptz | not null default now\(\) |) Tj
+0 -14 Td
+(| updated_by | uuid | nullable references auth.users\(id\) |) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(Tabel landing_testimonials) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(| Kolom | Tipe Data | Constraint |) Tj
+0 -14 Td
+(| --- | --- | --- |) Tj
+0 -14 Td
+(| id | uuid | primary key default gen_random_uuid\(\) |) Tj
+0 -14 Td
+(| customer_name | text | not null |) Tj
+0 -14 Td
+(| customer_role | text | nullable |) Tj
+0 -14 Td
+(| message | text | not null |) Tj
+0 -14 Td
+(| rating | integer | not null check \(rating between 1 and 5\) |) Tj
+0 -14 Td
+(| sort_order | integer | not null default 0 |) Tj
+0 -14 Td
+(| is_active | boolean | not null default true |) Tj
+0 -14 Td
+(| created_at | timestamptz | not null default now\(\) |) Tj
+0 -14 Td
+(| updated_at | timestamptz | not null default now\(\) |) Tj
+0 -14 Td
+(| updated_by | uuid | nullable references auth.users\(id\) |) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(Tabel landing_contact) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(| Kolom | Tipe Data | Constraint |) Tj
+0 -14 Td
+(| --- | --- | --- |) Tj
+ET
+endstream
+endobj
+27 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 3 0 R >> >> /Contents 26 0 R >>
+endobj
+28 0 obj
+<< /Length 2317 >>
+stream
+BT
+/F1 10 Tf
+14 TL
+50 790 Td
+(| id | uuid | primary key default gen_random_uuid\(\) |) Tj
+0 -14 Td
+(| whatsapp_number | text | not null |) Tj
+0 -14 Td
+(| whatsapp_url | text | nullable |) Tj
+0 -14 Td
+(| email | text | not null |) Tj
+0 -14 Td
+(| address | text | not null |) Tj
+0 -14 Td
+(| operational_weekday | text | nullable |) Tj
+0 -14 Td
+(| operational_holiday | text | nullable |) Tj
+0 -14 Td
+(| is_active | boolean | not null default true |) Tj
+0 -14 Td
+(| created_at | timestamptz | not null default now\(\) |) Tj
+0 -14 Td
+(| updated_at | timestamptz | not null default now\(\) |) Tj
+0 -14 Td
+(| updated_by | uuid | nullable references auth.users\(id\) |) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(Tabel landing_footer) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(| Kolom | Tipe Data | Constraint |) Tj
+0 -14 Td
+(| --- | --- | --- |) Tj
+0 -14 Td
+(| id | uuid | primary key default gen_random_uuid\(\) |) Tj
+0 -14 Td
+(| brand_name | text | not null default 'BRIGHTWASH' |) Tj
+0 -14 Td
+(| description | text | not null |) Tj
+0 -14 Td
+(| security_note | text | nullable |) Tj
+0 -14 Td
+(| copyright_label | text | nullable |) Tj
+0 -14 Td
+(| privacy_label | text | nullable default 'Privacy Policy' |) Tj
+0 -14 Td
+(| terms_label | text | nullable default 'Terms of Service' |) Tj
+0 -14 Td
+(| is_active | boolean | not null default true |) Tj
+0 -14 Td
+(| created_at | timestamptz | not null default now\(\) |) Tj
+0 -14 Td
+(| updated_at | timestamptz | not null default now\(\) |) Tj
+0 -14 Td
+(| updated_by | uuid | nullable references auth.users\(id\) |) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(SQL DDL Konseptual) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(AI Coding Agent wajib menghasilkan SQL final sendiri berdasarkan skema di atas. SQL harus) Tj
+0 -14 Td
+(mencakup:) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(- create extension if not exists pgcrypto;) Tj
+0 -14 Td
+(- create table if not exists ...) Tj
+0 -14 Td
+(- alter table ... enable row level security;) Tj
+0 -14 Td
+(- index untuk is_active dan sort_order) Tj
+0 -14 Td
+(- policy public select) Tj
+0 -14 Td
+(- policy admin write) Tj
+0 -14 Td
+(- trigger updated_at bila diperlukan) Tj
+0 -14 Td
+(- seed data minimal sesuai konten existing agar halaman langsung terisi) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(RLS Final) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(Untuk setiap tabel landing:) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(Public select:) Tj
+0 -14 Td
+() Tj
+ET
+endstream
+endobj
+29 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 3 0 R >> >> /Contents 28 0 R >>
+endobj
+30 0 obj
+<< /Length 1925 >>
+stream
+BT
+/F1 10 Tf
+14 TL
+50 790 Td
+(sql) Tj
+0 -14 Td
+(create policy "Public can read active landing content") Tj
+0 -14 Td
+(on <table_name>) Tj
+0 -14 Td
+(for select) Tj
+0 -14 Td
+(to anon, authenticated) Tj
+0 -14 Td
+(using \(is_active = true\);) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(Admin write:) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(sql) Tj
+0 -14 Td
+(create policy "Admin can manage landing content") Tj
+0 -14 Td
+(on <table_name>) Tj
+0 -14 Td
+(for all) Tj
+0 -14 Td
+(to authenticated) Tj
+0 -14 Td
+(using \(auth.jwt\(\) ->> 'role' = 'admin'\)) Tj
+0 -14 Td
+(with check \(auth.jwt\(\) ->> 'role' = 'admin'\);) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(Catatan penting:) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(- Jika project sudah memakai tabel role/profile, policy admin harus menyesuaikan pola) Tj
+0 -14 Td
+(existing.) Tj
+0 -14 Td
+(- Jika belum ada role admin, jangan membuat auth system baru di React hanya untuk PRD ini.) Tj
+0 -14 Td
+(- Jangan memberi write access ke anon.) Tj
+0 -14 Td
+(- Jangan memakai service role key di frontend.) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(Seed Data Minimal) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(AI Coding Agent harus membuat seed minimal untuk:) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(- 1 row landing_hero) Tj
+0 -14 Td
+(- 1 row landing_guarantee) Tj
+0 -14 Td
+(- 4 row landing_features) Tj
+0 -14 Td
+(- 3 row landing_stats) Tj
+0 -14 Td
+(- 6 row landing_services) Tj
+0 -14 Td
+(- 10 row landing_testimonials) Tj
+0 -14 Td
+(- 1 row landing_contact) Tj
+0 -14 Td
+(- 1 row landing_footer) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(Isi seed boleh mengacu pada konten existing di GuestPage.jsx agar visual dan pesan tetap) Tj
+0 -14 Td
+(konsisten.) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(Panduan Implementasi React) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(1. Import supabase dari src/pages/supabaseClient.js.) Tj
+0 -14 Td
+(2. Tambahkan state lokal untuk data landing page, memakai fallback dari data existing.) Tj
+0 -14 Td
+(3. Gunakan useEffect untuk fetch data saat halaman dimount.) Tj
+ET
+endstream
+endobj
+31 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 3 0 R >> >> /Contents 30 0 R >>
+endobj
+32 0 obj
+<< /Length 2532 >>
+stream
+BT
+/F1 10 Tf
+14 TL
+50 790 Td
+(4. Fetch data section secara sederhana.) Tj
+0 -14 Td
+(5. Mapping hasil Supabase ke format yang sudah dipakai render existing.) Tj
+0 -14 Td
+(6. Gunakan image_url || assetLokal.) Tj
+0 -14 Td
+(7. Gunakan icon_key dan color_key melalui object mapping lokal.) Tj
+0 -14 Td
+(8. Jangan mengubah struktur visual section kecuali mengganti value hardcoded menjadi) Tj
+0 -14 Td
+(variabel.) Tj
+0 -14 Td
+(9. Jangan menghapus CTA existing.) Tj
+0 -14 Td
+(10. Jalankan lint/build setelah implementasi.) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(Acceptance Criteria Final) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(- SQL DDL berhasil dieksekusi di Supabase.) Tj
+0 -14 Td
+(- RLS aktif untuk semua tabel.) Tj
+0 -14 Td
+(- Public visitor hanya bisa membaca data aktif.) Tj
+0 -14 Td
+(- Public visitor tidak bisa menulis data.) Tj
+0 -14 Td
+(- Admin authenticated dapat mengelola data sesuai policy project.) Tj
+0 -14 Td
+(- Landing page tetap tampil jika Supabase error.) Tj
+0 -14 Td
+(- Landing page menggunakan data Supabase jika tersedia.) Tj
+0 -14 Td
+(- Tidak ada perubahan layout besar.) Tj
+0 -14 Td
+(- Tidak ada service role key di frontend.) Tj
+0 -14 Td
+(- Build React berhasil.) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(Risiko dan Mitigasi) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(| Risiko | Dampak | Mitigasi |) Tj
+0 -14 Td
+(| --- | --- | --- |) Tj
+0 -14 Td
+(| RLS terlalu ketat | Data tidak tampil | Wajib fallback dan cek policy select |) Tj
+0 -14 Td
+(| RLS terlalu longgar | Public bisa edit data | Tidak ada policy write untuk anon |) Tj
+0 -14 Td
+(| Tabel kosong | Section kosong | Seed data minimal dan fallback |) Tj
+0 -14 Td
+(| Icon key tidak valid | UI rusak | Mapping icon dengan default icon |) Tj
+0 -14 Td
+(| URL gambar kosong | Gambar tidak tampil | Gunakan asset lokal existing |) Tj
+0 -14 Td
+(| Role admin belum ada | Admin write gagal | Sesuaikan dengan auth pattern existing |) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(Hasil Evaluasi v3) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(PRD v3 menjadi dokumen final yang siap diberikan ke AI Coding Agent. Versi ini memuat) Tj
+0 -14 Td
+(kebutuhan konseptual, batasan strict, skema database lengkap, RLS, seed data, instruksi) Tj
+0 -14 Td
+(eksekusi SQL, dan panduan React yang tetap menjaga desain landing page CRM BrightWash.) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(Bukti Commit v3) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(Akan diisi setelah commit PRD v3 dibuat.) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(---) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(Instruksi Khusus untuk Qoder / AI Coding Agent) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(Sebelum menulis atau mengubah kode React, Qoder wajib:) Tj
+ET
+endstream
+endobj
+33 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 3 0 R >> >> /Contents 32 0 R >>
+endobj
+34 0 obj
+<< /Length 932 >>
+stream
+BT
+/F1 10 Tf
+14 TL
+50 790 Td
+() Tj
+0 -14 Td
+(1. Membaca PRD ini sampai selesai.) Tj
+0 -14 Td
+(2. Menghasilkan SQL DDL lengkap berdasarkan skema database PRD v3.) Tj
+0 -14 Td
+(3. Menghasilkan SQL RLS lengkap untuk semua tabel landing page.) Tj
+0 -14 Td
+(4. Mengeksekusi SQL DDL dan RLS tersebut di Supabase terlebih dahulu.) Tj
+0 -14 Td
+(5. Menambahkan seed data minimal agar landing page memiliki data awal.) Tj
+0 -14 Td
+(6. Memverifikasi bahwa query select public terhadap data aktif berhasil.) Tj
+0 -14 Td
+(7. Baru setelah database siap, menyesuaikan kode React di GuestPage.jsx agar membaca data) Tj
+0 -14 Td
+(dari skema tersebut.) Tj
+0 -14 Td
+(8. Menjaga desain visual existing dan hanya mengganti hardcoded data menjadi data binding) Tj
+0 -14 Td
+(Supabase.) Tj
+0 -14 Td
+(9. Menjalankan lint/build setelah perubahan React.) Tj
+0 -14 Td
+(10. Melaporkan hasil eksekusi SQL, hasil build, dan file yang diubah.) Tj
+0 -14 Td
+() Tj
+ET
+endstream
+endobj
+35 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 3 0 R >> >> /Contents 34 0 R >>
+endobj
 xref
-0 20
+0 36
 0000000000 65535 f 
 0000000009 00000 n 
 0000000058 00000 n 
-0000000162 00000 n 
-0000000232 00000 n 
-0000002412 00000 n 
-0000002538 00000 n 
-0000004812 00000 n 
-0000004938 00000 n 
-0000007826 00000 n 
-0000007952 00000 n 
-0000010344 00000 n 
-0000010472 00000 n 
-0000013102 00000 n 
-0000013230 00000 n 
-0000016517 00000 n 
-0000016645 00000 n 
-0000019058 00000 n 
-0000019186 00000 n 
-0000019375 00000 n 
+0000000219 00000 n 
+0000000289 00000 n 
+0000002469 00000 n 
+0000002595 00000 n 
+0000004869 00000 n 
+0000004995 00000 n 
+0000007883 00000 n 
+0000008009 00000 n 
+0000010401 00000 n 
+0000010529 00000 n 
+0000013159 00000 n 
+0000013287 00000 n 
+0000016574 00000 n 
+0000016702 00000 n 
+0000019115 00000 n 
+0000019243 00000 n 
+0000021570 00000 n 
+0000021698 00000 n 
+0000024015 00000 n 
+0000024143 00000 n 
+0000026720 00000 n 
+0000026848 00000 n 
+0000029232 00000 n 
+0000029360 00000 n 
+0000031832 00000 n 
+0000031960 00000 n 
+0000034330 00000 n 
+0000034458 00000 n 
+0000036436 00000 n 
+0000036564 00000 n 
+0000039149 00000 n 
+0000039277 00000 n 
+0000040261 00000 n 
 trailer
-<< /Size 20 /Root 1 0 R >>
+<< /Size 36 /Root 1 0 R >>
 startxref
-19503
+40389
 %%EOF
