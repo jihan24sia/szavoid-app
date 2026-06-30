@@ -20,7 +20,7 @@ export default function MemberDashboard() {
   // Core Data States
   const [userProfile, setUserProfile] = useState(null);
   const [orders, setOrders] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true); // Diubah ke true untuk proteksi awal loading screen
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Form Booking States
@@ -29,7 +29,7 @@ export default function MemberDashboard() {
   const [customerName, setCustomerName] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [selectedScent, setSelectedScent] = useState('Lavender Premium');
-  const [paymentMethod, setPaymentMethod] = useState('qris'); // Default QRIS
+  const [paymentMethod, setPaymentMethod] = useState('qris'); 
   const [claimedVoucher, setClaimedVoucher] = useState(null);
 
   const services = [
@@ -41,42 +41,63 @@ export default function MemberDashboard() {
     { id: 'jas-gaun', name: 'Premium Satuan (Jas/Gaun)', price: 15000, icon: <Sparkles size={20} />, color: 'from-violet-600 to-fuchsia-600', eta: '2-3 Hari', category: 'satuan' },
   ];
 
-  const scents = [
-    { id: 'lavender', name: 'Lavender Premium', desc: 'Menenangkan & Tahan Lama' },
-    { id: 'sakura', name: 'Sakura Blossom', desc: 'Manis, Segar & Elegan' },
-    { id: 'vanilla', name: 'Sweet Vanilla', desc: 'Lembut & Wangi Kue Mewah' },
-    { id: 'ocean', name: 'Ocean Breeze', desc: 'Segar Alami Seperti Pantai' }
-  ];
+  // --- ⚙️ FUNGSI BARU: CLEAN LOGOUT (HAPUS SESSION SUPABASE & GOOGLE) ---
+  const handleLogout = async () => {
+    const confirmLogout = window.confirm("Apakah Anda yakin ingin keluar dan berganti akun?");
+    if (!confirmLogout) return;
 
-  // --- 1. LIVE DATA SINKRONISASI MEMBER ---
+    try {
+      await supabase.auth.signOut();
+      alert("Berhasil keluar! Sesi Anda telah dihapus.");
+      navigate('/login');
+    } catch (err) {
+      console.error("Gagal Logout:", err.message);
+    }
+  };
+
+  // --- 1. LIVE DATA SINKRONISASI & PROTEKSI ROUTER ---
   useEffect(() => {
-    if (!userId) return;
+    // 🔒 PROTEKSI 1: Jika tidak ada userId di URL (Akses Guest Tanpa Izin), lempar kembali ke Login
+    if (!userId) {
+      alert("Akses Ditolak! Anda harus login terlebih dahulu.");
+      navigate('/login');
+      return;
+    }
 
     const fetchUserData = async () => {
       try {
-        const { data: profile } = await supabase
+        setLoading(true);
+        // Validasi keaslian user ID di DB
+        const { data: profile, error: profileErr } = await supabase
           .from('users')
           .select('*')
           .eq('id', userId)
           .maybeSingle();
           
-        if (profile) {
-          setUserProfile(profile);
-          setCustomerName(profile.name || "");
-          setPhoneNumber(profile.phone || "");
+        // 🔒 PROTEKSI 2: Jika ID di URL ngawur/tidak ada di database, tendang keluar
+        if (profileErr || !profile) {
+          alert("Sesi bermasalah atau Profil tidak ditemukan. Silakan login kembali.");
+          navigate('/login');
+          return;
         }
 
-        const { data: ordersData, error } = await supabase
+        setUserProfile(profile);
+        setCustomerName(profile.name || "");
+        setPhoneNumber(profile.phone || "");
+
+        const { data: ordersData, error: ordersErr } = await supabase
           .from('orders')
           .select('*')
           .eq('user_id', userId)
           .order('created_at', { ascending: false });
 
-        if (!error && ordersData) {
+        if (!ordersErr && ordersData) {
           setOrders(ordersData);
         }
       } catch (err) {
         console.error("Gagal sinkronisasi data:", err.message);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -96,9 +117,9 @@ export default function MemberDashboard() {
     return () => {
       supabase.removeChannel(laundryRealtimeChannel);
     };
-  }, [userId]);
+  }, [userId, navigate]);
 
-  // --- 2. LIVE TRACKING FIX (PENCARIAN NOTA AGAR BISA WORK DENGAN UUID / TEXT) ---
+  // --- 2. LIVE TRACKING FIX ---
   useEffect(() => {
     const query = searchQuery.trim();
     if (!query || query.length < 3) {
@@ -108,8 +129,6 @@ export default function MemberDashboard() {
 
     const fetchTrackedOrder = async () => {
       try {
-        // Trik Supabase: Ambil semua orderan aktif, lalu filter lokal di sisi klien 
-        // Supaya user bisa ngetik 4 atau 8 digit depan ID UUID-nya aja tanpa error data type!
         const { data, error } = await supabase
           .from('orders')
           .select('*');
@@ -129,7 +148,6 @@ export default function MemberDashboard() {
 
     fetchTrackedOrder();
 
-    // Sinyal realtime update dari kasir
     const searchRealtimeChannel = supabase
       .channel('search-tracking-realtime')
       .on(
@@ -164,7 +182,7 @@ export default function MemberDashboard() {
         qty: parseFloat(weight),
         total_price: totalBill,
         status: 'Antri',
-        payment_method: paymentMethod, // Data payment_method masuk DB
+        payment_method: paymentMethod, 
         scent_type: selectedScent,
         ...(userId && { user_id: userId })
       };
@@ -181,14 +199,22 @@ export default function MemberDashboard() {
     }
   };
 
-  const filteredServices = activeTab === 'all' ? services : services.filter(s => s.category === activeTab);
-
   const getProgressWidth = (status) => {
     if (status === 'Antri') return 'w-1/6';
     if (status === 'Proses') return 'w-1/2';
     if (status === 'Selesai' || status === 'Diambil') return 'w-full';
     return 'w-0';
   };
+
+  // ── TEMPLATE SCREEN LOADING PROTEKSI ──
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-slate-950 flex flex-col items-center justify-center gap-3 text-slate-400 text-xs font-bold tracking-wider">
+        <RefreshCw className="animate-spin text-blue-500" size={24} />
+        MENYINKRONKAN DATA KEAMANAN MEMBER...
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100 font-sans antialiased">
@@ -205,11 +231,21 @@ export default function MemberDashboard() {
           </div>
           <div className="flex items-center gap-3">
             {userId && (
-              <div className="flex items-center gap-2 bg-slate-800 px-3 py-1.5 rounded-xl border border-slate-700">
+              <div className="flex items-center gap-2 bg-slate-800/60 px-3 py-1.5 rounded-xl border border-slate-700/60 shadow-inner">
                 <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
                 <span className="text-xs font-bold text-slate-200">{userProfile?.name || 'Member'}</span>
               </div>
             )}
+            
+            {/* 🛠️ TOMBOL LOGOUT BARU: Untuk Membersihkan Sesi Lama */}
+            <button
+              onClick={handleLogout}
+              className="bg-rose-950/40 hover:bg-rose-900/50 border border-rose-900/40 text-rose-400 font-bold px-3 py-1.5 rounded-xl text-xs flex items-center gap-2 transition-all active:scale-95"
+              title="Keluar akun dan ganti ID"
+            >
+              <LogOut size={13} />
+              <span className="hidden sm:inline">Ganti Akun</span>
+            </button>
           </div>
         </div>
       </nav>
@@ -252,18 +288,22 @@ export default function MemberDashboard() {
               <div className="space-y-3">
                 <h4 className="text-xs font-black text-emerald-400 uppercase tracking-widest flex items-center gap-2"><CheckCircle2 size={14}/> Nota Selesai / Diambil</h4>
                 <div className="space-y-2 max-h-[180px] overflow-y-auto">
-                  {orders.filter(o => o.status === 'Selesai' || o.status === 'Diambil').map((order) => (
-                    <div key={order.id} className="bg-slate-950/50 border border-slate-900 p-3 rounded-xl flex justify-between items-center text-xs">
-                      <div>
-                        <span className="font-mono text-[9px] text-slate-600 block">#{order.id.substring(0, 8).toUpperCase()}</span>
-                        <h5 className="font-bold text-slate-300">{order.service_name}</h5>
+                  {orders.filter(o => o.status === 'Selesai' || o.status === 'Diambil').length === 0 ? (
+                    <div className="bg-slate-950 p-6 text-center rounded-2xl text-slate-600 text-xs font-bold border border-slate-900">Belum ada riwayat nota selesai.</div>
+                  ) : (
+                    orders.filter(o => o.status === 'Selesai' || o.status === 'Diambil').map((order) => (
+                      <div key={order.id} className="bg-slate-950/50 border border-slate-900 p-3 rounded-xl flex justify-between items-center text-xs">
+                        <div>
+                          <span className="font-mono text-[9px] text-slate-600 block">#{order.id.substring(0, 8).toUpperCase()}</span>
+                          <h5 className="font-bold text-slate-300">{order.service_name}</h5>
+                        </div>
+                        <div className="text-right">
+                          <span className="font-black text-emerald-400 block">Rp {order.total_price?.toLocaleString('id-ID')}</span>
+                          <span className="text-[9px] uppercase font-black text-slate-500">{order.payment_method}</span>
+                        </div>
                       </div>
-                      <div className="text-right">
-                        <span className="font-black text-emerald-400 block">Rp {order.total_price?.toLocaleString('id-ID')}</span>
-                        <span className="text-[9px] uppercase font-black text-slate-500">{order.payment_method}</span>
-                      </div>
-                    </div>
-                  ))}
+                    ))
+                  )}
                 </div>
               </div>
             </div>
@@ -271,7 +311,7 @@ export default function MemberDashboard() {
         </section>
       )}
 
-      {/* --- 4. LIVE TRACKING MODULE (FIXED & FULL REAL-TIME) --- */}
+      {/* --- 4. LIVE TRACKING MODULE --- */}
       <section id="tracking" className="py-12 bg-slate-900/20 border-b border-slate-900">
         <div className="max-w-3xl mx-auto px-4 space-y-4">
           <div className="text-center">
@@ -326,7 +366,7 @@ export default function MemberDashboard() {
         </div>
       </section>
 
-      {/* --- 5. INTERACTIVE BOOKING ENGINE (FORM TERMASUK METODE PEMBAYARAN) --- */}
+      {/* --- 5. INTERACTIVE BOOKING ENGINE --- */}
       <section id="booking" className="py-12 max-w-5xl mx-auto px-4 space-y-6">
         <div className="text-center">
           <p className="text-2xl font-black text-white tracking-tight">Kalkulator Nota & E-Booking</p>
@@ -372,7 +412,7 @@ export default function MemberDashboard() {
               </div>
             </div>
 
-            {/* 3. INPUT METODE PEMBAYARAN (FIXED & ALREADY LIVE!) */}
+            {/* 3. INPUT METODE PEMBAYARAN */}
             <div className="bg-slate-900 p-4 rounded-2xl border border-slate-800 space-y-2">
               <label className="block text-[10px] font-black uppercase text-slate-400 tracking-wider">2. Opsi Metode Pembayaran</label>
               <div className="grid grid-cols-2 gap-3">
