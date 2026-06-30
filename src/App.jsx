@@ -19,8 +19,9 @@ const GuestPage = React.lazy(() => import("./pages/GuestPage"));
 const GuestPageV1 = React.lazy(() => import("./pages/GuestPageV1"));
 const GuestPageV2 = React.lazy(() => import("./pages/GuestPageV2"));
 const GuestPageV3 = React.lazy(() => import("./pages/GuestPageV3"));
-
 const MemberDashboard = React.lazy(() => import("./pages/MemberDashboard"));
+
+// 🛠️ Baris rusak ber-error "newPassword is not defined" sudah dibuang dari sini!
 
 // Layouts
 const MainLayout = React.lazy(() => import("./layouts/MainLayout"));
@@ -30,6 +31,7 @@ const AuthLayout = React.lazy(() => import("./layouts/AuthLayout"));
 const Login = React.lazy(() => import("./pages/auth/Login"));
 const Register = React.lazy(() => import("./pages/auth/Register"));
 const Forgot = React.lazy(() => import("./pages/auth/Forgot"));
+const ResetPassword = React.lazy(() => import("./pages/ResetPassword")); // 👈 Tambahkan ini untuk halaman reset password baru
 
 // Error Pages
 const NotFound = React.lazy(() => import("./pages/NotFound"));
@@ -57,12 +59,9 @@ function App() {
         <Route path="/guest-v3" element={<GuestPageV3 />} />
 
         {/* ================= KHUSUS HALAMAN MEMBER (MURNI TANPA SIDEBAR ADMIN) ================= */}
-        {/* Dikeluarkan dari MainLayout supaya menggunakan layout mandiri Member yang rapi */}
-
         <Route path="/memberdashboard/:userId" element={<MemberDashboard />} />
 
         {/* ================= PRIVATE ROUTES (KHUSUS ADMIN) ================= */}
-        {/* Semua halaman di bawah ini dibungkus MainLayout (Ada Sidebar Admin Jihan & Navbar) */}
         <Route element={<MainLayout />}>
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/orders/new" element={<NewOrder onAddOrder={handleAddOrder} />} />
@@ -83,6 +82,8 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/forgot" element={<Forgot />} />
+          {/* 🔗 Sambungan link token recovery dari email Supabase Anda */}
+          <Route path="/reset-password" element={<ResetPassword />} />
         </Route>
 
         {/* ================= ERROR PAGE ================= */}

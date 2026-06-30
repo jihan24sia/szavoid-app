@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { supabase } from './supabaseClient'; // Adjust path according to your structure
+import { supabase } from '../supabaseClient'; // Adjust path according to your structure
 import { Search, RefreshCw, ArrowLeft, ShieldCheck, Mail, Phone, User } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 

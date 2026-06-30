@@ -1,140 +1,179 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate, useParams } from 'react-router-dom'; // 🌟 TAMBAHKAN useParams DI SINI
-import { supabase } from './supabaseClient'; 
-import { 
-  Shirt, Clock, Zap, Waves, Droplets, Footprints, 
-  User, BedDouble, Sparkles, CheckCircle2, RefreshCw, 
-  ShoppingBag, ListOrdered, Navigation, Calendar, 
-  CreditCard, ArrowRight, Package, Info, ChevronRight,
-  TrendingUp, Award, Layers, LogOut 
+import { useNavigate, useParams } from 'react-router-dom';
+import { supabase } from '../supabaseClient';
+import {
+  Shirt, Clock, Zap, BedDouble, Footprints, Sparkles, CheckCircle2,
+  RefreshCw, ShoppingBag, ListOrdered, Navigation, Package,
+  ChevronRight, Award, LogOut, Activity, QrCode, Phone, MapPin, User,
+  Trash2, Droplets, Info, Search, ShieldAlert, Star, ShieldCheck, ArrowRight, Check, CreditCard, Coins
 } from 'lucide-react';
-
-import SectionHeader from '../components/SectionHeader';
-import ServiceOption from '../components/ServiceOption';
-import FormInput from '../components/FormInput';
-import SummaryItem from '../components/SummaryItem';
-import ServiceHighlight from '../components/ServiceHighlight';
 
 export default function MemberDashboard() {
   const navigate = useNavigate();
-  const { userId } = useParams(); // 🌟 1. Ambil id user dari path URL browser
-  const [currentSection, setCurrentSection] = useState('overview'); 
+  const { userId } = useParams(); 
 
-  // State Data Pelanggan & Nota
-  const [userProfile, setUserProfile] = useState({ full_name: 'Member', email: '' });
+  // Navigation & UI States
+  const [activeTab, setActiveTab] = useState('all');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [trackedOrder, setTrackedOrder] = useState(null); 
+
+  // Core Data States
+  const [userProfile, setUserProfile] = useState(null);
   const [orders, setOrders] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isLoggingOut, setIsLoggingOut] = useState(false); 
 
-  // State Form Pemesanan Baru
+  // Form Booking States
   const [selectedService, setSelectedService] = useState('cuci-kering');
-  const [weight, setWeight] = useState(0);
+  const [weight, setWeight] = useState(1);
   const [customerName, setCustomerName] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [selectedScent, setSelectedScent] = useState('Lavender Premium');
+  const [paymentMethod, setPaymentMethod] = useState('qris'); // Default QRIS
+  const [claimedVoucher, setClaimedVoucher] = useState(null);
 
   const services = [
-    { id: 'cuci-kering', name: 'Cuci Komplit (Cuci + Setrika)', price: 10000, icon: <Droplets size={20} />, color: 'from-blue-500 to-cyan-500' },
-    { id: 'cuci-setrika', name: 'Setrika Saja', price: 7000, icon: <Shirt size={20} />, color: 'from-indigo-500 to-purple-500' },
-    { id: 'express', name: 'Super Express 3 Jam', price: 15000, icon: <Zap size={20} />, color: 'from-amber-500 to-orange-500' },
-    { id: 'bed-cover', name: 'Bedcover & Blanket', price: 25000, icon: <BedDouble size={20} />, color: 'from-emerald-500 to-teal-500' },
-    { id: 'cuci-sepatu', name: 'Premium Shoes Clean', price: 35000, icon: <Footprints size={20} />, color: 'from-rose-500 to-pink-500' },
-    { id: 'jas-gaun', name: 'Premium Satuan (Jas/Gaun)', price: 15000, icon: <Sparkles size={20} />, color: 'from-violet-500 to-fuchsia-500' },
+    { id: 'cuci-kering', name: 'Cuci Komplit (Cuci + Setrika)', price: 10000, icon: <Droplets size={20} />, color: 'from-blue-600 to-cyan-600', eta: '1-2 Hari', category: 'kiloan' },
+    { id: 'cuci-setrika', name: 'Setrika Saja Premium', price: 7000, icon: <Shirt size={20} />, color: 'from-indigo-600 to-purple-600', eta: '1 Hari', category: 'kiloan' },
+    { id: 'express', name: 'Super Express (3 Jam Selesai)', price: 15000, icon: <Zap size={20} />, color: 'from-amber-600 to-orange-600', eta: '3 Jam', category: 'express' },
+    { id: 'bed-cover', name: 'Bedcover & Blanket Luxury', price: 25000, icon: <BedDouble size={20} />, color: 'from-emerald-600 to-teal-600', eta: '2 Hari', category: 'satuan' },
+    { id: 'cuci-sepatu', name: 'Premium Shoes Deep Clean', price: 35000, icon: <Footprints size={20} />, color: 'from-rose-600 to-pink-600', eta: '3 Hari', category: 'satuan' },
+    { id: 'jas-gaun', name: 'Premium Satuan (Jas/Gaun)', price: 15000, icon: <Sparkles size={20} />, color: 'from-violet-600 to-fuchsia-600', eta: '2-3 Hari', category: 'satuan' },
   ];
 
-  const currentService = services.find(s => s.id === selectedService);
-  const subtotal = weight * (currentService ? currentService.price : 0);
+  const scents = [
+    { id: 'lavender', name: 'Lavender Premium', desc: 'Menenangkan & Tahan Lama' },
+    { id: 'sakura', name: 'Sakura Blossom', desc: 'Manis, Segar & Elegan' },
+    { id: 'vanilla', name: 'Sweet Vanilla', desc: 'Lembut & Wangi Kue Mewah' },
+    { id: 'ocean', name: 'Ocean Breeze', desc: 'Segar Alami Seperti Pantai' }
+  ];
 
-  const fetchMemberData = async () => {
-    try {
-      // Ambil user yang saat ini sedang memegang token session aktif di browser
-      const { data: { user } } = await supabase.auth.getUser();
-      
-      // 🌟 2. PROTEKSI KEAMANAN URL: Jika ga login ATAU ID di URL iseng diganti orang lain
-      if (!user || user.id !== userId) {
-        alert("Akses ilegal terdeteksi! Sesi login Anda tidak cocok dengan parameter URL.");
-        await supabase.auth.signOut(); 
-        navigate('/login');
-        return;
-      }
-
-      const { data: profile } = await supabase
-        .from('users') 
-        .select('name, email')
-        .eq('id', user.id) // Pastikan panggil ID miliknya sendiri
-        .maybeSingle();
-
-      if (profile) {
-        setUserProfile({
-          full_name: profile.name || 'Member',
-          email: profile.email || ''
-        });
-        if (!customerName) setCustomerName(profile.name);
-      }
-
-      const { data: ordersData, error } = await supabase
-        .from('orders')
-        .select('*')
-        .eq('user_id', user.id) // Filter orderan hanya milik user ini
-        .order('created_at', { ascending: false });
-
-      if (!error && ordersData) setOrders(ordersData);
-    } catch (err) {
-      console.error(err.message);
-    } finally {
-      setLoading(false);
-    }
-  };
-
+  // --- 1. LIVE DATA SINKRONISASI MEMBER ---
   useEffect(() => {
-    fetchMemberData();
-  }, [navigate, userId]); // 🌟 3. Trigger ulang jika userId di URL tiba-tiba berubah
+    if (!userId) return;
 
-  // 🚪 FUNGSI LOGOUT SUPABASE
-  const handleLogout = async () => {
-    const confirmLogout = window.confirm("Apakah Anda yakin ingin keluar dari dashboard?");
-    if (!confirmLogout) return;
+    const fetchUserData = async () => {
+      try {
+        const { data: profile } = await supabase
+          .from('users')
+          .select('*')
+          .eq('id', userId)
+          .maybeSingle();
+          
+        if (profile) {
+          setUserProfile(profile);
+          setCustomerName(profile.name || "");
+          setPhoneNumber(profile.phone || "");
+        }
 
-    setIsLoggingOut(true);
-    try {
-      const { error } = await supabase.auth.signOut();
-      if (error) throw error;
-      navigate('/login');
-    } catch (err) {
-      alert("Gagal logout: " + err.message);
-    } finally {
-      setIsLoggingOut(false);
+        const { data: ordersData, error } = await supabase
+          .from('orders')
+          .select('*')
+          .eq('user_id', userId)
+          .order('created_at', { ascending: false });
+
+        if (!error && ordersData) {
+          setOrders(ordersData);
+        }
+      } catch (err) {
+        console.error("Gagal sinkronisasi data:", err.message);
+      }
+    };
+
+    fetchUserData();
+
+    const laundryRealtimeChannel = supabase
+      .channel('landing-page-orders-realtime')
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'orders', filter: `user_id=eq.${userId}` },
+        (payload) => {
+          fetchUserData(); 
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(laundryRealtimeChannel);
+    };
+  }, [userId]);
+
+  // --- 2. LIVE TRACKING FIX (PENCARIAN NOTA AGAR BISA WORK DENGAN UUID / TEXT) ---
+  useEffect(() => {
+    const query = searchQuery.trim();
+    if (!query || query.length < 3) {
+      setTrackedOrder(null);
+      return;
     }
-  };
 
-  const handleConfirmOrder = async () => {
-    if (!customerName || weight <= 0) {
-      return alert("Isi nama konfirmasi dan jumlah berat/pcs dulu ya!");
-    }
+    const fetchTrackedOrder = async () => {
+      try {
+        // Trik Supabase: Ambil semua orderan aktif, lalu filter lokal di sisi klien 
+        // Supaya user bisa ngetik 4 atau 8 digit depan ID UUID-nya aja tanpa error data type!
+        const { data, error } = await supabase
+          .from('orders')
+          .select('*');
+
+        if (!error && data) {
+          const match = data.find(o => o.id.toLowerCase().includes(query.toLowerCase()));
+          if (match) {
+            setTrackedOrder(match);
+            return;
+          }
+        }
+        setTrackedOrder(null);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+
+    fetchTrackedOrder();
+
+    // Sinyal realtime update dari kasir
+    const searchRealtimeChannel = supabase
+      .channel('search-tracking-realtime')
+      .on(
+        'postgres_changes',
+        { event: 'UPDATE', schema: 'public', table: 'orders' },
+        (payload) => {
+          if (payload.new && payload.new.id.toLowerCase().includes(query.toLowerCase())) {
+            setTrackedOrder(payload.new);
+          }
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(searchRealtimeChannel);
+    };
+  }, [searchQuery]);
+
+  // Kalkulasi Finansial
+  const currentService = services.find(s => s.id === selectedService);
+  const rawSubtotal = weight * (currentService ? currentService.price : 0);
+  const totalBill = Math.max(0, rawSubtotal);
+
+  const handleConfirmOrder = async (e) => {
+    e.preventDefault();
+    if (!customerName || weight <= 0) return alert("Harap lengkapi nama dan perkiraan berat!");
     setIsSubmitting(true);
     try {
-      const { data: { user } } = await supabase.auth.getUser();
-      
-      // Keamanan ekstra saat nembak database insert order
-      if (!user || user.id !== userId) {
-        throw new Error("Sesi tidak valid. Silakan login ulang.");
-      }
+      const orderPayload = {
+        customer_name: customerName,
+        service_name: currentService.name,
+        qty: parseFloat(weight),
+        total_price: totalBill,
+        status: 'Antri',
+        payment_method: paymentMethod, // Data payment_method masuk DB
+        scent_type: selectedScent,
+        ...(userId && { user_id: userId })
+      };
 
-      const { error } = await supabase.from('orders').insert([
-        {
-          user_id: user.id, // ID pengorder diambil langsung dari session aman Supabase
-          customer_name: customerName,
-          service_name: currentService.name,
-          qty: parseFloat(weight),
-          total_price: subtotal,
-          status: 'Antri'
-        }
-      ]);
-
+      const { error } = await supabase.from('orders').insert([orderPayload]);
       if (error) throw error;
-      alert("Mantap! Order berhasil dibooking.");
-      setWeight(0);
-      fetchMemberData(); 
-      setCurrentSection('overview'); 
+
+      alert(`🎉 Booking Sukses dengan Pembayaran [${paymentMethod.toUpperCase()}]! Silakan bawa pakaian Anda ke outlet.`);
+      setWeight(1);
     } catch (err) {
       alert(err.message);
     } finally {
@@ -142,307 +181,246 @@ export default function MemberDashboard() {
     }
   };
 
-  const activeOrders = orders.filter(o => o.status !== 'Selesai' && o.status !== 'Diambil');
-  const completedOrders = orders.filter(o => o.status === 'Selesai' || o.status === 'Diambil');
+  const filteredServices = activeTab === 'all' ? services : services.filter(s => s.category === activeTab);
 
-  const getStatusStyles = (status) => {
-    switch(status) {
-      case 'Antri': return 'bg-amber-500/10 text-amber-500 border-amber-500/20';
-      case 'Proses': return 'bg-blue-500/10 text-blue-500 border-blue-500/20';
-      case 'Selesai': return 'bg-emerald-500/10 text-emerald-500 border-emerald-500/20';
-      default: return 'bg-slate-500/10 text-slate-400 border-slate-500/20';
-    }
+  const getProgressWidth = (status) => {
+    if (status === 'Antri') return 'w-1/6';
+    if (status === 'Proses') return 'w-1/2';
+    if (status === 'Selesai' || status === 'Diambil') return 'w-full';
+    return 'w-0';
   };
 
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-slate-50/50 flex flex-col items-center justify-center text-slate-500 gap-3">
-        <div className="relative flex items-center justify-center">
-          <div className="w-12 h-12 rounded-full border-4 border-blue-100 border-t-blue-600 animate-spin"></div>
-          <RefreshCw className="absolute text-blue-600 w-5 h-5 animate-pulse" />
-        </div>
-        <p className="text-xs font-bold tracking-wider text-slate-400 uppercase animate-pulse">Menyinkronkan Workspace Member...</p>
-      </div>
-    );
-  }
-
   return (
-    <div className="min-h-screen bg-slate-50/40 text-slate-800 p-4 md:p-8 space-y-8 max-w-7xl mx-auto font-sans antialiased">
-      
-      {/* 🌟 PREMIUM GRAPHIC BANNER WITH LOGOUT BUTTON */}
-      <div className="relative overflow-hidden bg-slate-900 rounded-3xl p-8 md:p-10 text-white border border-slate-800 shadow-xl shadow-slate-900/5">
-        <div className="absolute top-0 right-0 w-96 h-96 bg-blue-600/10 rounded-full blur-3xl -mr-20 -mt-20 pointer-events-none"></div>
-        <div className="absolute bottom-0 left-1/3 w-64 h-64 bg-indigo-600/10 rounded-full blur-3xl pointer-events-none"></div>
-        
-        <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
-          <div className="space-y-3">
-            <div className="inline-flex items-center gap-1.5 bg-blue-500/10 border border-blue-500/30 text-blue-400 text-[10px] font-extrabold uppercase tracking-widest px-3 py-1 rounded-full">
-              <Award size={12} className="text-blue-400" /> BrightWash Elite Member
-            </div>
-            <h1 className="text-3xl md:text-4xl font-black tracking-tight text-white">
-              Halo, <span className="bg-gradient-to-r from-blue-400 via-indigo-200 to-white bg-clip-text text-transparent">{userProfile.full_name}</span>! 👋
-            </h1>
-            <p className="text-slate-400 text-xs md:text-sm max-w-xl font-medium leading-relaxed">
-              Selamat datang kembali di panel kontrol personal Anda. Pantau real-time proses antrean baju tanpa perlu konfirmasi manual ke kasir toko.
-            </p>
-          </div>
-          
-          {/* Sisi Kanan: Email & Tombol Logout */}
-          <div className="flex flex-row md:flex-col lg:flex-row items-start md:items-stretch lg:items-center gap-6 border-t border-slate-800 pt-6 md:pt-0 md:border-t-0 pl-0 md:pl-8 md:border-l md:border-slate-800 justify-between">
-            <div className="text-left">
-              <span className="text-slate-500 text-[10px] uppercase font-bold tracking-wider block">Email Terdaftar</span>
-              <span className="text-slate-300 text-xs font-mono font-semibold">{userProfile.email || 'member@brightwash.com'}</span>
-            </div>
+    <div className="min-h-screen bg-slate-950 text-slate-100 font-sans antialiased">
 
-            {/* 🚪 TOMBOL LOGOUT UTAMA */}
-            <button
-              onClick={handleLogout}
-              disabled={isLoggingOut}
-              className="flex items-center gap-2 bg-rose-500/10 hover:bg-rose-500 border border-rose-500/20 hover:border-rose-500 text-rose-400 hover:text-white px-4 py-2.5 rounded-xl text-xs font-black uppercase tracking-wider transition-all duration-200 shadow-md active:scale-95 disabled:opacity-50 shrink-0 self-center md:self-start lg:self-center"
-            >
-              <LogOut size={14} className={isLoggingOut ? "animate-spin" : ""} />
-              {isLoggingOut ? "Keluar..." : "Logout"}
-            </button>
-          </div>
-        </div>
-      </div>
-
-      {/* 🧭 NAVIGATION TABS SECTION */}
-      <div className="flex items-center justify-between border-b border-slate-200/80 pb-1">
-        <div className="flex gap-1 overflow-x-auto scrollbar-none py-1">
-          {[
-            { id: 'overview', label: 'Live Tracking', icon: <Navigation size={14} /> },
-            { id: 'booking', label: 'Booking Laundry', icon: <ShoppingBag size={14} /> },
-            { id: 'riwayat', label: 'Riwayat Transaksi', icon: <ListOrdered size={14} /> }
-          ].map((tab) => (
-            <button 
-              key={tab.id}
-              onClick={() => setCurrentSection(tab.id)}
-              className={`px-5 py-3 rounded-xl text-xs font-bold uppercase tracking-wider transition-all flex items-center gap-2 border whitespace-nowrap ${
-                currentSection === tab.id
-                  ? 'bg-white text-blue-600 border-slate-200 shadow-sm font-black' 
-                  : 'bg-transparent text-slate-500 border-transparent hover:text-slate-800 hover:bg-slate-100/60'
-              }`}
-            >
-              {tab.icon} {tab.label}
-            </button>
-          ))}
-        </div>
-      </div>
-
-      {/* ================= TAB 1: LIVE TRACKING ================= */}
-      {currentSection === 'overview' && (
-        <div className="space-y-8 animate-fadeIn">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="bg-white border border-slate-200/60 p-6 rounded-2xl shadow-sm flex items-center justify-between hover:shadow-md transition-shadow">
-              <div className="space-y-1">
-                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Cucian Diproses</span>
-                <span className="text-2xl font-black text-slate-900 tracking-tight block">{activeOrders.length} Nota Aktif</span>
-              </div>
-              <div className="w-12 h-12 rounded-xl bg-amber-500/10 text-amber-600 border border-amber-500/20 flex items-center justify-center shadow-inner">
-                <Clock className="w-5 h-5" />
-              </div>
-            </div>
-            <div className="bg-white border border-slate-200/60 p-6 rounded-2xl shadow-sm flex items-center justify-between hover:shadow-md transition-shadow">
-              <div className="space-y-1">
-                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Total Selesai</span>
-                <span className="text-2xl font-black text-slate-900 tracking-tight block">{completedOrders.length} Nota Selesai</span>
-              </div>
-              <div className="w-12 h-12 rounded-xl bg-blue-500/10 text-blue-600 border border-blue-500/20 flex items-center justify-center shadow-inner">
-                <CheckCircle2 className="w-5 h-5" />
-              </div>
+      {/* --- 1. PREMIUM HEADER / NAVIGATION --- */}
+      <nav className="bg-slate-900/80 border-b border-slate-800 sticky top-0 z-50 backdrop-blur-md">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 bg-gradient-to-tr from-blue-600 to-indigo-600 rounded-xl flex items-center justify-center text-white font-black text-base shadow-lg shadow-blue-500/20">BW</div>
+            <div>
+              <h1 className="font-black text-sm uppercase tracking-wider text-white">BrightWash</h1>
+              <p className="text-[10px] text-blue-400 font-black uppercase tracking-widest">Premium Studio</p>
             </div>
           </div>
-
-          <div className="space-y-4">
-            <div className="flex items-center gap-2">
-              <Layers size={16} className="text-blue-600" />
-              <h3 className="text-slate-900 font-extrabold text-sm tracking-tight">Antrean Pakaian Aktif Anda</h3>
-            </div>
-
-            {activeOrders.length === 0 ? (
-              <div className="bg-white border border-slate-200/60 rounded-2xl p-12 text-center shadow-sm max-w-md mx-auto space-y-4">
-                <div className="w-16 h-16 bg-slate-50 text-slate-400 rounded-full flex items-center justify-center mx-auto border border-slate-100">
-                  <Package size={24} className="text-slate-300" />
-                </div>
-                <div className="space-y-1">
-                  <h4 className="text-slate-800 font-extrabold text-sm">Lemari Monitoring Kosong!</h4>
-                  <p className="text-slate-400 text-xs px-4 leading-relaxed">Kamu tidak memiliki pakaian yang sedang dicuci saat ini di outlet kami.</p>
-                </div>
-                <button 
-                  onClick={() => setCurrentSection('booking')}
-                  className="inline-flex items-center gap-2 bg-slate-900 hover:bg-slate-800 text-white text-[11px] font-bold uppercase tracking-wider px-5 py-3 rounded-xl transition-all shadow-md"
-                >
-                  Mulai Booking Laundry <ChevronRight size={14} />
-                </button>
-              </div>
-            ) : (
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                {activeOrders.map((order) => (
-                  <div key={order.id} className="bg-white border border-slate-200/80 rounded-2xl p-6 shadow-sm flex flex-col justify-between gap-6 relative group hover:border-blue-200 hover:shadow-md transition-all">
-                    <div className="flex justify-between items-center border-b border-slate-100 pb-4">
-                      <div className="space-y-0.5">
-                        <span className="text-[9px] font-bold uppercase text-slate-400 tracking-wider block">ID NOTA</span>
-                        <span className="font-mono font-bold text-xs text-slate-700 bg-slate-100 px-2 py-0.5 rounded border border-slate-200">
-                          #{order.id.substring(0, 8).toUpperCase()}
-                        </span>
-                      </div>
-                      <span className={`text-[10px] font-extrabold uppercase px-3 py-1 rounded-full border tracking-wide ${getStatusStyles(order.status)}`}>
-                        {order.status}
-                      </span>
-                    </div>
-
-                    <div className="space-y-3">
-                      <div className="flex items-center gap-2.5 text-slate-900 font-extrabold text-base tracking-tight">
-                        <div className="w-8 h-8 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center border border-blue-100">
-                          <Shirt size={16} />
-                        </div>
-                        {order.service_name}
-                      </div>
-                      <div className="flex items-center gap-4 text-xs font-semibold text-slate-400 pl-1">
-                        <span className="flex items-center gap-1.5"><Package size={14} className="text-slate-300" /> {order.qty} Kg/Pcs</span>
-                        <span className="flex items-center gap-1.5"><Calendar size={14} className="text-slate-300" /> Live Update</span>
-                      </div>
-                    </div>
-
-                    <div className="space-y-2 bg-slate-50 p-4 rounded-xl border border-slate-100">
-                      <div className="flex justify-between text-[10px] font-black uppercase tracking-wider text-slate-400">
-                        <span className={order.status === 'Antri' ? 'text-amber-500 font-black' : 'text-slate-400 font-bold'}>Antri</span>
-                        <span className={order.status === 'Proses' ? 'text-blue-600 font-black' : 'text-slate-400 font-bold'}>Proses</span>
-                        <span className={order.status === 'Selesai' ? 'text-emerald-600 font-black' : 'text-slate-400 font-bold'}>Selesai</span>
-                      </div>
-                      <div className="w-full bg-slate-200 h-2 rounded-full overflow-hidden flex p-0.5">
-                        <div className={`h-full rounded-full transition-all duration-500 ${
-                          order.status === 'Antri' ? 'w-1/3 bg-amber-500 shadow-md shadow-amber-400/40' : 
-                          order.status === 'Proses' ? 'w-2/3 bg-blue-600 shadow-md shadow-blue-500/40' : 
-                          'w-full bg-emerald-500 shadow-md shadow-emerald-400/40'
-                        }`} />
-                      </div>
-                    </div>
-
-                    <div className="flex justify-between items-center pt-2 border-t border-slate-100/60 text-xs">
-                      <span className="text-slate-400 font-bold uppercase tracking-wider text-[10px]">Total Tagihan Kasir</span>
-                      <span className="font-black text-slate-900 text-base">Rp {(order.total_price || 0).toLocaleString('id-ID')}</span>
-                    </div>
-                  </div>
-                ))}
+          <div className="flex items-center gap-3">
+            {userId && (
+              <div className="flex items-center gap-2 bg-slate-800 px-3 py-1.5 rounded-xl border border-slate-700">
+                <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                <span className="text-xs font-bold text-slate-200">{userProfile?.name || 'Member'}</span>
               </div>
             )}
           </div>
         </div>
+      </nav>
+
+      {/* --- 2. HERO SECTION --- */}
+      <section className="relative overflow-hidden pt-12 pb-16 border-b border-slate-900">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center lg:text-left">
+          <h2 className="text-4xl font-black text-white tracking-tight">
+            Cucian Mewah, <span className="bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">Selesai Real-Time.</span>
+          </h2>
+          <p className="text-slate-400 text-xs mt-2 max-w-xl">Lacak perjalanan nota pakaian Anda secara live transparan langsung dari sistem database cloud kasir kami.</p>
+        </div>
+      </section>
+
+      {/* --- 2.5 MEMBER HUB & TRANSACTION HISTORY --- */}
+      {userId && (
+        <section className="py-8 bg-slate-900/40 border-b border-slate-800">
+          <div className="max-w-7xl mx-auto px-4 space-y-6">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {/* Cucian Aktif */}
+              <div className="space-y-3">
+                <h4 className="text-xs font-black text-blue-400 uppercase tracking-widest flex items-center gap-2"><Activity size={14}/> Cucian Sedang Diproses</h4>
+                {orders.filter(o => o.status !== 'Selesai' && o.status !== 'Diambil').length === 0 ? (
+                  <div className="bg-slate-950 p-6 text-center rounded-2xl text-slate-600 text-xs font-bold border border-slate-900">Tidak ada cucian aktif.</div>
+                ) : (
+                  orders.filter(o => o.status !== 'Selesai' && o.status !== 'Diambil').map((order) => (
+                    <div key={order.id} className="bg-slate-950 border border-slate-800 p-4 rounded-2xl flex justify-between items-center">
+                      <div>
+                        <span className="font-mono text-[10px] text-blue-400 block font-bold">#{order.id.substring(0, 8).toUpperCase()}</span>
+                        <h5 className="text-xs font-black text-white mt-0.5">{order.service_name}</h5>
+                        <p className="text-[10px] text-slate-500">Metode: {order.payment_method?.toUpperCase()} • {order.qty} Kg</p>
+                      </div>
+                      <span className="text-[10px] font-black uppercase px-2 py-1 rounded-md bg-amber-500/10 text-amber-400 border border-amber-500/20">{order.status}</span>
+                    </div>
+                  ))
+                )}
+              </div>
+
+              {/* Arsip Selesai */}
+              <div className="space-y-3">
+                <h4 className="text-xs font-black text-emerald-400 uppercase tracking-widest flex items-center gap-2"><CheckCircle2 size={14}/> Nota Selesai / Diambil</h4>
+                <div className="space-y-2 max-h-[180px] overflow-y-auto">
+                  {orders.filter(o => o.status === 'Selesai' || o.status === 'Diambil').map((order) => (
+                    <div key={order.id} className="bg-slate-950/50 border border-slate-900 p-3 rounded-xl flex justify-between items-center text-xs">
+                      <div>
+                        <span className="font-mono text-[9px] text-slate-600 block">#{order.id.substring(0, 8).toUpperCase()}</span>
+                        <h5 className="font-bold text-slate-300">{order.service_name}</h5>
+                      </div>
+                      <div className="text-right">
+                        <span className="font-black text-emerald-400 block">Rp {order.total_price?.toLocaleString('id-ID')}</span>
+                        <span className="text-[9px] uppercase font-black text-slate-500">{order.payment_method}</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
       )}
 
-      {/* ================= TAB 2: BOOKING LAUNDRY ================= */}
-      {currentSection === 'booking' && (
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 animate-fadeIn">
-          
-          {/* Left: Input Selection */}
-          <div className="col-span-12 lg:col-span-8 space-y-6">
-            <div className="bg-white p-6 rounded-2xl border border-slate-200/60 shadow-sm space-y-4">
-              <h3 className="text-xs font-black text-slate-400 uppercase tracking-widest flex items-center gap-2">
-                <Waves size={14} className="text-blue-600" /> 1. Pilih Kategori / Paket Layanan
-              </h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+      {/* --- 4. LIVE TRACKING MODULE (FIXED & FULL REAL-TIME) --- */}
+      <section id="tracking" className="py-12 bg-slate-900/20 border-b border-slate-900">
+        <div className="max-w-3xl mx-auto px-4 space-y-4">
+          <div className="text-center">
+            <h3 className="text-xs font-black tracking-widest text-blue-500 uppercase">Live Database Tracking</h3>
+            <p className="text-xl font-black text-white">Masukkan Minimal 4 Digit Depan ID Nota</p>
+          </div>
+
+          <div className="bg-slate-900 p-4 rounded-3xl border border-slate-800 space-y-4 shadow-xl">
+            <div className="relative">
+              <span className="absolute inset-y-0 left-0 flex items-center pl-4 text-slate-500"><Search size={16} /></span>
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="CONTOH KETIK: 8A4B (CEK KODE DI RIWAYAT ATAS)..."
+                className="w-full bg-slate-950 border border-slate-800 text-xs font-mono font-bold text-blue-400 rounded-2xl py-3.5 pl-11 pr-4 outline-none focus:border-blue-500 uppercase tracking-widest"
+              />
+            </div>
+
+            {trackedOrder ? (
+              <div className="p-4 bg-slate-950 border border-slate-850 rounded-2xl space-y-4 animate-fadeIn">
+                <div className="flex justify-between items-center text-[10px] font-bold border-b border-slate-900 pb-2">
+                  <span className="text-slate-400">Pelanggan: <span className="text-white">{trackedOrder.customer_name}</span></span>
+                  <span className="text-blue-400 bg-blue-500/10 px-2 py-0.5 rounded uppercase font-black">Bayar: {trackedOrder.payment_method?.toUpperCase()}</span>
+                </div>
+                
+                {/* Stepper */}
+                <div className="relative pt-2 pb-2">
+                  <div className="absolute top-4 left-2 right-2 bg-slate-900 h-1 rounded-full" />
+                  <div className={`absolute top-4 left-2 bg-blue-500 h-1 rounded-full transition-all duration-500 ${getProgressWidth(trackedOrder.status)}`} />
+                  <div className="relative z-10 flex justify-between items-center">
+                    {['Antri', 'Proses', 'Selesai'].map((step, idx) => {
+                      const stages = ['Antri', 'Proses', 'Selesai', 'Diambil'];
+                      const isCompleted = stages.indexOf(trackedOrder.status) >= idx;
+                      return (
+                        <div key={step} className="flex flex-col items-center">
+                          <div className={`w-6 h-6 rounded-full border flex items-center justify-center text-[9px] font-black ${isCompleted ? 'bg-blue-600 border-blue-400 text-white' : 'bg-slate-900 border-slate-800 text-slate-500'}`}>
+                            {isCompleted ? '✓' : idx + 1}
+                          </div>
+                          <span className="text-[9px] font-black mt-1 uppercase text-slate-400">{step}</span>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+                <p className="text-[11px] text-center text-slate-400 font-bold">Total Nota: <span className="text-emerald-400">Rp {trackedOrder.total_price?.toLocaleString('id-ID')}</span></p>
+              </div>
+            ) : searchQuery.length >= 3 ? (
+              <div className="p-3 bg-slate-950/60 text-center rounded-xl text-slate-600 text-xs font-bold">Nota tidak ditemukan di database.</div>
+            ) : null}
+          </div>
+        </div>
+      </section>
+
+      {/* --- 5. INTERACTIVE BOOKING ENGINE (FORM TERMASUK METODE PEMBAYARAN) --- */}
+      <section id="booking" className="py-12 max-w-5xl mx-auto px-4 space-y-6">
+        <div className="text-center">
+          <p className="text-2xl font-black text-white tracking-tight">Kalkulator Nota & E-Booking</p>
+        </div>
+
+        <form onSubmit={handleConfirmOrder} className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+          <div className="lg:col-span-7 space-y-4">
+            
+            {/* 1. Paket */}
+            <div className="bg-slate-900 p-4 rounded-2xl border border-slate-800 space-y-2">
+              <label className="block text-[10px] font-black uppercase text-slate-400">1. Pilih Layanan</label>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                 {services.map((s) => (
-                  <ServiceOption 
-                    key={s.id} 
-                    service={s} 
-                    isSelected={selectedService === s.id} 
-                    onSelect={setSelectedService} 
-                  />
+                  <button
+                    key={s.id} type="button" onClick={() => setSelectedService(s.id)}
+                    className={`p-3 rounded-xl border text-left text-xs flex items-center gap-3 transition-all ${selectedService === s.id ? 'bg-blue-950/40 border-blue-500 text-white' : 'bg-slate-950 border-slate-900 text-slate-400'}`}
+                  >
+                    <div>
+                      <h5 className="font-black block">{s.name}</h5>
+                      <span className="text-[10px] font-bold text-blue-400">Rp {s.price.toLocaleString('id-ID')}/unit</span>
+                    </div>
+                  </button>
                 ))}
               </div>
             </div>
 
-            <div className="bg-white p-6 rounded-2xl border border-slate-200/60 shadow-sm space-y-4">
-              <h3 className="text-xs font-black text-slate-400 uppercase tracking-widest flex items-center gap-2">
-                <User size={14} className="text-blue-600" /> 2. Konfirmasi Detail Kuantitas
-              </h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <FormInput label="Nama Pemesan Nota" value={customerName} onChange={(e) => setCustomerName(e.target.value)} placeholder="Masukkan Nama" />
-                <FormInput label="Estimasi Berat (Kg / Pcs)" type="number" value={weight} onChange={(e) => setWeight(e.target.value)} placeholder="0" />
+            {/* 2. Form Identitas & Berat */}
+            <div className="bg-slate-900 p-4 rounded-2xl border border-slate-800 grid grid-cols-2 gap-3">
+              <div className="space-y-1">
+                <span className="text-[10px] font-bold text-slate-400 uppercase">Nama Lengkap</span>
+                <input
+                  type="text" required value={customerName} onChange={(e) => setCustomerName(e.target.value)}
+                  placeholder="Nama pemilik nota..."
+                  className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs font-bold text-white outline-none"
+                />
               </div>
-              <div className="bg-blue-50/60 border border-blue-100/80 rounded-xl p-4 flex items-start gap-3 text-[11px] text-blue-800 leading-relaxed">
-                <Info size={16} className="shrink-0 text-blue-500 mt-0.5" />
-                <span>Berat pasti akan ditimbang secara presisi menggunakan timbangan digital outlet saat baju Anda diserahkan ke kurir atau drop-off langsung ke kasir.</span>
+              <div className="space-y-1">
+                <span className="text-[10px] font-bold text-slate-400 uppercase">Perkiraan Kuantitas (Kg)</span>
+                <input
+                  type="number" min="1" required value={weight} onChange={(e) => setWeight(Math.max(1, parseInt(e.target.value) || 0))}
+                  className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs font-bold text-white outline-none"
+                />
               </div>
             </div>
-          </div>
 
-          {/* Right: Modern Sticky Receipt */}
-          <div className="col-span-12 lg:col-span-4">
-            <div className="bg-slate-950 text-white rounded-2xl p-6 border border-slate-800 flex flex-col justify-between h-auto shadow-xl relative overflow-hidden sticky top-6">
-              <div className="absolute top-0 right-0 w-32 h-32 bg-blue-600/10 rounded-full blur-2xl"></div>
-              
-              <div className="space-y-6">
-                <div className="border-b border-slate-800/80 pb-4">
-                  <h3 className="text-xs font-black text-slate-400 uppercase tracking-widest">Ringkasan Invoice Estimasi</h3>
-                </div>
-                
-                <div className="space-y-4">
-                  <ServiceHighlight label="Paket Dipilih" serviceName={currentService ? currentService.name : ''} />
-                  <div className="bg-slate-900 p-4 rounded-xl space-y-3 border border-slate-800/60 text-xs font-semibold font-mono">
-                    <SummaryItem label="Harga Dasar" value={`Rp ${currentService ? currentService.price.toLocaleString('id-ID') : 0}`} />
-                    <SummaryItem label="Jumlah Input" value={`${weight} Kg/Pcs`} />
-                  </div>
-                </div>
-              </div>
-
-              <div className="mt-12 pt-4 border-t border-slate-800 space-y-4">
-                <div className="flex justify-between items-baseline">
-                  <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Subtotal Tagihan</span>
-                  <span className="text-2xl font-black text-blue-400 tracking-tight">Rp {subtotal.toLocaleString('id-ID')}</span>
-                </div>
-                <button 
-                  onClick={handleConfirmOrder} 
-                  disabled={isSubmitting}
-                  className="w-full bg-blue-600 hover:bg-blue-500 disabled:bg-slate-800 text-white py-4 px-4 rounded-xl font-black text-xs uppercase tracking-wider transition-all flex items-center justify-center gap-2 shadow-lg shadow-blue-600/10"
+            {/* 3. INPUT METODE PEMBAYARAN (FIXED & ALREADY LIVE!) */}
+            <div className="bg-slate-900 p-4 rounded-2xl border border-slate-800 space-y-2">
+              <label className="block text-[10px] font-black uppercase text-slate-400 tracking-wider">2. Opsi Metode Pembayaran</label>
+              <div className="grid grid-cols-2 gap-3">
+                <button
+                  type="button" onClick={() => setPaymentMethod('qris')}
+                  className={`p-3 rounded-xl border flex items-center justify-center gap-2 text-xs font-black uppercase tracking-wider transition-all ${paymentMethod === 'qris' ? 'bg-blue-950/40 border-blue-500 text-blue-400' : 'bg-slate-950 border-slate-900 text-slate-500'}`}
                 >
-                  {isSubmitting ? 'Memproses Nota...' : <>KIRIM ORDER BOOKING <ArrowRight size={14} /></>}
+                  <CreditCard size={16} /> QRIS Otomatis
+                </button>
+                <button
+                  type="button" onClick={() => setPaymentMethod('tunai')}
+                  className={`p-3 rounded-xl border flex items-center justify-center gap-2 text-xs font-black uppercase tracking-wider transition-all ${paymentMethod === 'tunai' ? 'bg-emerald-950/40 border-emerald-500 text-emerald-400' : 'bg-slate-950 border-slate-900 text-slate-500'}`}
+                >
+                  <Coins size={16} /> Tunai di Kasir
                 </button>
               </div>
             </div>
+
           </div>
 
-        </div>
-      )}
-
-      {/* ================= TAB 3: RIWAYAT TRANSAKSI ================= */}
-      {currentSection === 'riwayat' && (
-        <div className="space-y-4 animate-fadeIn">
-          <div className="flex items-center justify-between border-b border-slate-100 pb-3">
-            <h3 className="text-slate-900 font-extrabold text-sm tracking-tight">Riwayat Laundry Selesai & Diambil</h3>
-            <span className="bg-slate-100 text-slate-600 font-bold text-[11px] px-2.5 py-1 rounded-full border border-slate-200">{completedOrders.length} Arsip Nota</span>
+          {/* Kolom Kanan - Invoice Desk Summary */}
+          <div className="lg:col-span-5 bg-slate-900 border border-slate-800 p-5 rounded-2xl space-y-4">
+            <div className="border-b border-slate-800 pb-2">
+              <h4 className="text-xs font-black text-white uppercase tracking-widest">Rincian Nota Berjalan</h4>
+            </div>
+            <div className="space-y-2 text-xs">
+              <div className="flex justify-between text-slate-400">
+                <span>Paket Layanan:</span>
+                <span className="font-bold text-white text-right max-w-[180px] truncate">{currentService?.name}</span>
+              </div>
+              <div className="flex justify-between text-slate-400">
+                <span>Metode Pembayaran:</span>
+                <span className="font-black text-blue-400 uppercase bg-blue-500/5 px-2 py-0.5 rounded border border-blue-500/10">{paymentMethod}</span>
+              </div>
+              <div className="flex justify-between text-slate-400 pt-2 border-t border-slate-800/60 font-bold">
+                <span>Total Estimasi Biaya:</span>
+                <span className="text-sm font-black text-emerald-400">Rp {totalBill.toLocaleString('id-ID')}</span>
+              </div>
+            </div>
+            <button
+              type="submit" disabled={isSubmitting}
+              className="w-full bg-blue-600 hover:bg-blue-500 text-white font-black text-xs uppercase tracking-wider py-3.5 rounded-xl transition-all disabled:opacity-50"
+            >
+              {isSubmitting ? 'Memproses Booking...' : 'Konfirmasi Booking Pesanan'}
+            </button>
           </div>
-
-          {completedOrders.length === 0 ? (
-            <div className="bg-white border border-slate-200/60 rounded-xl p-12 text-center text-xs text-slate-400 shadow-sm max-w-md mx-auto">
-              Belum ada histori riwayat pakaian selesai atau diambil sebelumnya.
-            </div>
-          ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {completedOrders.map((order) => (
-                <div key={order.id} className="bg-white border border-slate-200/60 rounded-xl p-5 shadow-sm space-y-4 hover:border-slate-300 transition-colors">
-                  <div className="flex justify-between items-center text-[10px]">
-                    <span className="font-mono text-slate-500 font-bold bg-slate-50 px-2 py-0.5 rounded border border-slate-200">
-                      #{order.id.substring(0, 8).toUpperCase()}
-                    </span>
-                    <span className="bg-emerald-500/10 text-emerald-600 px-2.5 py-0.5 rounded-full font-extrabold tracking-wide uppercase text-[9px] border border-emerald-500/20">DIAMBIL</span>
-                  </div>
-                  <div className="space-y-1">
-                    <h4 className="text-slate-800 font-extrabold text-xs line-clamp-1">{order.service_name}</h4>
-                    <p className="text-slate-400 text-[11px] font-medium">{order.qty} Kg/Pcs</p>
-                  </div>
-                  <div className="pt-3 border-t border-slate-100 flex items-center justify-between text-xs">
-                    <span className="text-slate-400 font-medium text-[10px] uppercase">Total Biaya Lunas</span>
-                    <span className="font-black text-slate-900">Rp {(order.total_price || 0).toLocaleString('id-ID')}</span>
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-      )}
+        </form>
+      </section>
 
     </div>
   );

@@ -28,7 +28,7 @@ const Sidebar = () => {
 
   const menuItems = [
     { path: '/dashboard', name: 'Dashboard', icon: <LayoutDashboard size={20} />, exact: true },
-    { path: '/orders/new', name: 'Pemesanan Baru', icon: <PlusCircle size={20} /> },
+    
     { path: '/orders', name: 'Manajemen Order', icon: <ClipboardList size={20} />, exact: true },
     { path: '/tracking', name: 'Tracking Status', icon: <MapPin size={20} /> },
     { path: '/customers', name: 'Data Pelanggan', icon: <Users size={20} /> },

@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { LayoutGrid, Shirt, Zap, Droplets, FileSpreadsheet, Sparkles, AlertCircle } from 'lucide-react';
-import { useNavigate } from 'react-router-dom'; // 1. Import useNavigate
+import { useNavigate } from 'react-router-dom';
+import { supabase } from '../supabaseClient'; // 1. PASTIKAN IMPOR SUPABASE KAMU SUDAH BENAR
 
 // Import komponen dasar bawaan project
 import SectionHeader from '../components/SectionHeader';
@@ -19,18 +20,81 @@ import SopSteps from '../components/ui/SopSteps';
 import ActionTooltip from '../components/ui/ActionTooltip';
 
 const DashboardAdmin = () => {
-  const navigate = useNavigate(); // 2. Inisialisasi hook navigate
+  const navigate = useNavigate();
   
   // Status Buka/Tutup Memo Toko (True/False)
   const [showMemo, setShowMemo] = useState(false);
 
-  const orders = [
-    { id: '#BW-001', name: 'Jihan Zahra', package: 'Cuci Setrika', weight: '5kg', date: '05 Mei 2026', status: 'Proses', initial: 'JZ', color: 'bg-blue-600' },
-    { id: '#BW-002', name: 'Budi Santoso', package: 'Dry Cleaning', weight: '2kg', date: '05 Mei 2026', status: 'Selesai', initial: 'BS', color: 'bg-emerald-500' },
-    { id: '#BW-003', name: 'Siti Aminah', package: 'Cuci Kering', weight: '7kg', date: '04 Mei 2026', status: 'Antri', initial: 'SA', color: 'bg-amber-500' },
-  ];
+  // --- STATE REAL-TIME SUPABASE ---
+  const [dbOrders, setDbOrders] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  // 3. Menambahkan properti action (onClick) khusus pada card "Lainnya"
+  // 2. AMBIL DATA DARI SUPABASE & PASANG REALTIME SUBSCRIPTION
+  const fetchAdminDashboardData = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('orders')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      if (!error && data) {
+        setDbOrders(data);
+      }
+    } catch (err) {
+      console.error("Gagal mengambil data admin:", err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchAdminDashboardData();
+
+    // 🌟 SETUP LIVE TRACKING SUPABASE KILAT 🌟
+    // Setiap ada baris data masuk, update, atau hapus di tabel 'orders', dashboard otomatis refresh angkanya!
+    const channel = supabase
+      .channel('admin-live-orders')
+      .on('postgres_changes', { 
+        event: '*', 
+        schema: 'public', 
+        table: 'orders' 
+      }, () => {
+        fetchAdminDashboardData(); // Tarik ulang data otomatis kalau ada orderan baru masuk
+      })
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, []);
+
+  // 3. KALKULASI LAPORAN SECARA OTOMATIS (DARI DATABASE)
+  const totalOrdersCount = dbOrders.length;
+  const queueCount = dbOrders.filter(o => o.status === 'Antri').length;
+  // Menghitung status 'Cuci', 'Pengeringan', atau 'Setrika' sebagai bagian dari "Proses"
+  const processingCount = dbOrders.filter(o => ['Cuci', 'Pengeringan', 'Setrika', 'Proses'].includes(o.status)).length;
+  const completedCount = dbOrders.filter(o => ['Selesai', 'Diambil'].includes(o.status)).length;
+
+  // Hitung Pendapatan Real-time dari akumulasi total_price orderan yang masuk// INI YANG BENAR: Dipaksa jadi angka murni pakai parseInt() dulu
+const totalRevenue = dbOrders.reduce((acc, curr) => {
+  const price = typeof curr.total_price === 'string' 
+    ? parseInt(curr.total_price.replace(/[^0-9]/g, '')) // Hapus karakter aneh jika ada, lalu ubah ke angka
+    : (curr.total_price || 0);
+  return acc + (isNaN(price) ? 0 : price);
+}, 0);
+
+  // Ambil 5 antrian teratas saja untuk ditampilkan di list dashboard admin biar rapi
+  const displayedOrders = dbOrders.slice(0, 5).map(order => ({
+    id: `#${order.id.substring(0, 6).toUpperCase()}`,
+    name: order.customer_name || 'No Name',
+    package: order.service_name || 'Custom Paket',
+    weight: `${order.qty || 0}kg`,
+    date: order.created_at ? new Date(order.created_at).toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' }) : 'Hari Ini',
+    status: order.status || 'Antri',
+    initial: order.customer_name ? order.customer_name.charAt(0).toUpperCase() : 'U',
+    color: order.status === 'Selesai' ? 'bg-emerald-500' : order.status === 'Antri' ? 'bg-amber-500' : 'bg-blue-600'
+  }));
+
   const services = [
     { name: 'Cuci Komplit', icon: <Droplets size={24} />, color: 'bg-blue-600' },
     { name: 'Setrika Saja', icon: <Shirt size={24} />, color: 'bg-blue-600' },
@@ -39,16 +103,26 @@ const DashboardAdmin = () => {
       name: 'Lainnya', 
       icon: <LayoutGrid size={24} />, 
       color: 'bg-slate-700',
-      onClick: () => navigate('/orders/new') // Navigasi ke halaman /services
+      onClick: () => navigate('/services')
     },
   ];
 
+  // Menggunakan data hasil hitungan Supabase ke format Laporan Kilat
   const reports = [
-    { label: 'Total Order', val: '1.240', color: 'text-blue-600' },
-    { label: 'Diterima', val: '850', color: 'text-sky-600' },
-    { label: 'Proses Cuci', val: '320', color: 'text-amber-500' },
-    { label: 'Selesai', val: '1.070', color: 'text-emerald-600' },
+    { label: 'Total Order', val: totalOrdersCount.toLocaleString('id-ID'), color: 'text-blue-600' },
+    { label: 'Diterima / Antri', val: queueCount.toLocaleString('id-ID'), color: 'text-sky-600' },
+    { label: 'Proses Cuci', val: processingCount.toLocaleString('id-ID'), color: 'text-amber-500' },
+    { label: 'Selesai', val: completedCount.toLocaleString('id-ID'), color: 'text-emerald-600' },
   ];
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-slate-950 flex flex-col items-center justify-center text-slate-400 gap-4">
+        <div className="w-12 h-12 rounded-full border-4 border-slate-800 border-t-blue-500 animate-spin"></div>
+        <p className="text-xs font-black tracking-widest text-slate-200 uppercase animate-pulse">Sinkronisasi Database BrightWash...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-[#F8FAFC] text-slate-800 antialiased p-2 flex flex-col gap-8">
@@ -107,7 +181,6 @@ const DashboardAdmin = () => {
           {/* Grid Kategori Layanan */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
             {services.map((item, i) => (
-              // 4. Meneruskan properti onClick ke ServiceCard
               <ServiceCard key={i} {...item} />
             ))}
           </div>
@@ -118,12 +191,11 @@ const DashboardAdmin = () => {
               <div className="flex items-center gap-3">
                 <div className="w-1.5 h-7 bg-blue-600 rounded-full"></div>
                 <div>
-                  <h3 className="text-slate-900 font-extrabold text-lg tracking-tight">Antrian Pesanan</h3>
-                  <p className="text-slate-400 text-xs font-medium">Daftar cucian masuk yang sedang berada dalam sistem ritme kerja.</p>
+                  <h3 className="text-slate-900 font-extrabold text-lg tracking-tight">Antrian Pesanan (Live)</h3>
+                  <p className="text-slate-400 text-xs font-medium">Daftar cucian masuk dari database Supabase yang terupdate otomatis.</p>
                 </div>
               </div>
 
-              {/* MODAL TICKET */}
               <SupportTicketModal />
             </div>
 
@@ -135,23 +207,26 @@ const DashboardAdmin = () => {
             {/* List Baris Orderan */}
             <div className="space-y-3">
               <div className="flex justify-between items-center px-2 text-[10px] font-extrabold text-slate-400 uppercase tracking-wider mb-1">
-                <span>Detail Antrian Pelanggan</span>
+                <span>5 Antrian Terbaru Masuk</span>
 
-                {/* ACTION TOOLTIP */}
                 <ActionTooltip text="Membuka riwayat log seluruh data antrian secara lengkap">
                   <button
                     className="text-[10px] font-extrabold text-blue-600 uppercase bg-blue-50 hover:bg-blue-100 px-4 py-2 rounded-lg border border-blue-200 transition-colors"
                     onClick={() => alert("Menuju ke halaman seluruh riwayat antrian...")}
                   >
-                    Lihat Semua
+                    Lihat Semua ({dbOrders.length})
                   </button>
                 </ActionTooltip>
               </div>
 
               <div className="divide-y divide-slate-100 bg-slate-50/50 rounded-2xl border border-slate-100 p-2 space-y-2">
-                {orders.map((order, i) => (
-                  <OrderRow key={i} order={order} />
-                ))}
+                {displayedOrders.length === 0 ? (
+                  <p className="text-xs text-center text-slate-400 py-6 font-bold">Belum ada orderan masuk di database.</p>
+                ) : (
+                  displayedOrders.map((order, i) => (
+                    <OrderRow key={i} order={order} />
+                  ))
+                )}
               </div>
             </div>
           </ContentSection>
@@ -159,7 +234,8 @@ const DashboardAdmin = () => {
 
         {/* --- SISI KANAN: FINANSIAL & LAPORAN (4 Columns) --- */}
         <div className="col-span-12 lg:col-span-4 flex flex-col gap-8">
-          <BalanceBox amount="2.450.000" />
+          {/* Nilai nominal uang sekarang diambil dinamis dari total pendapatan orderan */}
+        <BalanceBox amount={`Rp ${totalRevenue.toLocaleString('id-ID')}`} />
 
           <ContentSection className="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm flex flex-col justify-between">
             <div className="flex justify-between items-center mb-10">
